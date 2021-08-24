@@ -35,7 +35,7 @@
 - name: check if '/etc/ansible-version/' is empty
   ansible.builtin.find:
     paths: '/etc/ansible-version/'
-  register: filesFound
+  register: files_found
 
 - name: write new version to remote disk
   become: true

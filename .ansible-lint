@@ -1,0 +1,16 @@
+offline: true
+
+exclude_paths:
+  - roles/
+
+skip_list:
+  - 204
+  - 301
+  - 403
+  - 305
+  - unnamed-task
+  - package-latest
+  - no-changed-when
+  - risky-file-permissions
+  - command-instead-of-shell
+  - ignore-errors

@@ -1,0 +1,29 @@
+# this file is split into multiple small task files so other playbooks can
+# reuse parts of this role (see gatekeeper prod deployment for instance)
+- name: include scmd-docker
+  include_role:
+    name: cenk1cenk2.service.scmd-docker
+  vars:
+    scmd_variables_only: true
+    scmd_service_name: '{{ elk_client_service_name }}'
+
+- name: copy heartbeat monitor
+  template:
+    src: 'elk-heartbeat-monitor.j2'
+    dest: '{{ scmd_service_dir }}/{{ scmd_volume_dir }}/{{ heartbeat_container_name }}-config/monitor.d/{{ elk_client_name }}.yml'
+  when:
+    - elk_is_active is defined
+    - elk_is_active
+    - elk_client_name is defined
+    - elk_client_heartbeat.monitor is defined
+    - elk_client_heartbeat.monitor
+
+- name: remove heartbeat monitor
+  file:
+    path: '{{ scmd_service_dir }}/{{ scmd_volume_dir }}/{{ heartbeat_container_name }}-config/monitor.d/{{ elk_client_name }}.yml'
+    state: absent
+  when:
+    - elk_is_active is defined
+    - elk_is_active
+    - elk_client_heartbeat.monitor is defined
+    - not elk_client_heartbeat.monitor

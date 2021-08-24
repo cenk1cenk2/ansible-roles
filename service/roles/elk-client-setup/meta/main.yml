@@ -1,6 +1,0 @@
-galaxy_info:
-  author: Cenk Kilic
-  description: Adds additional configuration to beats.
-  company: kilic.dev
-  license: MIT
-  min_ansible_version: 2.9

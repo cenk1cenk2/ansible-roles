@@ -1,3 +1,0 @@
-ansible_management_user: ansible
-authorized_key_remove: false
-authorized_key_replace: false
