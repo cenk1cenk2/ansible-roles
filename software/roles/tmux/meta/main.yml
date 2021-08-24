@@ -1,0 +1,27 @@
+---
+galaxy_info:
+  author: Ted Cook
+  description: An Ansible role to install and configure tmux
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: EL
+      versions:
+        - 7
+    - name: Archlinux
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - xenial
+    - name: Debian
+      versions:
+        - stretch
+  galaxy_tags:
+    - tmux
+
+dependencies:
+  - role: nephelaiio.git
+    version: 2.1.0
+  - role: nephelaiio.xclip
+    version: 2.1.0

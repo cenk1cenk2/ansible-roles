@@ -1,0 +1,49 @@
+---
+scmd_compose_file_version: 3.7
+scmd_use_docker_service: true
+scmd_compose_file_template: docker-compose-v{{ scmd_compose_file_version }}.j2
+scmd_native_properties:
+  - build
+  - hostname
+  - user
+  - ulimits
+  - entrypoint
+  - command
+  - dns
+  - ports
+  - extra_hosts
+  - volumes
+  - network_mode
+  - networks
+  - privileged
+  - devices
+  - cap_add
+  - security_opt
+  - depends_on
+  - labels
+
+scmd_volumes_dir_name: 'volumes'
+scmd_env_dir_name: 'env'
+scmd_logs_dir_name: 'logs'
+scmd_build_dir_name: '.docker'
+
+scmd_env_file_template_dir: files/env
+scmd_base_dir: /root/docker
+
+# scmd_registry_url:
+# scmd_registry_user:
+# scmd_registry_password:
+
+scmd_log_driver: json-file
+scmd_log_file_max_size: 10m
+scmd_log_file_max_amount: 1
+
+scmd_register_host_ip: false
+scmd_host_name: docker_host # this is the name of the host that should be used when adding the docker host ip to a container using --add-hosts (or extra_hosts in a docker-compose.yml)
+scmd_docker_sock_volume: '/var/run/docker.sock:/var/run/docker.sock'
+scmd_docker_config_volume: '/root/.docker/config.json:/root/.docker/config.json:ro'
+
+# in-container location for maintenance lockfile (used by various api-skeleton forked apps)
+scmd_maintenance_lockfile: /opt/lock/maintenance.lock
+scmd_scale_to_cpus: 1
+scmd_no_env: false

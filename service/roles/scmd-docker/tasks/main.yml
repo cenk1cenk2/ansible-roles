@@ -1,0 +1,68 @@
+# this file is split into multiple small task files so other playbooks can
+# reuse parts of this role (see gatekeeper prod deployment for instance)
+- import_tasks: register-variables.yml
+  when:
+    - scmd_private_registry_only is not defined
+
+- include_tasks: register-env-vars.yml
+  when:
+    - not scmd_no_env
+    - scmd_variables_only is not defined
+    - scmd_state is not defined
+
+- include_tasks: docker-host-ip.yml
+  when:
+    - scmd_register_host_ip
+    - scmd_variables_only is not defined
+    - scmd_private_registry_only is not defined
+    - scmd_state is not defined
+
+- import_tasks: filesystem.yml
+  when:
+    - scmd_variables_only is not defined
+    - scmd_private_registry_only is not defined
+    - scmd_state is not defined
+
+- import_tasks: copy-docker-compose-file.yml
+  when:
+    - scmd_variables_only is not defined
+    - scmd_private_registry_only is not defined
+    - scmd_state is not defined
+
+- import_tasks: registry-login.yml
+  when:
+    - scmd_private_registry_only is defined
+    - scmd_private_registry_only
+    - scmd_private_registry is defined
+    - scmd_external_network is not defined
+    - scmd_state is not defined
+
+- import_tasks: docker-network.yml
+  when:
+    - scmd_external_network is defined
+    - scmd_private_registry_only is not defined
+    - scmd_external_network | length
+    - scmd_state is not defined
+
+- include_tasks: docker-service.yml
+  when:
+    - scmd_use_docker_service
+    - scmd_variables_only is not defined
+    - scmd_private_registry_only is not defined
+    - scmd_state is not defined
+
+- include_tasks: docker-compose-cli.yml
+  when:
+    - not scmd_use_docker_service
+    - scmd_variables_only is not defined
+    - scmd_private_registry_only is not defined
+    - scmd_state is not defined
+
+- include_tasks: clean-up.yml
+  when:
+    - scmd_state is defined
+
+- include_tasks: cleanup-env-vars.yml
+  when:
+    - not scmd_no_env
+    - scmd_variables_only is not defined

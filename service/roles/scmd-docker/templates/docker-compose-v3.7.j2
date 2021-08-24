@@ -1,0 +1,70 @@
+#jinja2:trim_blocks: True,lstrip_blocks: True
+{#
+Be careful with whitespace here. The options above (mostly) disable jinja tampering with whitespace, so all whitespace
+will be preserved as-is in the final output. Jinja code blocks will not produce any whitespace of their own.
+#}
+# Ansible generated docker-compose file for "{{ scmd_service_name }}" service.
+
+version: "3.7"
+
+services:
+  {% for container in scmd_services if (container.disabled is not defined or not container.disabled) %}
+  {{ container.name }}:
+  {% if container.private_image is defined %}
+    image: {{ scmd_registry_url }}/{{ container.private_image }}
+  {% elif container.image is defined %}
+    image: {{ container.image }}
+  {% endif %}
+  {% if container.restart is defined %}
+    restart: {{ container.restart }}
+  {% endif %}
+  {% if container.restart_policy is defined %}
+    {{ '{"restart_policy": %s}' | format(container.restart_policy | to_json) | from_json | to_nice_yaml(indent=2) | indent(6) }}
+  {% endif %}
+  {% if ((scmd_no_env is not defined or not scmd_no_env) and scmd_env_files is defined) %}
+    {% set env_files = [] %}
+    {% if (scmd_env_files | selectattr("name", "equalto", "env") | list | length > 0) %}
+      {% set env_files = env_files + [scmd_env_dir + "/" + ".env"] %}
+    {% endif %}
+    {% if (scmd_env_files | selectattr("name", "equalto", container.name) | list | length > 0) %}
+      {% set env_files = env_files + [scmd_env_dir + "/" + container.name + ".env"] %}
+    {% endif %}
+    {% if (env_files | length == 1) %}
+      {% set env_files = ''.join(env_files) %}
+    {% endif %}
+  {% set env_file = { "env_file": env_files} %}
+    {% if env_files | length > 0 %}
+    {{ env_file | to_nice_yaml(indent=2) | indent(6) | trim }}
+    {% endif %}
+  {% endif %}
+  {% for prop in scmd_native_properties %}
+  {% if prop in container and ((container[prop] is not iterable and container[prop] | string | length > 0) or (container[prop] is iterable and container[prop] | list | length > 0)) %}
+    {% if container[prop] is not mapping %}
+    {{ '{"%s": %s}' | format(prop, container[prop] | to_json) | from_json | to_nice_yaml(indent=2) | indent(6) | trim }}
+    {% else %}
+    {{ '{"%s": %s}' | format(prop, container[prop] | to_json) | from_json | to_nice_yaml(indent=2) | indent(4) | trim }}
+    {% endif %}
+
+  {%- endif %}
+  {%- endfor %}
+    logging:
+      driver: "{{ container.log_driver | default(scmd_log_driver) }}"
+      options:
+        max-size: "{{ container.log_file_max_size | default(scmd_log_file_max_size) }}"
+        max-file: "{{ container.log_file_max_amount | default(scmd_log_file_max_amount) }}"
+
+  {% endfor %}
+{% if ((scmd_external_network is defined and scmd_external_network | length) or (scmd_network is defined and scmd_network | length)) %}
+networks:
+  {% if scmd_network is defined %}
+  {% for network in scmd_network %}
+  {{ '{"%s": %s}' | format(network.name, network | dict2items | rejectattr("key", "equalto", "name") | list | items2dict | to_json) | from_json | to_nice_yaml(indent=2) | indent(2) }}
+  {% endfor %}
+  {%- endif %}
+  {% if scmd_external_network is defined %}
+  {% for network in scmd_external_network %}
+  {{ network }}:
+    external: true
+  {% endfor %}
+  {%- endif %}
+{%- endif %}

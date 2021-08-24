@@ -1,0 +1,25 @@
+namespace: cenk1cenk2
+name: software
+version: 1.0.0
+readme: README.md
+authors:
+  - Cenk Kilic <cenk@kilic.dev>
+
+description: Service related roles for provisioning.
+
+license:
+  - MIT
+
+tags: []
+
+# dependencies: {}
+
+repository: https://src.kilic.dev/ansible-roles
+
+documentation: https://src.kilic.dev/ansible-roles
+
+homepage: https://src.kilic.dev/ansible-roles
+
+issues: https://src.kilic.dev/ansible-roles/issues
+
+build_ignore: []

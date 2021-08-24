@@ -1,0 +1,22 @@
+- name: pull images
+  shell:
+    cmd: docker-compose pull
+    chdir: '{{ scmd_service_dir }}'
+
+- name: stop and remove containers
+  shell:
+    cmd: docker-compose down --remove-orphans && docker-compose rm -f
+    chdir: '{{ scmd_service_dir }}'
+
+- name: restart containers and scale
+  shell:
+    cmd: docker-compose up -d {{ '--scale ' ~ item.key ~ '=' ~ ansible_processor_vcpus ~ ' ' if item.value >= 1 else '' }}
+    chdir: '{{ scmd_service_dir }}'
+  when: scmd_scale is defined
+  with_dict: '{{ scmd_scale | default({ }) }}'
+
+- name: restart containers
+  shell:
+    cmd: docker-compose up -d
+    chdir: '{{ scmd_service_dir }}'
+  when: scmd_scale is undefined

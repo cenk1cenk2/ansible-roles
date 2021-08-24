@@ -1,6 +1,6 @@
 - name: include scmd role
   include_role:
-    name: scmd-docker
+    name: cenk1cenk2.service.scmd-docker
     public: yes
   vars:
     scmd_variables_only: true
@@ -8,7 +8,7 @@
 
 - name: include nginx role
   include_role:
-    name: nginx-vhost
+    name: cenk1cenk2.service.nginx-vhost
     public: yes
   vars:
     vhost_variables_only: true

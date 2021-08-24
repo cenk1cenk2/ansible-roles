@@ -1,6 +1,6 @@
 galaxy_info:
   author: Cenk Kilic
-  description: manage nginx configuration with docker
+  description: manage docker applications via docker-compose
   company: kilic.dev
   license: MIT
   min_ansible_version: 2.9

@@ -1,0 +1,11 @@
+---
+- name: pull images and restart service using docker service
+  docker_compose:
+    state: present
+    project_name: '{{ scmd_service_name }}'
+    project_src: '{{ scmd_service_dir }}'
+    pull: yes
+    build: yes
+    remove_orphans: yes
+    recreate: always
+    scale: '{{ scmd_scale | default({}) }}'

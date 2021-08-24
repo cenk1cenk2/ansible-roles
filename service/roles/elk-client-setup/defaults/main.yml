@@ -1,0 +1,6 @@
+---
+elk_client_service_name: elk-client
+metricbeat_container_name: elk-metricbeat
+filebeat_container_name: elk-filebeat
+heartbeat_container_name: elk-heartbeat
+elk_client_keys_directory: keys

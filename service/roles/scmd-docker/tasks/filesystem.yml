@@ -1,0 +1,40 @@
+- name: create service directory
+  file:
+    name: '{{ item }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  with_items:
+    - '{{ scmd_service_dir }}'
+
+- name: create volumes directory
+  file:
+    name: '{{ item }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  with_items:
+    - '{{ scmd_volume_dirs }}'
+
+- name: create env directory
+  file:
+    name: '{{ item }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  with_items:
+    - '{{ scmd_full_env_dir }}'
+  when:
+    - not scmd_no_env
+    - scmd_env_files is defined
+    - scmd_env_files | length > 0
+
+- name: copy env files
+  template:
+    src: '{{ item.path }}'
+    dest: "{{ scmd_full_env_dir }}/{% if item.name != 'env' %}{{ item.name }}{% endif %}.env"
+  with_items: '{{ scmd_env_files }}'
+  when:
+    - not scmd_no_env
+    - scmd_env_files is defined
+    - scmd_env_files | length > 0

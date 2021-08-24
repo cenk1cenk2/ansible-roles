@@ -1,0 +1,44 @@
+- name: fetch latest release
+  uri:
+    url: https://api.github.com/repos/{{ github_latest_release_repo }}/releases/latest
+    return_content: true
+  register: json_response
+
+- name: register last release version
+  set_fact:
+    github_latest_release_final_version: '{{ json_response.json.tag_name }}'
+
+- name: create temporary download directory
+  tempfile:
+    state: directory
+  register: temp
+
+- name: create temporary unarchive directory
+  tempfile:
+    state: directory
+  register: temp_unarchive
+  when:
+    - github_latest_release_archive
+
+- name: fetch
+  get_url:
+    url: 'https://github.com/{{ github_latest_release_repo }}/releases/download/{{ json_response.json.tag_name }}/{{ github_latest_release_repo_filename }}{{ github_latest_release_archive | default("") }}'
+    dest: '{{ temp.path }}'
+  register: download
+
+- name: unarchive
+  unarchive:
+    src: '{{ download.dest }}'
+    dest: '{{ temp_unarchive.path }}'
+  when:
+    - github_latest_release_archive
+
+- name: set download directory
+  set_fact:
+    github_latest_release_repo_download_directory: '{{ temp_unarchive.path if temp_unarchive else temp.path }}'
+
+- name: copy from archive
+  copy:
+    src: '{{ github_latest_release_repo_download_directory }}/{{ github_latest_release_binary_path | default(github_latest_release_repo_filename) }}'
+    dest: '{{ github_latest_release_dest }}'
+    mode: '{{ github_latest_release_mode | default("0777") }}'
