@@ -21,11 +21,6 @@
     - item.path is match("(" + ssl_certificate_domains | join("|") + ")/(fullchain|privkey).pem.secrets.j2")
   with_filetree: '{{ ssl_certificates_root }}'
 
-- debug:
-    msg: 'Found certificates: {{ ssl_certificates }}'
-  when:
-    - ssl_certificates is defined
-
 - name: ensure certificate directories
   file:
     path: '{{ letsencrypt_cert_dir }}/live/{{ item.path | dirname }}'

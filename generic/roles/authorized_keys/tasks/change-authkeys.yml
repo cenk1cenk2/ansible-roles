@@ -16,39 +16,39 @@
     exclusive: true
 
 - name: set fact for defined authorized_key
-  when:
-    - authorized_key is defined
   set_fact:
     auth_keys: "{{ (auth_keys | default('')) + lookup('file', item) + '\n' }}"
   with_fileglob:
     - "{{ authorized_keys_root }}/({{ authorized_key | join('|') }}).pub"
-
-- name: append authorized key from file
   when:
     - authorized_key is defined
-    - not authorized_key_replace
-    - not authorized_key_remove
+
+- name: append authorized key from file
   authorized_key:
     user: '{{ ansible_management_user }}'
     state: present
     key: '{{ auth_keys }}'
-
-- name: set authorized key from file
   when:
     - authorized_key is defined
-    - authorized_key_replace
+    - not authorized_key_replace
     - not authorized_key_remove
+
+- name: set authorized key from file
   authorized_key:
     user: '{{ ansible_management_user }}'
     state: present
     exclusive: true
     key: '{{ auth_keys }}'
-
-- name: remove authorized key from file
   when:
     - authorized_key is defined
-    - authorized_key_remove
+    - authorized_key_replace
+    - not authorized_key_remove
+
+- name: remove authorized key from file
   authorized_key:
     user: '{{ ansible_management_user }}'
     state: absent
     key: '{{ auth_keys }}'
+  when:
+    - authorized_key is defined
+    - authorized_key_remove
