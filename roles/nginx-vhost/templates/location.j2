@@ -1,0 +1,52 @@
+{% if vhost_redirect is defined %}
+  {% for redir in vhost_redirect %}
+rewrite ^{{ redir.from }}(.*)$ {{ redir.to }}$1 {% if redir.temporary is defined and redir.temporary == True %}redirect{% else %}permanent{% endif %};
+  {% endfor %}
+
+{% endif %}
+{% if vhost_docroot is defined %}
+root {{ vhost_docroot }};
+index index.html;
+try_files "${uri}.html" $uri $uri/ =404;
+
+{% endif %}
+{% if vhost_proxy_locations is defined %}
+  {% if vhost_proxy_cache_enable %}
+{% include "./proxy-cache.j2" %}
+
+  {% endif %}
+{% for l in vhost_proxy_locations %}
+location {{ l.location }} {
+  {% if vhost_resolver is defined %}
+  {% if vhost_resolver.ip is defined and vhost_resolver.valid is defined %}
+  resolver {{ vhost_resolver.ip }} valid={{ vhost_resolver.valid }};
+  {% else %}
+  resolver 127.0.0.11 valid=600s;
+  {% endif %}
+
+  {% endif %}
+  {% if l.restrict_access is defined %}
+  {% filter indent(2, True) %}{% include "./restrict-access.j2" %}{% endfilter %}
+
+  {% endif %}
+  {% if l.redirect is defined %}
+  return 302 {{ l.redirect }};
+
+  {% elif l.static_directory is defined %}
+  {% filter indent(2, True) %}{% include "./static-directory.j2" %}{% endfilter %}
+
+  {% else %}
+  {% filter indent(2, True) %}{% include "./reverse-proxy.j2" %}{% endfilter %}
+  {% if l.proxy_redirect is defined %}
+
+  {% for r in l.proxy_redirect %}
+  proxy_redirect {{ r.from | default(r) }}{{ ' ' + r.to if r.to is defined else '' }};
+  {% endfor %}
+  {% endif %}
+
+  {% endif %}
+}
+
+{% endfor %}
+{% endif %}
+

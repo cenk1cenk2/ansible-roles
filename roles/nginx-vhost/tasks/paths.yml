@@ -1,0 +1,43 @@
+---
+- name: copy paths template
+  template:
+    src: '{{ vhost_template_file }}'
+    dest: "{{ nginx_paths_full_dir }}/{{ vhost_path_name | regex_replace('[$^*]', '_') }}.conf"
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  when: vhost_template_file is defined
+  notify:
+    - reload nginx
+
+- name: copy paths config
+  template:
+    src: '{{ vhost_path_template }}'
+    dest: "{{ nginx_paths_full_dir }}/{{ vhost_path_name | regex_replace('[$^*]', '_') }}.conf"
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  when:
+    - vhost_template_file is undefined
+  notify:
+    - reload nginx
+
+- name: copy paths upstream config
+  template:
+    src: '{{ vhost_upstream_template }}'
+    dest: "{{ nginx_upstream_full_dir }}/{{ vhost_path_name | regex_replace('[$^*]', '_') }}.conf"
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  when:
+    - vhost_upstream is defined
+  notify:
+    - reload nginx
+
+- name: create static directories
+  file:
+    path: '{{ nginx_publish_full_dir }}/{{ item.static_directory }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  when:
+    - item.static_directory is defined
+  with_items:
+    - '{{ vhost_proxy_locations }}'

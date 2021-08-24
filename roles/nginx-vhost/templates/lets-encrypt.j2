@@ -1,0 +1,9 @@
+{% if vhost_ssl_le is defined and vhost_ssl_le == true %}
+
+location /.well-known/acme-challenge {
+  access_log {{ nginx_log_dir }}/{{ vhost_base_domain }}-acme-access.log;
+  error_log {{ nginx_log_dir }}/{{ vhost_base_domain }}-acme-error.log;
+  allow all;
+  root {{ letsencyrpt_container_acme_root }};
+}
+{% endif %}

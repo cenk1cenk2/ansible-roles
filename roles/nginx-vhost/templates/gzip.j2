@@ -1,0 +1,8 @@
+gzip on;
+gzip_comp_level {{ vhost_gzip_comp_level }};
+gzip_vary {{ vhost_gzip_vary }};
+gzip_min_length  {{ vhost_gzip_min_length }};
+gzip_proxied any;
+gzip_types {{ vhost_gzip_types | join(' ') }};
+gzip_buffers {{ vhost_gzip_buffer_count }} {{ vhost_gzip_buffer_size }};
+

@@ -1,0 +1,12 @@
+{% if l.restrict_access.allow is defined %}
+{% for target in l.restrict_access.allow %}
+allow {{ target }};
+{% endfor %}
+{% endif %}
+
+{% if l.restrict_access.deny is defined %}
+{% for target in l.restrict_access.deny %}
+deny {{ target }};
+{% endfor %}
+{% endif %}
+

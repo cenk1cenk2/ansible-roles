@@ -1,0 +1,108 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+# ansible generated config file for nginx vhost "{{ vhost_uri }}"
+
+include ./{{ nginx_upstream_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}/*.conf;
+
+{% if vhost_ssl == true and vhost_non_ssl != true and vhost_http_redir == true %}
+server {
+  {% with listen_port = vhost_non_ssl_port %}
+  {% filter indent(2, True) %}{% include './listen.j2' %}{% endfilter %}
+  {% endwith %}
+  {% filter indent(2, True) %}{% include './lets-encrypt.j2' %}{% endfilter %}
+
+  {% filter indent(2, True) %}{% include './error-pages.j2' %}{% endfilter %}
+
+  server_name {{ vhost_uri }} {% if vhost_server_alias is defined and vhost_server_alias != False %}{% for alias in vhost_server_alias %} {{ alias }}{% endfor %}{% endif %};
+
+  {% if vhost_non_ssl_networks_allow is not defined or (vhost_non_ssl_networks_allow_domain is defined and vhost_non_ssl_networks_allow_domain == False) %}
+  location / {
+    return 302 https://$host$request_uri;
+  }
+  {% else %}
+  if ($internal_networks = 0) {
+    return 302 https://$host$request_uri;
+  }
+
+  access_log {{ nginx_log_dir }}/{{ vhost_uri }}-access.log;
+  error_log {{ nginx_log_dir }}/{{ vhost_uri }}-error.log;
+
+  {% if vhost_use_gzip %}
+  {% filter indent(2, True) %}{% include './gzip.j2' %}{% endfilter %}
+  {% endif %}
+
+  client_max_body_size    {{ vhost_max_body_size }};
+  default_type            {{ vhost_default_mime_type }};
+  keepalive_timeout       {{ vhost_keepalive_timeout }};
+
+  include ./{{ nginx_paths_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}/*.conf;
+  {% endif %}
+}
+{% endif %}
+{% if vhost_url_redirect is defined and vhost_url_redirect != false %}
+{% for r in vhost_url_redirect %}
+server {
+  {% if not r.http_redir is defined or r.http_redir == true %}
+  {% with listen_port = vhost_non_ssl_port %}{% filter indent(2, True) %}{% include './listen.j2' %}{% endfilter %}{% endwith %}
+  {% endif %}
+  {% if not r.https_redir is defined or r.https_redir == true %}
+  {% with listen_port = vhost_ssl_port, ssl = true %}
+  {% filter indent(2,True) %}{% include './listen.j2' %}{% endfilter %}
+  {% endwith %}
+  {% filter indent(2,True) %}{% include "./ssl.j2" %}{% endfilter %}
+  {% endif %}
+  {% filter indent(2, True) %}{% include './lets-encrypt.j2' %}{% endfilter %}
+
+  {% filter indent(2, True) %}{% include './error-pages.j2' %}{% endfilter %}
+
+  server_name {{ r.from }};
+
+  return 302 {{ r.to }}$request_uri;
+}
+{% endfor %}
+{% endif %}
+
+server {
+  {% if vhost_non_ssl == true %}
+  {% with listen_port = vhost_non_ssl_port %}{% filter indent(2, True) %}{% include './listen.j2' %}{% endfilter %}{% endwith %}
+  {% endif %}
+  {% if vhost_ssl == true %}
+  {% with listen_port = vhost_ssl_port, ssl = true %}{% filter indent(2, True) %}{% include './listen.j2' %}{% endfilter %}{% endwith %}
+
+  {% filter indent(2, True) %}{% include "./ssl.j2" %}{% endfilter %}
+  {% if vhost_non_ssl_networks_allow is defined and vhost_non_ssl_networks_allow != False %}
+
+  {% for network in vhost_non_ssl_networks_allow %}
+  if ($internal_networks = "{{ network.name }}") {
+    return 302 http://{{ network.redirect }}$request_uri;
+  }
+
+  {% endfor %}
+
+  {% endif %}
+  {% endif %}
+  {% if vhost_additional_ports %}
+  {% for port in vhost_additional_ports %}
+  {% with listen_port = port %}{% filter indent(2, True) %}{% include './listen.j2' %}{% endfilter %}{% endwith %}
+  {% endfor %}
+  {% endif %}
+  {% with ssl=true %}
+  {% filter indent(2, True) %}{% include './lets-encrypt.j2' %}{% endfilter %}
+  {% endwith %}
+
+  {% filter indent(2, True) %}{% include './error-pages.j2' %}{% endfilter %}
+
+  server_name {{ vhost_uri }}{% if vhost_server_alias is defined and vhost_server_alias != False %}{% for alias in vhost_server_alias %} {{ alias }}{% endfor %}{% endif %};
+
+  access_log {{ nginx_log_dir }}/{{ vhost_uri }}-access.log;
+  error_log {{ nginx_log_dir }}/{{ vhost_uri }}-error.log;
+
+  {% if vhost_use_gzip %}
+  {% filter indent(2, True) %}{% include './gzip.j2' %}{% endfilter %}
+  {% endif %}
+
+  client_max_body_size    {{ vhost_max_body_size }};
+  default_type            {{ vhost_default_mime_type }};
+  keepalive_timeout       {{ vhost_keepalive_timeout }};
+
+  include ./{{ nginx_paths_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}/*.conf;
+}

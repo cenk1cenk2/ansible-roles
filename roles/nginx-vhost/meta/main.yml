@@ -1,0 +1,10 @@
+galaxy_info:
+  author: Cenk Kilic
+  description: manage nginx configuration with docker
+  company: kilic.dev
+  license: MIT
+  min_ansible_version: 2.3
+#  platforms:
+#  - name: EL
+#    versions:
+#    - all

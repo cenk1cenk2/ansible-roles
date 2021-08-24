@@ -1,0 +1,6 @@
+proxy_cache {{ vhost_uri }};
+proxy_cache_key "{{ vhost_proxy_cache_key_base }}{% if vhost_proxy_cache_honor_headers is defined %}$http_{{ vhost_proxy_cache_honor_headers|map('replace', '-', '_')|map('lower')|join('$http_') }}{% endif %}";
+proxy_cache_bypass $http_cache_control; # allow client to explicitly request non-cached version of resource
+proxy_cache_use_stale error timeout http_500 http_502 http_503 http_504; # serve cached content - if available - in case of these errors
+add_header X-Proxy-Cache $upstream_cache_status;
+

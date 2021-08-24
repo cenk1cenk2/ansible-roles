@@ -1,0 +1,22 @@
+#jinja2:trim_blocks: True,lstrip_blocks: True
+# ansible generated config file for nginx upstream for path "{{ vhost_path_name }}" for domain "{{ vhost_uri }}"
+
+{% if vhost_upstream is defined %}
+{% for upstream in vhost_upstream %}
+upstream {{ upstream.id }} {
+  {% if upstream.port_range is defined %}
+  {% for port in range(upstream.port_range.start|int, upstream.port_range.finish|int) %}
+  server localhost:{{ port }};
+  {% endfor %}
+  {% elif upstream.urls is defined %}
+  {% for url in upstream.urls %}
+  server {{ url }};
+  {% endfor %}
+  {% else %}
+  server localhost:{{ upstream.port }};
+  {% endif %}
+}
+
+{% endfor %}
+{% endif %}
+

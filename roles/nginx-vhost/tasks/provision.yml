@@ -1,0 +1,59 @@
+---
+- name: create directories for domains nginx provision
+  file:
+    name: '{{ item }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  with_items:
+    - '{{ nginx_domains_full_dir }}'
+  when:
+    - vhost_uri is defined
+
+- name: create directories for paths nginx provision
+  file:
+    name: '{{ item }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  with_items:
+    - '{{ nginx_paths_full_dir }}'
+  when:
+    - vhost_uri is defined
+    - vhost_path_name is defined
+
+- name: create directories for paths nginx provision upstream
+  file:
+    name: '{{ item }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  with_items:
+    - '{{ nginx_upstream_full_dir }}'
+  when:
+    - vhost_uri is defined
+    - vhost_path_name is defined
+    - vhost_upstream is defined
+
+- name: provision base nginx.conf
+  template:
+    src: '{{ vhost_base_conf_template }}'
+    dest: '{{ nginx_volumes_full_dir }}/nginx.conf'
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+  notify:
+    - reload nginx
+
+- name: allow http port
+  ufw:
+    rule: allow
+    port: '80'
+  when:
+    - vhost_provision_only is defined and vhost_provision_only
+
+- name: allow https port
+  ufw:
+    rule: allow
+    port: '443'
+  when:
+    - vhost_provision_only is defined and vhost_provision_only

@@ -1,0 +1,85 @@
+---
+- name: remove paths template
+  file:
+    path: '{{ nginx_paths_full_dir }}/{{ vhost_path_name }}.conf'
+    state: absent
+  when:
+    - vhost_path_name is defined
+    - vhost_template_file is defined
+    - vhost_state.path is defined
+    - vhost_state.path == "absent"
+  notify:
+    - reload nginx
+
+- name: remove paths config
+  file:
+    path: '{{ nginx_paths_full_dir }}/{{ vhost_path_name }}.conf'
+    state: absent
+  when:
+    - vhost_path_name is defined
+    - vhost_template_file is undefined
+    - vhost_state.path is defined
+    - vhost_state.path == "absent"
+  notify:
+    - reload nginx
+
+- name: remove paths upstream config
+  file:
+    path: '{{ nginx_upstream_full_dir }}/{{ vhost_path_name }}.conf'
+    state: absent
+  when:
+    - vhost_path_name is defined
+    - vhost_upstream is defined
+    - vhost_state.path is defined
+    - vhost_state.path == "absent"
+  notify:
+    - reload nginx
+
+- name: remove proxy cache directory
+  file:
+    path: '{{ vhost_proxy_cache_path }}'
+    state: absent
+  when:
+    - vhost_uri is defined
+    - vhost_proxy_locations is defined and vhost_proxy_cache_enable
+    - vhost_state.uri is defined
+    - vhost_state.uri == "absent"
+
+- name: remove vhost template
+  file:
+    path: '{{ nginx_domains_full_dir }}/{{ vhost_uri }}.conf'
+    state: absent
+  when:
+    - vhost_uri is defined
+    - vhost_template_file is defined
+    - vhost_state.uri is defined
+    - vhost_state.uri == "absent"
+  notify:
+    - reload nginx
+
+- name: remove vhost config
+  file:
+    path: '{{ nginx_domains_full_dir }}/{{ vhost_uri }}.conf'
+    state: absent
+  when:
+    - vhost_uri is defined
+    - vhost_template_file is undefined
+    - vhost_state.uri is defined
+    - vhost_state.uri == "absent"
+  notify:
+    - reload nginx
+
+- name: remove designated dirs for uri
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - '{{ nginx_paths_full_dir }}'
+    - '{{ nginx_upstream_full_dir }}'
+  when:
+    - vhost_uri is defined
+    - vhost_template_file is undefined
+    - vhost_state.uri is defined
+    - vhost_state.uri == "absent"
+  notify:
+    - reload nginx

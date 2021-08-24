@@ -1,0 +1,8 @@
+{% if vhost_non_ssl_networks_allow is defined %}
+geo $internal_networks {
+  default 0;
+  {% for n in vhost_non_ssl_networks_allow %}
+  {{ n.subnet }} {{ n.name }};
+  {% endfor %}
+}
+{% endif %}

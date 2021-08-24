@@ -1,0 +1,10 @@
+ssl_protocols {{ nginx_ssl_protocols[nginx_ssl_profile] }};
+ssl_ciphers '{{ nginx_ssl_ciphers[nginx_ssl_profile] }}';
+ssl_prefer_server_ciphers on;
+ssl_session_cache shared:SSL:10m;
+add_header Strict-Transport-Security max-age=15768000;
+ssl_stapling on;
+ssl_stapling_verify on;
+ssl_certificate     {{ vhost_ssl_bundle_file }};
+ssl_certificate_key {{ vhost_ssl_key_file }};
+

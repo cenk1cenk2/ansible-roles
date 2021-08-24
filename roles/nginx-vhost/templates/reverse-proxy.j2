@@ -1,0 +1,22 @@
+{% if l.disable_logging is defined and l.disable_logging == true %}
+access_log off;
+error_log off;
+
+{% endif %}
+{% if l.auth_file is defined and l.auth_file != false %}
+auth_basic "{{ l.auth_name | default('Authentication required') }}";
+auth_basic_user_file {{ l.auth_file }};
+
+{% endif %}
+{% include './proxy-schema.j2' %}
+{% if vhost_resolver is defined %}
+set $upstream_resolver {% if l.url is defined %}{{ l.url }}{% elif l.upstream is defined %}http://{{ l.upstream }}{% else %}http://localhost:{{ l.port }}{% endif %};
+
+{% endif %}
+{% if  l.rewrite is defined and l.retain_path is defined and not l.retain_path %}
+rewrite {{ l.rewrite | default(l.location) }}(:?/?(.*)) /$1 break;
+
+{% endif %}
+{% if l.url is defined or l.upstream is defined or l.port is defined %}
+proxy_pass {% if vhost_resolver is defined %}$upstream_resolver{% elif l.url is defined %}{{ l.url }}{% elif l.upstream is defined %}http://{{ l.upstream }}{% else %}http://localhost:{{ l.port }}{% endif %};
+{% endif %}
