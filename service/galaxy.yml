@@ -1,11 +1,11 @@
 namespace: cenk1cenk2
-name: generic
+name: service
 version: 1.0.0
 readme: README.md
 authors:
   - Cenk Kilic <cenk@kilic.dev>
 
-description: Generic set of ansible roles for basic provisioning actions.
+description: Service related roles for provisioning.
 
 license:
   - MIT
