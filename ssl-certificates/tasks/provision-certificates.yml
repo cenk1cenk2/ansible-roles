@@ -1,0 +1,45 @@
+- name: include scmd role
+  include_role:
+    name: scmd-docker
+    public: yes
+  vars:
+    scmd_variables_only: true
+    scmd_service_name: any
+
+- name: include nginx role
+  include_role:
+    name: nginx-vhost
+    public: yes
+  vars:
+    vhost_variables_only: true
+
+- name: set ssl certificates available
+  set_fact:
+    ssl_certificates: '{{ ssl_certificates | default([]) + [ { "path": item.path, "root": item.root + "/" + item.path } ] }}'
+  when:
+    - item.state == 'file'
+    - item.path is match("(" + ssl_certificate_domains | join("|") + ")/(fullchain|privkey).pem.secrets.j2")
+  with_filetree: '{{ ssl_certificates_root }}'
+
+- debug:
+    msg: 'Found certificates: {{ ssl_certificates }}'
+  when:
+    - ssl_certificates is defined
+
+- name: ensure certificate directories
+  file:
+    path: '{{ letsencrypt_cert_dir }}/live/{{ item.path | dirname }}'
+    state: directory
+  with_items:
+    - '{{ ssl_certificates }}'
+  when:
+    - ssl_certificates is defined
+
+- name: copy ssl certificates
+  template:
+    src: '{{ item.root }}'
+    dest: "{{ letsencrypt_cert_dir }}/live/{{ item.path | regex_replace('.secrets.j2$', '') }}"
+  with_items:
+    - '{{ ssl_certificates }}'
+  when:
+    - ssl_certificates is defined

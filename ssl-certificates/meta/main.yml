@@ -1,0 +1,8 @@
+galaxy_info:
+  author: Cenk Kilic
+  description: manage ssl certificates, and inject them to a given repository
+  company: kilic.dev
+  license: MIT
+  min_ansible_version: 2.4
+
+dependencies: []
