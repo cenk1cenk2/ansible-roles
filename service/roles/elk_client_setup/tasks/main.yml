@@ -1,8 +1,8 @@
 # this file is split into multiple small task files so other playbooks can
 # reuse parts of this role (see gatekeeper prod deployment for instance)
-- name: include scmd-docker
+- name: include scmd_docker
   include_role:
-    name: cenk1cenk2.service.scmd-docker
+    name: cenk1cenk2.service.scmd_docker
   vars:
     scmd_variables_only: true
     scmd_service_name: '{{ elk_client_service_name }}'

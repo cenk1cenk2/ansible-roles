@@ -1,1 +1,1 @@
-# cenk1cenk2.service.nginx-vhost
+# cenk1cenk2.service.nginx_vhosts
