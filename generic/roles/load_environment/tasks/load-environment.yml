@@ -1,0 +1,3 @@
+- name: load environment
+  include_vars:
+    dir: '{{ load_environment_root }}/{{ load_environment }}'

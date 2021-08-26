@@ -1,0 +1,8 @@
+- import_tasks: load-vars.yml
+  when:
+    - load_environment_vars is defined
+    - load_environment_vars
+
+- import_tasks: load-environment.yml
+  when:
+    - load_environment is defined

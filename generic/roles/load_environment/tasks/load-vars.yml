@@ -1,0 +1,3 @@
+- name: load variables
+  include_vars:
+    dir: '{{ load_environment_variables_root }}'

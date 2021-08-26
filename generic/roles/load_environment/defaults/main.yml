@@ -1,0 +1,2 @@
+load_environment_root: ./environments
+load_environment_variables_root: ./vars
