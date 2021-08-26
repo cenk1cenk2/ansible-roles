@@ -37,7 +37,7 @@
 
 - name: set download directory
   set_fact:
-    github_latest_release_repo_download_directory: '{{ temp_unarchive.path if temp_unarchive else temp.path }}'
+    github_latest_release_repo_download_directory: '{{ temp_unarchive.path if temp_unarchive is defined else temp.path }}'
 
 - name: copy from archive
   copy:
