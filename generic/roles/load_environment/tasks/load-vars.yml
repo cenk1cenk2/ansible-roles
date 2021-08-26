@@ -1,3 +1,7 @@
 - name: load variables
   include_vars:
-    dir: '{{ load_environment_variables_root }}'
+    file: '{{ item }}'
+  with_fileglob:
+    - '{{ load_environment_variables_root }}/*.yml'
+    - '{{ load_environment_variables_root }}/*.json'
+    - '{{ load_environment_variables_root }}/*.yaml'
