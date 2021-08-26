@@ -18,6 +18,7 @@
     state: directory
   register: temp_unarchive
   when:
+    - github_latest_release_archive is defined
     - github_latest_release_archive
 
 - name: fetch
@@ -31,6 +32,7 @@
     src: '{{ download.dest }}'
     dest: '{{ temp_unarchive.path }}'
   when:
+    - github_latest_release_archive is defined
     - github_latest_release_archive
 
 - name: set download directory
@@ -41,4 +43,5 @@
   copy:
     src: '{{ github_latest_release_repo_download_directory }}/{{ github_latest_release_binary_path | default(github_latest_release_repo_filename) }}'
     dest: '{{ github_latest_release_dest }}'
-    mode: '{{ github_latest_release_mode | default("0777") }}'
+    mode: '{{ github_latest_release_mode }}'
+    force: '{{ github_latest_release_force }}'
