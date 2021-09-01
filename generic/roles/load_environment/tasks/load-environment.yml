@@ -5,6 +5,8 @@
     - '{{ load_environment_root }}/{{ common_load_environment }}/*.yml'
     - '{{ load_environment_root }}/{{ common_load_environment }}/*.json'
     - '{{ load_environment_root }}/{{ common_load_environment }}/*.yaml'
+  when:
+    - common_load_environment is defined
 
 - name: load environment and its variables
   include_vars:
