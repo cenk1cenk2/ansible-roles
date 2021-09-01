@@ -1,2 +1,3 @@
 load_environment_root: ./environments
 load_environment_variables_root: ./vars
+common_load_environment: all

@@ -1,3 +1,11 @@
+- name: load common environment and its variables
+  include_vars:
+    file: '{{ item }}'
+  with_fileglob:
+    - '{{ load_environment_root }}/{{ common_load_environment }}/*.yml'
+    - '{{ load_environment_root }}/{{ common_load_environment }}/*.json'
+    - '{{ load_environment_root }}/{{ common_load_environment }}/*.yaml'
+
 - name: load environment and its variables
   include_vars:
     file: '{{ item }}'
@@ -5,4 +13,3 @@
     - '{{ load_environment_root }}/{{ load_environment }}/*.yml'
     - '{{ load_environment_root }}/{{ load_environment }}/*.json'
     - '{{ load_environment_root }}/{{ load_environment }}/*.yaml'
-
