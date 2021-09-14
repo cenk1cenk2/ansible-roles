@@ -18,7 +18,7 @@
     ssl_certificates: '{{ ssl_certificates | default([]) + [ { "path": item.path, "root": item.root + "/" + item.path } ] }}'
   when:
     - item.state == 'file'
-    - item.path is match("(" + ssl_certificate_domains | join("|") + ")/(fullchain|privkey).pem.secrets.j2")
+    - item.path is match("(" + ssl_certificate_domains | join("|") + ")/(fullchain|privkey).pem.secrets.j2") or item.path is match("(" + ssl_certificate_domains | join("|") + ")/(cert).pfx.secrets.j2")
   with_filetree: '{{ ssl_certificates_root }}'
 
 - name: ensure certificate directories
