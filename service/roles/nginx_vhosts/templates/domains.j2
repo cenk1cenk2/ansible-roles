@@ -103,6 +103,13 @@ server {
   client_max_body_size    {{ vhost_max_body_size }};
   default_type            {{ vhost_default_mime_type }};
   keepalive_timeout       {{ vhost_keepalive_timeout }};
+  {% if vhost_disallow_robots %}
+
+  location = /robots.txt {
+     add_header Content-Type text/plain;
+     return 200 "User-agent: *\nDisallow: /\n";
+  }
+  {% endif %}
 
   include ./{{ nginx_paths_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}/*.conf;
 }
