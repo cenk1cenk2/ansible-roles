@@ -103,7 +103,7 @@ server {
   client_max_body_size    {{ vhost_max_body_size }};
   default_type            {{ vhost_default_mime_type }};
   keepalive_timeout       {{ vhost_keepalive_timeout }};
-  {% if vhost_disallow_robots %}
+  {% if vhost_disallow_robots is defined and vhost_disallow_robots %}
 
   location = /robots.txt {
      add_header Content-Type text/plain;
