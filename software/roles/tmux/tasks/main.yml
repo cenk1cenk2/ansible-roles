@@ -11,6 +11,7 @@
     name: '{{ tmux_packages | default(tmux_packages_default) }}'
     state: '{{ tmux_packages_state }}'
   become: yes
+  become_user: root
 
 - name: create configuration directory
   file:
