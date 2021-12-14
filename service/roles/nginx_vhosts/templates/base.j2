@@ -61,5 +61,12 @@ http {
 
   {% endif %}
 
+  {% if vhost_custom is defined %}
+  {% for h in vhost_custom %}
+  {{ h }}
+  {% endfor %}
+
+  {% endif %}
+
   include ./{{ nginx_domains_dir }}/*.conf;
 }
