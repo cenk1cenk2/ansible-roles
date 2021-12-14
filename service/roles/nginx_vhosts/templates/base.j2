@@ -7,7 +7,7 @@ worker_rlimit_nofile 100000;
 
 {% for m in vhost_modules %}
 # load external modules and directives
-load_module modules/{{ m }};
+load_module {{ m }};
 {% endfor %}
 {% endif %}
 
