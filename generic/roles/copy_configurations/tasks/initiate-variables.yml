@@ -1,6 +1,6 @@
 - name: scanning required files
   set_fact:
-    copy_conf_src_all_files: '{{ lookup("fileglob", copy_conf_src + "/**", wantList=True) | list }}'
+    copy_conf_src_all_files: '{{ lookup("fileglob", copy_conf_src + "/**", wantlist=True) }}'
 
 - name: filter files
   set_fact:
