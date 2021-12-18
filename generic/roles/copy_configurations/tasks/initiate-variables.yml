@@ -2,7 +2,7 @@
   set_fact:
     copy_conf_src_all_files: '{{ copy_conf_src_all_files | default([]) + [ item ] }}'
   with_fileglob:
-    - copy_conf_src_dir
+    - '{{ copy_conf_src_dir }}'
 
 - name: filter files
   set_fact:
@@ -10,4 +10,4 @@
 
 - name: filter templates
   set_fact:
-    copy_conf_src_files: '{{ copy_conf_src_all_files | select("match", ".j2$") | list }}'
+    copy_conf_src_templates: '{{ copy_conf_src_all_files | select("match", ".j2$") | list }}'
