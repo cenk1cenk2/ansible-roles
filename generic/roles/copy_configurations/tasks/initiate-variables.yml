@@ -1,6 +1,6 @@
 - name: scanning required files
   set_fact:
-    copy_conf_src_all_files: '{{ lookup("fileglob", copy_conf_src + "/**") }}'
+    copy_conf_src_all_files: '{{ lookup("fileglob", copy_conf_src + "/**", wantList=True) }}'
 
 - name: filter files
   set_fact:
@@ -8,4 +8,4 @@
 
 - name: filter templates
   set_fact:
-    copy_conf_src_templates: '{{ copy_conf_src_all_templates | select("match", ".*\.j2$") | list }}'
+    copy_conf_src_templates: '{{ copy_conf_src_all_files | select("match", ".*\.j2$") | list }}'
