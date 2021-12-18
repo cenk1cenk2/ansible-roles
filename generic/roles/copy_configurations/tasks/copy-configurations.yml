@@ -1,0 +1,18 @@
+- name: ensure target directory exists
+  file:
+    path: '{{ copy_conf_dist_dir }}'
+    state: directory
+
+- name: scanning required files
+  set_fact:
+    copy_conf_src_all_files: '{{ copy_conf_src_files | default([]) + [ item ] }}'
+  with_fileglob:
+    - copy_conf_src_dir
+
+- name: filter files
+  set_fact:
+    copy_conf_src_files: '{{ copy_conf_src_all_files | reject("match", ".j2$") | list }}'
+
+- name: filter templates
+  set_fact:
+    copy_conf_src_files: '{{ copy_conf_src_all_files | select("match", ".j2$") | list }}'

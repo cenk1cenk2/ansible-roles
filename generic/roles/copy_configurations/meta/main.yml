@@ -1,0 +1,21 @@
+galaxy_info:
+  author: Cenk Kilic
+  description: copy configuration files to a root directory from a root directory
+  company: kilic.dev
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Archlinux
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: Alpine
+      versions:
+        - all
+
+dependencies: []

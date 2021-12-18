@@ -1,0 +1,4 @@
+- import_tasks: load-vars.yml
+  when:
+    - load_vars is defined
+    - load_vars
