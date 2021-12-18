@@ -1,6 +1,6 @@
 - name: ensure target directory exists
   file:
-    path: '{{ copy_conf_dist }}'
+    path: '{{ copy_conf_dest }}'
     state: directory
 
 - name: copy files
