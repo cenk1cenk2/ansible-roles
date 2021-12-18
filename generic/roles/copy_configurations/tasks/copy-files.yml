@@ -1,0 +1,4 @@
+- name: ensure target directory exists
+  file:
+    path: '{{ copy_conf_dist_dir }}'
+    state: directory
