@@ -4,16 +4,16 @@
 
 - name: filter directories
   set_fact:
-    copy_files_src_all_directories: '{{ copy_files_src_all | selectattr("state", "==", "directory") | map(attribute = "path") }}'
+    copy_files_src_all_directories: '{{ copy_files_src_all | selectattr("state", "==", "directory") }}'
 
 - name: filter all files
   set_fact:
-    copy_files_src_all_files: '{{ copy_files_src_all | selectattr("state", "==", "file") | map(attribute = "path") }}'
+    copy_files_src_all_files: '{{ copy_files_src_all | selectattr("state", "==", "file") }}'
 
 - name: filter files
   set_fact:
-    copy_files_src_files: '{{ copy_files_src_all_files | reject("match", ".*\.j2$") | list }}'
+    copy_files_src_files: '{{ copy_files_src_all_files | rejectattr("path", "match", ".*\.j2$") }}'
 
 - name: filter templates
   set_fact:
-    copy_files_src_templates: '{{ copy_files_src_all_files | select("match", ".*\.j2$") | list }}'
+    copy_files_src_templates: '{{ copy_files_src_all_files | selectattr("path", "match", ".*\.j2$") }}'
