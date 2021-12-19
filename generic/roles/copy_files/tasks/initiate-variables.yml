@@ -1,0 +1,11 @@
+- name: scanning required files
+  set_fact:
+    copy_files_src_all_files: '{{ lookup("fileglob", copy_files_src + "/**", wantlist=True) }}'
+
+- name: filter files
+  set_fact:
+    copy_files_src_files: '{{ copy_files_src_all_files | reject("match", ".*\.j2$") | list }}'
+
+- name: filter templates
+  set_fact:
+    copy_files_src_templates: '{{ copy_files_src_all_files | select("match", ".*\.j2$") | list }}'
