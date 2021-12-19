@@ -19,6 +19,15 @@
   when:
     - copy_files_src_files | length > 0
 
+- name: copy secrets
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ copy_files_dest }}/{{ item.path | regex_replace(".secrets", "") }}'
+    decrypt: true
+  with_items: '{{ copy_files_src_secrets }}'
+  when:
+    - copy_files_src_secrets | length > 0
+
 - name: copy templates
   template:
     src: '{{ item.src }}'

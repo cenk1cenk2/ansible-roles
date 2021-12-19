@@ -12,7 +12,11 @@
 
 - name: filter files
   set_fact:
-    copy_files_src_files: '{{ copy_files_src_all_files | rejectattr("path", "match", ".*\.j2$") }}'
+    copy_files_src_files: '{{ copy_files_src_all_files | rejectattr("path", "match", ".*\.j2$") | rejectattr("path", "match", ".*\.secrets.*") }}'
+
+- name: filter secrets
+  set_fact:
+    copy_files_src_secrets: '{{ copy_files_src_all_files | rejectattr("path", "match", ".*\.j2$") | selectattr("path", "match", ".*\.secrets.*") }}'
 
 - name: filter templates
   set_fact:
