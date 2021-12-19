@@ -1,6 +1,14 @@
 - name: scanning required files
   set_fact:
-    copy_files_src_all_files: '{{ lookup("fileglob", copy_files_src + "/**", wantlist=True) }}'
+    copy_files_src_all: '{{ lookup("filetree", copy_files_src, wantlist=True) }}'
+
+- name: filter directories
+  set_fact:
+    copy_files_src_all_directories: '{{ copy_files_src_all | selectattr("state", "==", "directory") | map(attribute = "path") }}'
+
+- name: filter all files
+  set_fact:
+    copy_files_src_all_files: '{{ copy_files_src_all | selectattr("state", "==", "file") | map(attribute = "path") }}'
 
 - name: filter files
   set_fact:

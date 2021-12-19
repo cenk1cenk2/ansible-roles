@@ -1,16 +1,17 @@
-- name: ensure target directory exists
+- name: ensure target directories exists
   file:
-    path: '{{ copy_files_dest }}'
+    path: '{{ copy_files_dest }}/{{ item }}'
     state: directory
+  with_items: '{{ copy_files_src_all_directories }}'
 
 - name: copy files
   synchronize:
     src: '{{ item }}'
-    dest: '{{ copy_files_dest }}/{{ item | regex_replace(".*/" + copy_files_src, "") | regex_replace(".secrets", "") }}'
+    dest: '{{ copy_files_dest }}/{{ item | regex_replace(".secrets", "") }}'
   with_items: '{{ copy_files_src_files }}'
 
 - name: copy templates
   template:
     src: '{{ item }}'
-    dest: '{{ copy_files_dest }}/{{ item | regex_replace(".*/" + copy_files_src, "") | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
+    dest: '{{ copy_files_dest }}/{{ item | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
   with_items: '{{ copy_files_src_templates }}'
