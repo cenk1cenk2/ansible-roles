@@ -8,15 +8,21 @@
     path: '{{ copy_files_dest }}/{{ item }}'
     state: directory
   with_items: '{{ copy_files_src_all_directories }}'
+  when:
+    - copy_files_src_all_directories | length > 0
 
 - name: copy files
   synchronize:
     src: '{{ copy_files_src }}/{{ item }}'
     dest: '{{ copy_files_dest }}/{{ item | regex_replace(".secrets", "") }}'
   with_items: '{{ copy_files_src_files }}'
+  when:
+    - copy_files_src_files | length > 0
 
 - name: copy templates
   template:
     src: '{{ copy_files_src }}/{{ item }}'
     dest: '{{ copy_files_dest }}/{{ item | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
   with_items: '{{ copy_files_src_templates }}'
+  when:
+    - copy_files_src_templates | length > 0
