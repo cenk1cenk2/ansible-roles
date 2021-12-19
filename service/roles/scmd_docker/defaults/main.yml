@@ -42,6 +42,8 @@ scmd_register_host_ip: false
 scmd_host_name: docker_host # this is the name of the host that should be used when adding the docker host ip to a container using --add-hosts (or extra_hosts in a docker-compose.yml)
 scmd_docker_sock_volume: '/var/run/docker.sock:/var/run/docker.sock:ro'
 scmd_docker_config_volume: '/root/.docker/config.json:/root/.docker/config.json:ro'
+scmd_timezone_volume: '/etc/timezone:/etc/timezone:ro'
+scmd_localtime_volume: '/etc/localtime:/etc/localtime:ro'
 
 # in-container location for maintenance lockfile (used by various api-skeleton forked apps)
 scmd_maintenance_lockfile: /opt/lock/maintenance.lock
