@@ -44,4 +44,5 @@
     src: '{{ github_latest_release_repo_download_directory }}/{{ github_latest_release_binary_path | default(github_latest_release_repo_filename) }}'
     dest: '{{ github_latest_release_dest }}'
     mode: '{{ github_latest_release_mode }}'
-    force: '{{ github_latest_release_force }}'
+    force: '{{ github_latest_release_force | bool }}'
+    remote_src: true
