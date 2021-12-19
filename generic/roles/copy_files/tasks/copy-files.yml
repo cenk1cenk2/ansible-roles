@@ -1,3 +1,8 @@
+- name: ensure target directory exists
+  file:
+    path: '{{ copy_files_dest }}'
+    state: directory
+
 - name: ensure target directories exists
   file:
     path: '{{ copy_files_dest }}/{{ item }}'
