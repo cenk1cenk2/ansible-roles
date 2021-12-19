@@ -6,12 +6,12 @@
 
 - name: copy files
   synchronize:
-    src: '{{ item }}'
+    src: '{{ copy_files_src }}/{{ item }}'
     dest: '{{ copy_files_dest }}/{{ item | regex_replace(".secrets", "") }}'
   with_items: '{{ copy_files_src_files }}'
 
 - name: copy templates
   template:
-    src: '{{ item }}'
+    src: '{{ copy_files_src }}/{{ item }}'
     dest: '{{ copy_files_dest }}/{{ item | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
   with_items: '{{ copy_files_src_templates }}'
