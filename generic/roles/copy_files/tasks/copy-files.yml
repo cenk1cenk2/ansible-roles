@@ -5,33 +5,41 @@
 
 - name: ensure target directories exists
   file:
-    path: '{{ copy_files_dest }}/{{ item.path }}'
+    path: '{{ copy_files_dest }}/{{ file.path }}'
     state: directory
   with_items: '{{ copy_files_src_all_directories }}'
+  loop_control:
+    loop_var: file
   when:
     - copy_files_src_all_directories | length > 0
 
 - name: copy files
   synchronize:
-    src: '{{ item.src }}'
-    dest: '{{ copy_files_dest }}/{{ item.path | regex_replace(".secrets", "") }}'
+    src: '{{ file.src }}'
+    dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
   with_items: '{{ copy_files_src_files }}'
+  loop_control:
+    loop_var: file
   when:
     - copy_files_src_files | length > 0
 
 - name: copy secrets
   copy:
-    src: '{{ item.src }}'
-    dest: '{{ copy_files_dest }}/{{ item.path | regex_replace(".secrets", "") }}'
+    src: '{{ file.src }}'
+    dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
     decrypt: true
   with_items: '{{ copy_files_src_secrets }}'
+  loop_control:
+    loop_var: file
   when:
     - copy_files_src_secrets | length > 0
 
 - name: copy templates
   template:
-    src: '{{ item.src }}'
-    dest: '{{ copy_files_dest }}/{{ item.path | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
+    src: '{{ file.src }}'
+    dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
   with_items: '{{ copy_files_src_templates }}'
+  loop_control:
+    loop_var: file
   when:
     - copy_files_src_templates | length > 0
