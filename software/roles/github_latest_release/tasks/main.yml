@@ -40,6 +40,7 @@
     github_latest_release_repo_download_directory: '{{ temp_unarchive.path if temp_unarchive.path is defined else temp.path }}'
 
 - name: copy from archive
+  become: true
   copy:
     src: '{{ github_latest_release_repo_download_directory }}/{{ github_latest_release_binary_path | default(github_latest_release_repo_filename) }}'
     dest: '{{ github_latest_release_dest }}'
