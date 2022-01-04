@@ -41,6 +41,7 @@
 
 - name: copy from archive
   become: true
+  become_user: root
   copy:
     src: '{{ github_latest_release_repo_download_directory }}/{{ github_latest_release_binary_path | default(github_latest_release_repo_filename) }}'
     dest: '{{ github_latest_release_dest }}'
