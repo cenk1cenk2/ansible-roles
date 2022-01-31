@@ -29,12 +29,15 @@ services:
     {% if (scmd_env_files | selectattr("name", "equalto", container.name) | list | length > 0) %}
       {% set env_files = env_files + [scmd_env_dir + "/" + container.name + ".env"] %}
     {% endif %}
+    {% if scmd_docker_env_template_files is defined and (scmd_docker_env_template_files | select("equalto", container.name) | list | length > 0) %}
+      {% set env_files = env_files + [scmd_env_dir + "/" + container.name + ".env"] %}
+    {% endif %}
     {% if (env_files | length == 1) %}
       {% set env_files = ''.join(env_files) %}
     {% endif %}
   {% set env_file = { "env_file": env_files} %}
     {% if env_files | length > 0 %}
-    {{ env_file | to_nice_yaml(indent=2) | indent(6) | trim }}
+    {{ env_file | unique | to_nice_yaml(indent=2) | indent(6) | trim }}
     {% endif %}
   {% endif %}
   {% for prop in scmd_native_properties %}
