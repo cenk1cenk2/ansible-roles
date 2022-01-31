@@ -5,10 +5,11 @@
     - '{{ load_vars_root }}/*.yml'
     - '{{ load_vars_root }}/*.json'
     - '{{ load_vars_root }}/*.yaml'
+  register: loaded_variables
 
 - name: fail on no variables and strict mode
   fail:
     msg: 'In strict mode, variables files should be matched in the given directory: {{ load_vars_root }}'
   when:
     - load_vars_strict
-    - variables | length == 0
+    - loaded_variables | length == 0
