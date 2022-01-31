@@ -1,11 +1,14 @@
 - name: load variables
   include_vars:
-    dir: '{{ load_vars_root }}'
-  register: variables
+    file: '{{ item }}'
+  with_fileglob:
+    - '{{ load_vars_root }}/*.yml'
+    - '{{ load_vars_root }}/*.json'
+    - '{{ load_vars_root }}/*.yaml'
 
 - name: fail on no variables and strict mode
   fail:
     msg: 'In strict mode, variables files should be matched in the given directory: {{ load_vars_root }}'
   when:
     - load_vars_strict
-    - variables | length=== 0
+    - variables | length == 0
