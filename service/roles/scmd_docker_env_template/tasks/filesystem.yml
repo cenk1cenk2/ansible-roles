@@ -6,21 +6,12 @@
     group: '{{ service_group }}'
   with_items:
     - '{{ scmd_full_env_dir }}'
-  when:
-    - not scmd_no_env
-    - scmd_docker_env_template is defined
 
 - name: copy env files
   template:
     src: '{{ scmd_docker_env_template.src }}'
     dest: '{{ scmd_full_env_dir }}/{{ scmd_docker_env_template.dest }}.env'
-  when:
-    - not scmd_no_env
-    - scmd_docker_env_template is defined
 
 - name: set env fact for scmd_docker
   set_fact:
     scmd_docker_env_template_files: '{{ (scmd_docker_env_template_files | default([ ]) + [ scmd_docker_env_template.dest ]) | unique }}'
-  when:
-    - not scmd_no_env
-    - scmd_docker_env_template is defined
