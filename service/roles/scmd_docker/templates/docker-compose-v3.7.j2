@@ -35,9 +35,9 @@ services:
     {% if (env_files | length == 1) %}
       {% set env_files = ''.join(env_files) %}
     {% endif %}
-  {% set env_file = { "env_file": env_files} %}
+  {% set env_file_label = { "env_file": env_files} %}
     {% if env_files | length > 0 %}
-    {{ env_file | unique | to_nice_yaml(indent=2) | indent(6) | trim }}
+    {{ env_file_label | to_nice_yaml(indent=2) | indent(6) | trim }}
     {% endif %}
   {% endif %}
   {% for prop in scmd_native_properties %}
