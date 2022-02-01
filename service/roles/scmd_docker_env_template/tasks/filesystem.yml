@@ -1,11 +1,9 @@
 - name: create env directory
   file:
-    name: '{{ item }}'
+    name: '{{ scmd_full_env_dir }}'
     state: directory
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
-  with_items:
-    - '{{ scmd_full_env_dir }}'
 
 - name: copy env files
   template:
