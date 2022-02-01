@@ -2,9 +2,9 @@
   include_vars:
     file: '{{ item }}'
   with_fileglob:
-    - '{{ load_vars_root }}/*.yml'
-    - '{{ load_vars_root }}/*.json'
-    - '{{ load_vars_root }}/*.yaml'
+    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.yml'
+    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.json'
+    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.yaml'
   register: loaded_variables
 
 - name: fail on no variables and strict mode

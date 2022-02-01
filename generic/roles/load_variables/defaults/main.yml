@@ -1,2 +1,3 @@
 load_vars_root: ./vars
 load_vars_strict: false
+load_vars_file_filter: '*'
