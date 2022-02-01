@@ -9,7 +9,7 @@
   "root": true,
   "scripts": {
     "format": "prettier --write ./ --loglevel warn",
-    "lint": "ansible-lint"
+    "lint": "ansible-lint -v"
   },
   "lint-staged": {
     "*.{yml,yml.j2}": [

@@ -1,16 +1,37 @@
+---
 offline: true
 
 exclude_paths:
   - roles/
+  - collections/
+  - '**/files/conf/**/*'
+
+use_default_rules: true
 
 skip_list:
-  - 204
-  - 301
-  - 403
-  - 305
-  - unnamed-task
-  - package-latest
-  - no-changed-when
   - risky-file-permissions
   - command-instead-of-shell
   - ignore-errors
+  - no-changed-when
+  - line-length
+  - package-latest
+  - comments
+
+enable_list:
+  - command-shell
+  - core
+  - deprecations
+  - experimental
+  - formatting
+  - idempotency
+  - idiom
+  - metadata
+  - opt-in
+  - security
+  - unpredictability
+  - unskippable
+  - yaml
+
+kinds:
+  - tasks: "**/tasks/*.yml"
+  - vars: "**/vars/**/*.yml"

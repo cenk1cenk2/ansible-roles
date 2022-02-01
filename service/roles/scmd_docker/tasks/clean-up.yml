@@ -3,7 +3,7 @@
   shell:
     cmd: docker-compose stop && docker-compose rm -f
     chdir: '{{ scmd_service_dir }}'
-  ignore_errors: yes
+  ignore_errors: true
   when:
     - scmd_state is defined
     - (scmd_state.setup is defined and scmd_state.setup == "absent") or (scmd_state.all is defined and scmd_state.all == "absent")

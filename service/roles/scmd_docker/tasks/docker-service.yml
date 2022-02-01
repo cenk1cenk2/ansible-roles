@@ -4,8 +4,8 @@
     state: present
     project_name: '{{ scmd_service_name }}'
     project_src: '{{ scmd_service_dir }}'
-    pull: yes
-    build: yes
-    remove_orphans: yes
+    pull: true
+    build: true
+    remove_orphans: true
     recreate: always
     scale: '{{ scmd_scale | default({}) }}'

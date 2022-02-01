@@ -10,7 +10,7 @@
   package:
     name: '{{ tmux_packages | default(tmux_packages_default) }}'
     state: '{{ tmux_packages_state }}'
-  become: yes
+  become: true
   become_user: root
 
 - name: create configuration directory
@@ -41,6 +41,6 @@
     repo: "{{ item['repo'] }}"
     dest: "~/{{ tmux_plugin_dir }}/{{ item['name'] }}"
     version: "{{ item['version'] }}"
-    force: yes
+    force: true
   with_items:
     - '{{ tmux_plugins }}'
