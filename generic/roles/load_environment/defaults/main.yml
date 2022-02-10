@@ -1,2 +1,3 @@
 load_environment_root: ./environments
-common_load_environment: all
+load_environment_strict: false
+common_load_environment: base

@@ -1,4 +1,4 @@
-- name: fetch latest release
+- name: 'fetching latest release: {{ github_latest_release_repo }}'
   uri:
     url: https://api.github.com/repos/{{ github_latest_release_repo }}/releases/latest
     return_content: true
@@ -8,12 +8,12 @@
   set_fact:
     github_latest_release_final_version: '{{ json_response.json.tag_name }}'
 
-- name: create temporary download directory
+- name: 'create temporary download directory: {{ github_latest_release_repo }}'
   tempfile:
     state: directory
   register: temp
 
-- name: create temporary unarchive directory
+- name: 'create temporary unarchive directory: {{ github_latest_release_repo }}'
   tempfile:
     state: directory
   register: temp_unarchive
@@ -21,13 +21,13 @@
     - github_latest_release_archive is defined
     - github_latest_release_archive
 
-- name: fetch
+- name: 'fetch: {{ github_latest_release_repo }}'
   get_url:
     url: 'https://github.com/{{ github_latest_release_repo }}/releases/download/{{ json_response.json.tag_name }}/{{ github_latest_release_repo_filename }}{{ github_latest_release_archive | default("") }}'
     dest: '{{ temp.path }}'
   register: download
 
-- name: unarchive
+- name: 'unarchive: {{ github_latest_release_repo }}'
   unarchive:
     src: '{{ download.dest }}'
     dest: '{{ temp_unarchive.path }}'
@@ -35,11 +35,11 @@
     - github_latest_release_archive is defined
     - github_latest_release_archive
 
-- name: set download directory
+- name: 'set download directory: {{ github_latest_release_repo }}'
   set_fact:
     github_latest_release_repo_download_directory: '{{ temp_unarchive.path if temp_unarchive.path is defined else temp.path }}'
 
-- name: copy from archive
+- name: 'copy from archive: {{ github_latest_release_repo }}'
   become: true
   become_user: root
   copy:

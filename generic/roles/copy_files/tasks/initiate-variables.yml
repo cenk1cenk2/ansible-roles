@@ -1,23 +1,23 @@
-- name: scanning required files
+- name: 'scanning required files in {{ copy_files_src }}'
   set_fact:
     copy_files_src_all: '{{ lookup("filetree", copy_files_src, wantlist=True) }}'
 
-- name: filter directories
+- name: filtering directories
   set_fact:
     copy_files_src_all_directories: '{{ copy_files_src_all | selectattr("state", "==", "directory") }}'
 
-- name: filter all files
+- name: filtering all files
   set_fact:
     copy_files_src_all_files: '{{ copy_files_src_all | selectattr("state", "==", "file") }}'
 
-- name: filter files
+- name: filtering plain files
   set_fact:
     copy_files_src_files: '{{ copy_files_src_all_files | rejectattr("path", "match", ".*\.j2$") | rejectattr("path", "match", ".*\.secrets.*") }}'
 
-- name: filter secrets
+- name: filtering secrets
   set_fact:
     copy_files_src_secrets: '{{ copy_files_src_all_files | rejectattr("path", "match", ".*\.j2$") | selectattr("path", "match", ".*\.secrets.*") }}'
 
-- name: filter templates
+- name: filtering templates
   set_fact:
     copy_files_src_templates: '{{ copy_files_src_all_files | selectattr("path", "match", ".*\.j2$") }}'

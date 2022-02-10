@@ -1,4 +1,4 @@
-- name: load common environment and its variables
+- name: 'loading common environment: {{ common_load_environment }} from {{ load_environment_root }}'
   include_vars:
     file: '{{ item }}'
   with_fileglob:
@@ -8,10 +8,18 @@
   when:
     - common_load_environment is defined
 
-- name: load environment and its variables
+- name: 'loading common environment: {{ load_environment }} from {{ load_environment_root }}'
   include_vars:
     file: '{{ item }}'
   with_fileglob:
     - '{{ load_environment_root }}/{{ load_environment }}/*.yml'
     - '{{ load_environment_root }}/{{ load_environment }}/*.json'
     - '{{ load_environment_root }}/{{ load_environment }}/*.yaml'
+  register: loaded_environment
+
+- name: fail on no variables and strict mode
+  fail:
+    msg: 'In strict mode, variables files should be matched in the given directory: {{ load_environment_root }}/{{ load_environment }}'
+  when:
+    - load_environment_strict
+    - loaded_environment | length == 0
