@@ -1,0 +1,45 @@
+- name: ensure target directory exists
+  file:
+    path: '{{ s3_copy_dest }}'
+    state: directory
+
+- name: ensure target directories exists
+  file:
+    path: '{{ s3_copy_dest }}/{{ file.path }}'
+    state: directory
+  with_items: '{{ s3_bucket_items_all_directories }}'
+  loop_control:
+    loop_var: file
+  when:
+    - s3_bucket_items_all_directories | length > 0
+
+- name: copy files
+  synchronize:
+    src: '{{ file.src }}'
+    dest: '{{ s3_copy_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
+  with_items: '{{ s3_bucket_items_all_files }}'
+  loop_control:
+    loop_var: file
+  when:
+    - s3_bucket_items_all_files | length > 0
+
+- name: copy secrets
+  copy:
+    src: '{{ file.src }}'
+    dest: '{{ s3_copy_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
+    decrypt: true
+  with_items: '{{ s3_bucket_items_src_secrets }}'
+  loop_control:
+    loop_var: file
+  when:
+    - s3_bucket_items_src_secrets | length > 0
+
+- name: copy templates
+  template:
+    src: '{{ file.src }}'
+    dest: '{{ s3_copy_dest }}/{{ file.path | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
+  with_items: '{{ s3_bucket_items_src_templates }}'
+  loop_control:
+    loop_var: file
+  when:
+    - s3_bucket_items_src_templates | length > 0

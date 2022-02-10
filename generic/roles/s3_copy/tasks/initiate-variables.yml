@@ -1,0 +1,30 @@
+- name: scan required files from the s3
+  aws_s3:
+    mode: list
+    aws_access_key: "{{ s3_copy_access_id }}"
+    aws_secret_key: "{{ s3_copy_access_key }}"
+    bucket: "{{ s3_copy_bucket }}"
+    prefix: "{{ s3_copy_prefix }}"
+    marker: "{{ s3_copy_prefix }}"
+    s3_url: "{{ s3_copy_url }}"
+  register: s3_bucket_items
+
+- name: filter directories
+  set_fact:
+    s3_bucket_items_all_directories: '{{ s3_bucket_items | selectattr("state", "==", "directory") }}'
+
+- name: filter all files
+  set_fact:
+    s3_bucket_items_all_files: '{{ s3_bucket_items | selectattr("state", "==", "file") }}'
+
+- name: filter files
+  set_fact:
+    s3_bucket_items_src_files: '{{ s3_bucket_items_all_files | rejectattr("path", "match", ".*\.j2$") | rejectattr("path", "match", ".*\.secrets.*") }}'
+
+- name: filter secrets
+  set_fact:
+    s3_bucket_items_secrets: '{{ s3_bucket_items_all_files | rejectattr("path", "match", ".*\.j2$") | selectattr("path", "match", ".*\.secrets.*") }}'
+
+- name: filter templates
+  set_fact:
+    s3_bucket_items_templates: '{{ s3_bucket_items_all_files | selectattr("path", "match", ".*\.j2$") }}'
