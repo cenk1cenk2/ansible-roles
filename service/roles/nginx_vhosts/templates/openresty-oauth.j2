@@ -1,7 +1,7 @@
 {% if openresty_enable_oauth %}
 access_by_lua_block {
   local opts = {
-     redirect_uri_path = "/.oauth/redirect_uri",
+     redirect_uri_path = "/redirect_uri",
 
      discovery = "{{ openresty_oauth_discovery_url }}",
      client_id = "{{ openresty_oauth_client_id }}",
