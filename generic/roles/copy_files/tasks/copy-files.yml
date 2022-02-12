@@ -3,7 +3,7 @@
     path: '{{ copy_files_dest }}'
     state: directory
 
-- name: 'ensure directories in the tree exists in {{ copy_files_dest }}' 
+- name: 'ensure directories in the tree exists in {{ copy_files_dest }}'
   file:
     path: '{{ copy_files_dest }}/{{ file.path }}'
     state: directory
