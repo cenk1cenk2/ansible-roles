@@ -10,7 +10,7 @@ access_by_lua_block {
      scope = "openid email profile",
      logout_path = "/logout",
      redirect_after_logout_uri = "/",
-     ssl_verify = false,
+     ssl_verify = "no",
      -- Where should the user be redirected after logout from the RP. This option overides any end_session_endpoint that the OP may have provided in the discovery response.
 
      renew_access_token_on_expiry = true,
