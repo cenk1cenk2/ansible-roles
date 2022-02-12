@@ -1,4 +1,3 @@
-#jinja2:trim_blocks: True,lstrip_blocks: True
 {% if openresty_enable_oauth %}
 access_by_lua_block {
   local opts = {
@@ -13,17 +12,17 @@ access_by_lua_block {
      redirect_after_logout_uri = "/",
      -- Where should the user be redirected after logout from the RP. This option overides any end_session_endpoint that the OP may have provided in the discovery response.
 
-     renew_access_token_on_expiry = true
+     renew_access_token_on_expiry = true,
      -- whether this plugin shall try to silently renew the access token once it is expired if a refresh token is available.
      -- if it fails to renew the token, the user will be redirected to the authorization endpoint.
 
-     session_contents = {id_token=true, user=true, access_token=true}
+     session_contents = {id_token=true, user=true, access_token=true},
      -- Whitelist of session content to enable. This can be used to reduce the session size.
      -- When not set everything will be included in the session.
      -- Available are:
      -- id_token, enc_id_token, user, access_token (includes refresh token)
 
-     revoke_tokens_on_logout = true
+     revoke_tokens_on_logout = true,
   }
 
   -- call authenticate for OpenID Connect user authentication
@@ -37,4 +36,5 @@ access_by_lua_block {
 
   ngx.req.set_header("X-USER", res.id_token.sub)
 }
+
 {% endif %}
