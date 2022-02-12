@@ -90,3 +90,6 @@ letsencyrpt_container_acme_root: '/var/www/certbot'
 vhost_ssl_domain: '{{ vhost_uri }}'
 vhost_ssl_bundle_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/fullchain.pem'
 vhost_ssl_key_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/privkey.pem'
+
+vhost_openresty: false
+openresty_enable_oauth: false

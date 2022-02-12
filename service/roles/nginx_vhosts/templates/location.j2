@@ -25,6 +25,7 @@ location {{ l.location }} {
   {% endif %}
 
   {% endif %}
+  {% filter indent(2, True) %}{% include "./openresty-oauth.j2" %}{% endfilter %}
   {% if l.restrict_access is defined %}
   {% filter indent(2, True) %}{% include "./restrict-access.j2" %}{% endfilter %}
 

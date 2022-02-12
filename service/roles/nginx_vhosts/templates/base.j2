@@ -11,6 +11,11 @@ load_module {{ m }};
 {% endfor %}
 {% endif %}
 
+{% if vhost_openresty %}
+# Enables the use of JIT for regular expressions to speed-up their processing.
+pcre_jit on;
+
+{% endif %}
 events {
   worker_connections 1024;
   use epoll;
@@ -74,6 +79,17 @@ http {
   {% endfor %}
 
   {% endif %}
+  {% if vhost_openresty %}
+  # See Move default writable paths to a dedicated directory (#119)
+  # https://github.com/openresty/docker-openresty/issues/119
+  client_body_temp_path /var/run/openresty/nginx-client-body;
+  proxy_temp_path       /var/run/openresty/nginx-proxy;
+  fastcgi_temp_path     /var/run/openresty/nginx-fastcgi;
+  uwsgi_temp_path       /var/run/openresty/nginx-uwsgi;
+  scgi_temp_path        /var/run/openresty/nginx-scgi;
 
+  server_tokens off;
+
+  {% endif %}
   include ./{{ nginx_domains_dir }}/*.conf;
 }
