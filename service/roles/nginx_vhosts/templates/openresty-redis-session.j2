@@ -1,0 +1,22 @@
+{% if openresty_enable_redis_session %}
+set $session_storage redis;
+
+set $session_redis_prefix                   openresty_sessions;
+set $session_redis_database                 0;
+set $session_redis_connect_timeout          1000; # (in milliseconds)
+set $session_redis_send_timeout             1000; # (in milliseconds)
+set $session_redis_read_timeout             1000; # (in milliseconds)
+set $session_redis_host                     {{ openresty_redis_session_host | default(openresty_redis_session_docker_service_name) }};
+set $session_redis_port                     {{ openresty_redis_session_port | default("6379") }};
+set $session_redis_ssl                      off;
+set $session_redis_ssl_verify               off;
+set $session_redis_uselocking               on;
+set $session_redis_spinlockwait             150;  # (in milliseconds)
+set $session_redis_maxlockwait              30;   # (in seconds)
+set $session_redis_pool_name                openresty_sessions;
+set $session_redis_pool_timeout             1000; # (in milliseconds)
+set $session_redis_pool_size                10;
+set $session_redis_pool_backlog             10;
+
+{% endif %}
+

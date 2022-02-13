@@ -92,4 +92,14 @@ vhost_ssl_bundle_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/f
 vhost_ssl_key_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/privkey.pem'
 
 vhost_openresty: false
+
 openresty_enable_oauth: false
+openresty_oauth_redirect_url: '/.oauth/callback'
+openresty_oauth_logout_url: '/.oauth/logout'
+openresty_oauth_redirect_after_logout_path: '/'
+openresty_oauth_scope: 'openid email profile'
+openresty_oauth_ssl_verify: 'no'
+openresty_oauth_disable_cache: false
+
+openresty_enable_redis_session: false
+openresty_redis_session_docker_service_name: 'nginx-reverse-proxy-redis-session'

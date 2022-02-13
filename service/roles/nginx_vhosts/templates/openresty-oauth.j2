@@ -1,41 +1,62 @@
+{% if openresty_enable_redis_session %}
+{% filter indent(2, True) %}{% include './openresty-redis-session.j2' %}{% endfilter %}
+
+{% endif %}
 {% if openresty_enable_oauth %}
+set $session_secret {{ openresty_session_secret }};
+
 access_by_lua_block {
   local opts = {
-     redirect_uri_path = "/redirect_uri",
+    discovery = "{{ openresty_oauth_discovery_url }}",
+    client_id = "{{ openresty_oauth_client_id }}",
+    client_secret = "{{ openresty_oauth_client_secret }}",
 
-     discovery = "{{ openresty_oauth_discovery_url }}",
-     client_id = "{{ openresty_oauth_client_id }}",
-     client_secret = "{{ openresty_oauth_client_secret }}",
+    scope = "{{ openresty_oauth_scope }}",
+    redirect_uri = "{{ openresty_oauth_redirect_url }}",
+    logout_path = "{{ openresty_oauth_logout_url }}",
+    redirect_after_logout_uri = "{{ openresty_oauth_redirect_after_logout_path }}",
+    ssl_verify = "{{ openresty_oauth_ssl_verify }}",
+    -- Where should the user be redirected after logout from the RP. This option overides any end_session_endpoint that the OP may have provided in the discovery response.
 
-     scope = "openid email profile",
-     logout_path = "/logout",
-     redirect_after_logout_uri = "/",
-     ssl_verify = "no",
-     -- Where should the user be redirected after logout from the RP. This option overides any end_session_endpoint that the OP may have provided in the discovery response.
+    renew_access_token_on_expiry = true,
+    -- whether this plugin shall try to silently renew the access token once it is expired if a refresh token is available.
+    -- if it fails to renew the token, the user will be redirected to the authorization endpoint.
 
-     renew_access_token_on_expiry = true,
-     -- whether this plugin shall try to silently renew the access token once it is expired if a refresh token is available.
-     -- if it fails to renew the token, the user will be redirected to the authorization endpoint.
+    session_contents = {id_token=true},
+    -- Whitelist of session content to enable. This can be used to reduce the session size.
+    -- When not set everything will be included in the session.
+    -- Available are:
+    -- id_token, enc_id_token, user, access_token (includes refresh token)
 
-     session_contents = {id_token=true, user=true, access_token=true},
-     -- Whitelist of session content to enable. This can be used to reduce the session size.
-     -- When not set everything will be included in the session.
-     -- Available are:
-     -- id_token, enc_id_token, user, access_token (includes refresh token)
-
-     revoke_tokens_on_logout = true,
+    revoke_tokens_on_logout = true,
+    redirect_after_logout_with_id_token_hint = false,
+    accept_none_alg = true,
   }
 
   -- call authenticate for OpenID Connect user authentication
+  {% if openresty_enable_redis_session %}
+  local res, err, target, session = require("resty.openidc").authenticate(opts)
+  session:close()
+  {% else %}
   local res, err = require("resty.openidc").authenticate(opts)
+  {% endif %}
 
   if err then
     ngx.status = 403
-    ngx.say(err)
+
+    ngx.log(ngx.ERR, err)
+
     ngx.exit(ngx.HTTP_FORBIDDEN)
   end
 
+  ngx.log(ngx.INFO, "Logged in user:", res)
+
   ngx.req.set_header("X-USER", res.id_token.sub)
 }
+
+{% if openresty_oauth_disable_cache %}
+expires           0;
+add_header        Cache-Control private;
+{% endif %}
 
 {% endif %}
