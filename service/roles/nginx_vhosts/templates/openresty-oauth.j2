@@ -18,6 +18,8 @@ access_by_lua_block {
     ssl_verify = "{{ openresty_oauth_ssl_verify }}",
     -- Where should the user be redirected after logout from the RP. This option overides any end_session_endpoint that the OP may have provided in the discovery response.
 
+    refresh_session_interval = 60,
+
     renew_access_token_on_expiry = true,
     -- whether this plugin shall try to silently renew the access token once it is expired if a refresh token is available.
     -- if it fails to renew the token, the user will be redirected to the authorization endpoint.
