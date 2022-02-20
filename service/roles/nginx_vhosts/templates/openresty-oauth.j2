@@ -58,7 +58,6 @@ access_by_lua_block {
 
   function verification(res)
     {{ openresty_oauth_verification | indent(4) }}
-
     return false
   end
 
