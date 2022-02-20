@@ -86,6 +86,8 @@ nginx_cache_path: /var/cache/nginx
 vhost_main_access_logs: 'off'
 vhost_main_error_logs: 'off'
 
+nginx_debug: false
+
 vhost_ssl_le: true
 letsencrypt_cert_dir: '/etc/letsencrypt'
 letsencyrpt_container_acme_root: '/var/www/certbot'
@@ -94,7 +96,6 @@ vhost_ssl_bundle_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/f
 vhost_ssl_key_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/privkey.pem'
 
 vhost_openresty: false
-openresty_debug: false
 
 openresty_enable_oauth: false
 openresty_oauth_redirect_url: '/.oauth/callback'
