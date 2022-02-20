@@ -36,6 +36,7 @@ access_by_lua_block {
   -- call authenticate for OpenID Connect user authentication
   {% if openresty_enable_redis_session %}
   local res, err, target, session = require("resty.openidc").authenticate(opts)
+  session:close()
   {% else %}
   local res, err = require("resty.openidc").authenticate(opts)
   {% endif %}
