@@ -34,12 +34,14 @@ access_by_lua_block {
   }
 
   -- call authenticate for OpenID Connect user authentication
+  local oidc = require("resty.openidc")
   {% if openresty_enable_redis_session %}
-  local res, err, target, session = require("resty.openidc").authenticate(opts)
+  local res, err, target, session = oidc.authenticate(opts)
   session:close()
   {% else %}
-  local res, err = require("resty.openidc").authenticate(opts)
+  local res, err = oidc.authenticate(opts)
   {% endif %}
+  oidc.set_logging(nil, { DEBUG = ngx.INFO })
 
   if err then
     ngx.status = 500
@@ -55,7 +57,6 @@ access_by_lua_block {
 
     return false
   end
-
   function verification(res)
     {{ openresty_oauth_verification | indent(4) }}
     return false
