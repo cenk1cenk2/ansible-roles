@@ -92,6 +92,7 @@ vhost_ssl_bundle_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/f
 vhost_ssl_key_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/privkey.pem'
 
 vhost_openresty: false
+openresty_debug: false
 
 openresty_enable_oauth: false
 openresty_oauth_redirect_url: '/.oauth/callback'
