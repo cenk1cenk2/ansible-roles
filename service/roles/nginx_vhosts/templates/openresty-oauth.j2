@@ -1,8 +1,6 @@
-{% if openresty_enable_redis_session %}
-{% filter indent(2, True) %}{% include './openresty-redis-session.j2' %}{% endfilter %}
-
-{% endif %}
 {% if openresty_enable_oauth %}
+{% filter indent(0, True) %}{% include './openresty-redis-session.j2' %}{% endfilter %}
+
 set $session_secret {{ openresty_session_secret }};
 
 access_by_lua_block {
