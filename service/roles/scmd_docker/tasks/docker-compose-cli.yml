@@ -10,10 +10,12 @@
 
 - name: restart containers and scale
   shell:
-    cmd: docker-compose up -d {{ '--scale ' ~ item.key ~ '=' ~ ansible_processor_vcpus ~ ' ' if item.value >= 1 else '' }}
+    cmd: docker-compose up -d {{ '--scale ' ~ scale.key ~ '=' ~ ansible_processor_vcpus ~ ' ' if scale.value >= 1 else '' }}
     chdir: '{{ scmd_service_dir }}'
   when: scmd_scale is defined
   with_dict: '{{ scmd_scale | default({ }) }}'
+  loop_control:
+    loop_var: scale
 
 - name: restart containers
   shell:

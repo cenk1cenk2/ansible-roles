@@ -1,9 +1,11 @@
 ---
 - name: register env var files
   set_fact:
-    scmd_env_files: "{{ scmd_env_files | default([ ]) + [ { 'name': item[:-3] | basename, 'path': item } ] }}"
+    scmd_env_files: "{{ scmd_env_files | default([ ]) + [ { 'name': env_file[:-3] | basename, 'path': env_file } ] }}"
   with_fileglob:
     - '{{ scmd_env_file_template_dir }}/*.j2'
+  loop_control:
+    loop_var: env_file
 
 - name: debug
   debug:
@@ -13,7 +15,7 @@
 - name: register volume dirs
   set_fact:
     scmd_volume_dirs: |
-      {% if 'volumes' in item and scmd_volume_dir in item.volumes %}
+      {% if 'volumes' in volume_dir and scmd_volume_dir in volume_dir.volumes %}
       {% set value = (scmd_volume_dirs | default([ ]) + [ '%s/%s' | format(scmd_full_volume_dir, scmd_service_name) ]) | unique %}
       {% else %}
       {% set value = scmd_volume_dirs | default([ ]) %}
@@ -21,6 +23,8 @@
       {{ value }}
   with_items:
     - '{{ scmd_services }}'
+  loop_control:
+    loop_var: volume_dir
   when:
     - scmd_services is defined
 

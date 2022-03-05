@@ -33,11 +33,13 @@
 
 - name: create static directories
   file:
-    path: '{{ nginx_publish_full_dir }}/{{ item.static_directory }}'
+    path: '{{ nginx_publish_full_dir }}/{{ location.static_directory }}'
     state: directory
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
   when:
-    - item.static_directory is defined
+    - location.static_directory is defined
   with_items:
     - '{{ vhost_proxy_locations }}'
+  loop_control:
+    loop_var: location

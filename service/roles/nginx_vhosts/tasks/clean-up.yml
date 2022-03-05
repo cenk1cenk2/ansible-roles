@@ -71,11 +71,13 @@
 
 - name: remove designated dirs for uri
   file:
-    path: '{{ item }}'
+    path: '{{ dirs }}'
     state: absent
   with_items:
     - '{{ nginx_paths_full_dir }}'
     - '{{ nginx_upstream_full_dir }}'
+  loop_control:
+    loop_var: dirs
   when:
     - vhost_uri is defined
     - vhost_template_file is undefined

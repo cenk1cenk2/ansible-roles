@@ -1,7 +1,9 @@
 - name: login to private docker registry
   docker_login:
-    username: '{{ item.registry_user is defined | ternary(item.registry_user, scmd_registry_user) }}'
-    password: '{{ item.registry_password is defined | ternary(item.registry_password, scmd_registry_password) }}'
-    registry_url: '{{ item.registry_url is defined | ternary(item.registry_url, scmd_registry_url) }}'
+    username: '{{ registry.registry_user is defined | ternary(registry.registry_user, scmd_registry_user) }}'
+    password: '{{ registry.registry_password is defined | ternary(registry.registry_password, scmd_registry_password) }}'
+    registry_url: '{{ registry.registry_url is defined | ternary(registry.registry_url, scmd_registry_url) }}'
     reauthorize: true
   with_items: '{{ scmd_private_registry }}'
+  loop_control:
+    loop_var: registry

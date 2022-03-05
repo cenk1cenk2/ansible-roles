@@ -26,13 +26,15 @@
 
 - name: check if domain is already in certbot env file
   set_fact:
-    certbot_register_domains: '{{ (certbot_register_domains | default([ ]) + [ item ]) | unique }}'
+    certbot_register_domains: '{{ (certbot_register_domains | default([ ]) + [ cert ]) | unique }}'
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_domain is defined
-    - item not in certbot_env_file_domains
+    - cert not in certbot_env_file_domains
   with_items:
     - '{{ letsencrypt_register_domain }}'
+  loop_control:
+    loop_var: cert
 
 - name: register letsencrypt domains
   set_fact:
@@ -51,13 +53,15 @@
 
 - name: check if subdomain is already in certbot env file
   set_fact:
-    certbot_register_subdomains: '{{ (certbot_register_subdomains | default([ ]) + [ item ]) | unique }}'
+    certbot_register_subdomains: '{{ (certbot_register_subdomains | default([ ]) + [ cert ]) | unique }}'
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_subdomain is defined
-    - item not in certbot_env_file_subdomains
+    - cert not in certbot_env_file_subdomains
   with_items:
     - '{{ letsencrypt_register_subdomain }}'
+  loop_control:
+    loop_var: cert
 
 - name: register letsencrypt subdomains
   set_fact:
