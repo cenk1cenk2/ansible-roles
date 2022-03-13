@@ -49,17 +49,3 @@
     group: '{{ service_group }}'
   notify:
     - reload nginx
-
-- name: allow http port
-  ufw:
-    rule: allow
-    port: '80'
-  when:
-    - vhost_provision_only is defined and vhost_provision_only
-
-- name: allow https port
-  ufw:
-    rule: allow
-    port: '443'
-  when:
-    - vhost_provision_only is defined and vhost_provision_only
