@@ -51,7 +51,7 @@ access_by_lua_block {
   end
   {% if openresty_enable_redis_session %}
 
-  -- session:close()
+  session:close()
   {% endif %}
 
   {% if openresty_oauth_verification is defined %}
