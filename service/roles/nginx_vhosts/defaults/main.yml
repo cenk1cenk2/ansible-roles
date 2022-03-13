@@ -108,6 +108,7 @@ openresty_oauth_session_contents:
   - id_token
   - user
   - access_token
+  - offline_token
 
 openresty_enable_redis_session: false
 openresty_redis_session_docker_service_name: 'nginx-reverse-proxy-redis-session'
