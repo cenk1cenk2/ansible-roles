@@ -1,6 +1,6 @@
 {% if openresty_enable_oauth %}
 {% filter indent(0, True) %}{% include './openresty-redis-session.j2' %}{% endfilter %}
-{% filter indent(0, True) %}{% include './openresty-ouath-headers.j2' %}{% endfilter %}
+{% filter indent(0, True) %}{% include './openresty-oauth-headers.j2' %}{% endfilter %}
 
 set $session_secret {{ openresty_session_secret }};
 
