@@ -1,5 +1,6 @@
 {% if openresty_enable_oauth %}
 {% filter indent(0, True) %}{% include './openresty-redis-session.j2' %}{% endfilter %}
+{% filter indent(0, True) %}{% include './openresty-ouath-headers.j2' %}{% endfilter %}
 
 set $session_secret {{ openresty_session_secret }};
 
@@ -26,6 +27,10 @@ access_by_lua_block {
     -- Available are:
     -- id_token, enc_id_token, user, access_token (includes refresh token)
 
+    {% if openresty_oauth_refresh_session_interval is defined %}
+    refresh_session_interval = {{ openresty_oauth_refresh_session_interval }},
+    {% endif %}
+
     revoke_tokens_on_logout = true,
     redirect_after_logout_with_id_token_hint = false,
     accept_none_alg = true,
@@ -51,7 +56,7 @@ access_by_lua_block {
   end
   {% if openresty_enable_redis_session %}
 
-  session:close()
+  -- session:close()
   {% endif %}
 
   {% if openresty_oauth_verification is defined %}
