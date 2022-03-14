@@ -101,14 +101,13 @@ openresty_enable_oauth: false
 openresty_oauth_redirect_url: '/.oauth/callback'
 openresty_oauth_logout_url: '/.oauth/logout'
 openresty_oauth_redirect_after_logout_path: '/'
-openresty_oauth_scope: 'openid email profile'
+openresty_oauth_scope: 'openid email profile offline_access'
 openresty_oauth_ssl_verify: 'no'
 openresty_oauth_disable_cache: false
 openresty_oauth_session_contents:
   - id_token
   - user
   - access_token
-  - offline_token
 
 openresty_enable_redis_session: false
 openresty_redis_session_docker_service_name: 'nginx-reverse-proxy-redis-session'
