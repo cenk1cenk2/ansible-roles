@@ -1,8 +1,7 @@
 {% if openresty_oauth_cors_url is defined %}
 
 add_header 'Access-Control-Allow-Origin' '{{ openresty_oauth_cors_url }}';
-add_header 'Access-Control-Allow-Credentials' 'true';
 add_header 'Access-Control-Allow-Headers' '*';
-add_header 'Access-Control-Allow-Methods' 'GET, HEAD, POST, PUT, DELETE, PATCH, OPTIONS';
-add_header 'Access-Control-Max-Age' '1728000';
+add_header 'Access-Control-Allow-Methods' '*';
+add_header 'Access-Control-Allow-Credentials' 'true';
 {% endif %}
