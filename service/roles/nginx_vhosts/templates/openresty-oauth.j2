@@ -46,7 +46,7 @@ access_by_lua_block {
   {% if openresty_enable_redis_session %}
   local res, err, target, session = oidc.authenticate(opts)
 
-  session:close()
+  session:hide()
   {% else %}
   local res, err = oidc.authenticate(opts)
   {% endif %}
