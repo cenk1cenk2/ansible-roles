@@ -10,9 +10,9 @@ set $session_redis_host                     {{ openresty_redis_session_host | de
 set $session_redis_port                     {{ openresty_redis_session_port | default("6379") }};
 set $session_redis_ssl                      off;
 set $session_redis_ssl_verify               off;
-set $session_redis_uselocking               off;
+set $session_redis_uselocking               on;
 set $session_redis_spinlockwait             150;  # (in milliseconds)
-set $session_redis_maxlockwait              30;   # (in seconds)
+set $session_redis_maxlockwait              10;   # (in seconds)
 set $session_redis_pool_name                openresty_sessions;
 set $session_redis_pool_timeout             1000; # (in milliseconds)
 
