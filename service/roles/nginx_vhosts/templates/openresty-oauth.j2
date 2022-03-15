@@ -40,7 +40,7 @@ access_by_lua_block {
   local oidc = require("resty.openidc")
   {% if nginx_debug %}
 
-  oidc.set_logging(nil, { DEBUG = ngx.ERROR })
+  oidc.set_logging(nil, { DEBUG = ngx.INFO })
   {% endif %}
 
   {% if openresty_enable_redis_session %}
