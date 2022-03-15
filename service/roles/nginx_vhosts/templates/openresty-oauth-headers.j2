@@ -3,4 +3,5 @@
 add_header Access-Control-Allow-Origin '{{ openresty_oauth_cors_url }}';
 add_header Access-Control-Allow-Headers '*';
 add_header Access-Control-Allow-Credentials 'true';
+add_header Access-Control-Allow-Methods '*';
 {% endif %}
