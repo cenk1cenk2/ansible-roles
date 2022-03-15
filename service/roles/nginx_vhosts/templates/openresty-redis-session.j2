@@ -1,6 +1,7 @@
 {% if openresty_enable_redis_session %}
 set $session_storage redis;
 
+set $session_name                           openresty_oauth_session;
 set $session_redis_prefix                   openresty_sessions;
 set $session_redis_database                 0;
 set $session_redis_connect_timeout          1000; # (in milliseconds)
