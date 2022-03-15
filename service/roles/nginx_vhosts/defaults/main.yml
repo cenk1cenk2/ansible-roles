@@ -100,7 +100,7 @@ vhost_openresty: false
 openresty_enable_oauth: false
 openresty_oauth_redirect_url: '/.oauth/callback'
 openresty_oauth_logout_url: '/.oauth/logout'
-openresty_oauth_redirect_after_logout_path: '/'
+# openresty_oauth_redirect_after_logout_path: '/'
 openresty_oauth_scope: 'openid email profile offline_access'
 openresty_oauth_ssl_verify: 'no'
 openresty_oauth_disable_cache: false

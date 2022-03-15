@@ -13,7 +13,9 @@ access_by_lua_block {
     scope = "{{ openresty_oauth_scope }}",
     redirect_uri = "{{ openresty_oauth_redirect_url }}",
     logout_path = "{{ openresty_oauth_logout_url }}",
+    {% if openresty_oauth_redirect_after_logout_path is defined %}
     redirect_after_logout_uri = "{{ openresty_oauth_redirect_after_logout_path }}",
+    {% endif %}
     ssl_verify = "{{ openresty_oauth_ssl_verify }}",
     -- Where should the user be redirected after logout from the RP. This option overides any end_session_endpoint that the OP may have provided in the discovery response.
 
