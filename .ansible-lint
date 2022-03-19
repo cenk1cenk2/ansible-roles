@@ -16,7 +16,7 @@ skip_list:
   - line-length
   - package-latest
   - comments
-  - fqcn-builts
+  - fqcn-builtins
 
 enable_list:
   - command-shell
