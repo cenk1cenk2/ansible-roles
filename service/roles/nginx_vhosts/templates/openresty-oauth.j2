@@ -23,6 +23,8 @@ access_by_lua_block {
     -- whether this plugin shall try to silently renew the access token once it is expired if a refresh token is available.
     -- if it fails to renew the token, the user will be redirected to the authorization endpoint.
 
+    access_token_expires_leeway = 60,
+
     session_contents = { {% for content in openresty_oauth_session_contents %} {{ content }}=true, {% endfor %}},
     -- Whitelist of session content to enable. This can be used to reduce the session size.
     -- When not set everything will be included in the session.
