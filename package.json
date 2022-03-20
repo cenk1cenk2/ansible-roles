@@ -8,7 +8,7 @@
   "private": true,
   "root": true,
   "scripts": {
-    "format": "prettier --write ./ --loglevel warn",
+    "format": "prettier --write --loglevel warn .",
     "lint": "ansible-lint -v"
   },
   "lint-staged": {
