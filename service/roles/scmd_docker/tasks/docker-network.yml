@@ -1,6 +1,6 @@
 ---
 - name: create docker networks
-  docker_network:
+  community.docker.docker_network:
     name: '{{ scmd_loop_external_network }}'
   with_items: '{{ scmd_external_network }}'
   loop_control:

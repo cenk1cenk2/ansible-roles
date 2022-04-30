@@ -1,6 +1,6 @@
 ---
 - name: 'start docker service: {{ scmd_service_name }}'
-  docker_compose:
+  community.docker.docker_compose:
     state: absent
     project_name: '{{ scmd_service_name }}'
     project_src: '{{ scmd_service_dir }}'

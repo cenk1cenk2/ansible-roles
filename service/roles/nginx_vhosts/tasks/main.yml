@@ -27,7 +27,7 @@
   when:
     - vhost_state is not defined or not vhost_state
     - letsencrypt_register_domain is defined or letsencrypt_register_subdomain is defined
-    - (vhost_provision_only is defined and vhost_provision_only)
+    - vhost_provision_only is defined and vhost_provision_only
 
 - include_tasks: clean-up.yml
   when:
