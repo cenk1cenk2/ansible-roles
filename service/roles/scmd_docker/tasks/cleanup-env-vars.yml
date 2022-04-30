@@ -1,5 +1,0 @@
----
-- name: clear out env files
-  set_fact:
-    scmd_env_files: []
-    scmd_volume_dirs: []

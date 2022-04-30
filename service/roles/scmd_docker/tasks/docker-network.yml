@@ -1,7 +1,7 @@
 ---
-- name: Create a network
+- name: create docker networks
   docker_network:
-    name: '{{ network }}'
+    name: '{{ scmd_loop_external_network }}'
   with_items: '{{ scmd_external_network }}'
   loop_control:
-    loop_var: network
+    loop_var: scmd_loop_external_network

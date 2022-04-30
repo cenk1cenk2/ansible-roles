@@ -1,8 +1,0 @@
-- name: get docker host ip
-  shell: "set -o pipefail && ip route show | grep docker0 | awk '{print $9}'"
-  register: dc_raw_output
-
-- name: register docker host ip
-  ignore_errors: true # when using --check this will otherwise throw an error (since shell command from previous step won't be executed in check mode)
-  set_fact:
-    scmd_host_ip: '{{ dc_raw_output.stdout }}'

@@ -1,4 +1,5 @@
-- name: copy docker-compose file
+---
+- name: 'copy docker-compose file: {{ scmd_service_name }}'
   template:
     src: '{{ scmd_compose_file_template }}'
     dest: '{{ scmd_service_dir }}/docker-compose.yml'

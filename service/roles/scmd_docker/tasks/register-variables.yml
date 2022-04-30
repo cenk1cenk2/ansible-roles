@@ -1,24 +1,15 @@
-- name: register service dir
+---
+- name: 'register service dir: {{ scmd_service_name }}'
   set_fact:
     scmd_service_dir: '{{ scmd_base_dir }}/{{ scmd_service_name }}'
 
-- name: register volume directories
+- name: 'register component directories: {{ scmd_service_name }}'
   set_fact:
     scmd_volume_dir: './{{ scmd_volumes_dir_name }}'
     scmd_full_volume_dir: '{{ scmd_service_dir }}/{{ scmd_volumes_dir_name }}'
-
-- name: register env directories
-  set_fact:
     scmd_env_dir: './{{ scmd_env_dir_name }}'
     scmd_full_env_dir: '{{ scmd_service_dir }}/{{ scmd_env_dir_name }}'
-  when: not scmd_no_env
-
-- name: register logs directories
-  set_fact:
     scmd_logs_dir: './{{ scmd_logs_dir_name }}'
     scmd_full_logs_dir: '{{ scmd_service_dir }}/{{ scmd_logs_dir_name }}'
-
-- name: register build directories
-  set_fact:
     scmd_build_dir: './{{ scmd_build_dir_name }}'
     scmd_full_build_dir: '{{ scmd_service_dir }}/{{ scmd_build_dir_name }}'

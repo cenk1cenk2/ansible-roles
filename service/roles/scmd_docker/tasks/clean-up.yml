@@ -1,23 +1,22 @@
 ---
-- name: stop and remove containers
-  shell:
-    cmd: docker-compose stop && docker-compose rm -f
-    chdir: '{{ scmd_service_dir }}'
-  ignore_errors: true
-  when:
-    - scmd_state is defined
-    - (scmd_state.setup is defined and scmd_state.setup == "absent") or (scmd_state.all is defined and scmd_state.all == "absent")
+- name: 'start docker service: {{ scmd_service_name }}'
+  docker_compose:
+    state: absent
+    project_name: '{{ scmd_service_name }}'
+    project_src: '{{ scmd_service_dir }}'
+    remove_volumes: true
+    remove_images: true
 
 - name: remove docker setup
   file:
-    path: '{{ setup }}'
+    path: '{{ scmd_loop_setup_dirs }}'
     state: absent
   when:
     - scmd_state is defined
     - scmd_state.setup is defined
     - scmd_state.setup == "absent"
   loop_control:
-    loop_var: setup
+    loop_var: scmd_loop_setup_dirs
   with_items:
     - '{{ scmd_full_env_dir }}'
     - '{{ scmd_full_build_dir }}'
@@ -25,14 +24,14 @@
 
 - name: remove persistent docker volumes
   file:
-    path: '{{ setup }}'
+    path: '{{ scmd_loop_all_dirs }}'
     state: absent
   with_items:
     - '{{ scmd_full_logs_dir }}'
     - '{{ scmd_full_volume_dir }}'
     - '{{ scmd_service_dir }}'
   loop_control:
-    loop_var: setup
+    loop_var: scmd_loop_all_dirs
   when:
     - scmd_state is defined
     - scmd_state.all is defined

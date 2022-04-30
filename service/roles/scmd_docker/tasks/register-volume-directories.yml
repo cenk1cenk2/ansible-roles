@@ -1,18 +1,5 @@
 ---
-- name: register env var files
-  set_fact:
-    scmd_env_files: "{{ scmd_env_files | default([ ]) + [ { 'name': env_file[:-3] | basename, 'path': env_file } ] }}"
-  with_fileglob:
-    - '{{ scmd_env_file_template_dir }}/*.j2'
-  loop_control:
-    loop_var: env_file
-
-- name: debug
-  debug:
-    msg: '{{ scmd_env_files }}'
-  when: ansible_check_mode
-
-- name: register volume dirs
+- name: 'register volume directories: {{ scmd_service_name }}'
   set_fact:
     scmd_volume_dirs: |
       {% if 'volumes' in volume_dir and scmd_volume_dir in volume_dir.volumes %}
@@ -28,7 +15,8 @@
   when:
     - scmd_services is defined
 
-- name: debug
+- name: 'volume directories: {{ scmd_service_name }}'
   debug:
     msg: '{{ scmd_volume_dirs }}'
-  when: ansible_check_mode
+  when:
+    - ansible_check_mode

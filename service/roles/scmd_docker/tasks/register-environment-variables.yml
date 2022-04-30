@@ -1,0 +1,14 @@
+---
+- name: 'register environment variable files: {{ scmd_service_name }}'
+  set_fact:
+    scmd_env_files: "{{ scmd_env_files | default([ ]) + [ { 'name': scmd_loop_env_files[:-3] | basename, 'path': scmd_loop_env_files } ] }}"
+  with_fileglob:
+    - '{{ scmd_env_file_template_dir }}/*.j2'
+  loop_control:
+    loop_var: scmd_loop_env_files
+
+- name: 'environment variable files: {{ scmd_service_name }}'
+  debug:
+    msg: '{{ scmd_env_files }}'
+  when:
+    - ansible_check_mode

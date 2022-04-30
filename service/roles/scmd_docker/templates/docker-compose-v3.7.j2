@@ -1,8 +1,4 @@
 #jinja2:trim_blocks: True,lstrip_blocks: True
-{#
-Be careful with whitespace here. The options above (mostly) disable jinja tampering with whitespace, so all whitespace
-will be preserved as-is in the final output. Jinja code blocks will not produce any whitespace of their own.
-#}
 # Ansible generated docker-compose file for "{{ scmd_service_name }}" service.
 
 version: "3.7"
@@ -21,7 +17,7 @@ services:
   {% if container.restart_policy is defined %}
     {{ '{"restart_policy": %s}' | format(container.restart_policy | to_json) | from_json | to_nice_yaml(indent=2) | indent(6) }}
   {% endif %}
-  {% if ((scmd_no_env is not defined or not scmd_no_env) and scmd_env_files is defined) %}
+  {% if scmd_env_files is defined) %}
     {% set env_files = [] %}
     {% if (scmd_env_files | selectattr("name", "equalto", "env") | list | length > 0) %}
       {% set env_files = env_files + [scmd_env_dir + "/" + ".env"] %}

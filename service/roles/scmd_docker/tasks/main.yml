@@ -1,18 +1,16 @@
+---
 - import_tasks: register-variables.yml
   when:
-    - scmd_private_registry_only is not defined
+    - scmd_private_registry_only is not defined or not scmd_private_registry_only
 
-- include_tasks: register-env-vars.yml
+- include_tasks: register-environment-variables.yml
   when:
-    - not scmd_no_env
-    - scmd_variables_only is not defined
+    - scmd_variables_only is not defined or not scmd_variables_only
     - scmd_state is not defined
 
-- include_tasks: docker-host-ip.yml
+- include_tasks: register-volume-directories.yml
   when:
-    - scmd_register_host_ip
-    - scmd_variables_only is not defined
-    - scmd_private_registry_only is not defined
+    - scmd_variables_only is not defined or not scmd_variables_only
     - scmd_state is not defined
 
 - import_tasks: filesystem.yml
@@ -21,16 +19,15 @@
     - scmd_private_registry_only is not defined
     - scmd_state is not defined
 
-- import_tasks: copy-docker-compose-file.yml
+- import_tasks: generate-docker-compose-file.yml
   when:
-    - scmd_variables_only is not defined
-    - scmd_private_registry_only is not defined
+    - scmd_variables_only is not defined or not scmd_variables_only
+    - scmd_private_registry_only is not defined or not scmd_private_registry_only
     - scmd_state is not defined
 
 - import_tasks: registry-login.yml
   when:
-    - scmd_private_registry_only is defined
-    - scmd_private_registry_only
+    - scmd_private_registry_only is defined and scmd_private_registry_only
     - scmd_private_registry is defined
     - scmd_external_network is not defined
     - scmd_state is not defined
@@ -38,29 +35,20 @@
 - import_tasks: docker-network.yml
   when:
     - scmd_external_network is defined
-    - scmd_private_registry_only is not defined
-    - scmd_external_network | length
+    - scmd_external_network | length > 0
+    - scmd_private_registry_only is not defined or not scmd_private_registry_only
     - scmd_state is not defined
 
 - include_tasks: docker-service.yml
   when:
-    - scmd_use_docker_service
-    - scmd_variables_only is not defined
-    - scmd_private_registry_only is not defined
-    - scmd_state is not defined
-
-- include_tasks: docker-compose-cli.yml
-  when:
-    - not scmd_use_docker_service
-    - scmd_variables_only is not defined
-    - scmd_private_registry_only is not defined
+    - scmd_variables_only is not defined or not scmd_variables_only
+    - scmd_private_registry_only is not defined or not scmd_private_registry_only
     - scmd_state is not defined
 
 - include_tasks: clean-up.yml
   when:
     - scmd_state is defined
 
-- include_tasks: cleanup-env-vars.yml
+- include_tasks: clean-up-variables.yml
   when:
-    - not scmd_no_env
-    - scmd_variables_only is not defined
+    - scmd_variables_only is not defined or not scmd_variables_only
