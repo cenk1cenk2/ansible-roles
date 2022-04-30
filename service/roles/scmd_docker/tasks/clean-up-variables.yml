@@ -1,14 +1,5 @@
 ---
 - name: clean role facts
   set_fact:
-    scmd_service_dir: '{{ scmd_base_dir }}/{{ scmd_service_name }}'
-    scmd_volume_dir:
-    scmd_full_volume_dir:
-    scmd_env_dir:
-    scmd_full_env_dir:
-    scmd_logs_dir:
-    scmd_full_logs_dir:
-    scmd_build_dir:
-    scmd_full_build_dir:
     scmd_env_files:
     scmd_volume_dirs:
