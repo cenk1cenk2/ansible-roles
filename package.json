@@ -7,6 +7,7 @@
   "license": "MIT",
   "private": true,
   "root": true,
+  "type": "module",
   "scripts": {
     "format": "prettier --write --loglevel warn .",
     "lint": "ansible-lint -v"

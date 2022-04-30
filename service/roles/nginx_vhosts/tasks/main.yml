@@ -1,31 +1,33 @@
 ---
-- include_tasks: register-variables.yml
+- include_tasks: register-le-variables.yml
   when:
-    - letsencrypt_register_domain is defined or letsencrypt_register_subdomain is defined or vhost_variables_only is defined or not vhost_variables_only
+    - letsencrypt_register_domain is defined or letsencrypt_register_subdomain is defined or (vhost_variables_only is defined and vhost_variables_only)
 
 - include_tasks: provision.yml
   when:
+    - vhost_state is not defined or not vhost_state
     - vhost_variables_only is not defined or (vhost_provision_only is defined and vhost_provision_only)
-    - vhost_state is not defined
 
 - include_tasks: domains.yml
   when:
+    - vhost_state is not defined or not vhost_state
     - vhost_uri is defined
     - vhost_variables_only is not defined or not vhost_variables_only
-    - vhost_state is not defined
 
 - include_tasks: paths.yml
   when:
+    - vhost_state is not defined or not vhost_state
     - vhost_uri is defined
     - vhost_path_name is defined
     - vhost_variables_only is not defined or not vhost_variables_only
-    - vhost_state is not defined
 
 - include_tasks: register-le-domains.yml
   when:
+    - vhost_state is not defined or not vhost_state
     - letsencrypt_register_domain is defined or letsencrypt_register_subdomain is defined
-    - vhost_state is not defined
+    - (vhost_provision_only is defined and vhost_provision_only)
 
 - include_tasks: clean-up.yml
   when:
     - vhost_state is defined
+    - vhost_state
