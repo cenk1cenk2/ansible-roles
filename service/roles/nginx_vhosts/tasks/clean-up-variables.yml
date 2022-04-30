@@ -1,0 +1,10 @@
+---
+- name: clear variables
+  set_fact:
+    nginx_service_full_dir:
+    nginx_volumes_full_dir:
+    nginx_env_full_dir:
+    nginx_paths_full_dir:
+    nginx_upstream_full_dir:
+    nginx_domains_full_dir:
+    nginx_publish_full_dir:

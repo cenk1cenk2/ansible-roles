@@ -33,3 +33,7 @@
   when:
     - vhost_state is defined
     - vhost_state
+
+- include_tasks: clean-up-variables.yml
+  when:
+    - vhost_variables_only is not defined or not vhost_variables_only

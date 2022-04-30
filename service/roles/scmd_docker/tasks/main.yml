@@ -1,5 +1,3 @@
-# this file is split into multiple small task files so other playbooks can
-# reuse parts of this role (see gatekeeper prod deployment for instance)
 - import_tasks: register-variables.yml
   when:
     - scmd_private_registry_only is not defined
