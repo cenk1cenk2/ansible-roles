@@ -2,6 +2,9 @@
 - name: set letsencrypt variables
   set_fact:
     letsencrypt_env_path_dir: '{{ nginx_env_full_dir }}'
+
+- name: set letsencrypt environment variable file
+  set_fact:
     letsencrypt_env_path: '{{ letsencrypt_env_path_dir }}/{{ letsencrypt_docker_service_name }}.env'
 
 - name: letsencrypt register domain
