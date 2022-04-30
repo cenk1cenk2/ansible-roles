@@ -10,10 +10,7 @@
   when:
     - letsencrypt_register_subdomain is defined
 
-- name: set letsencrypt env variable path dir
+- name: set letsencrypt variables
   set_fact:
     letsencrypt_env_path_dir: '{{ nginx_env_full_dir }}'
-
-- name: set letsencrypt env variable path
-  set_fact:
     letsencrypt_env_path: '{{ letsencrypt_env_path_dir }}/{{ letsencrypt_docker_service_name }}.env'

@@ -1,7 +1,9 @@
 ---
+- include_tasks: register-variables.yml
+
 - include_tasks: register-le-variables.yml
   when:
-    - letsencrypt_register_domain is defined or letsencrypt_register_subdomain is defined or (vhost_variables_only is defined and vhost_variables_only)
+    - letsencrypt_register_domain is defined or letsencrypt_register_subdomain is defined
 
 - include_tasks: provision.yml
   when:
