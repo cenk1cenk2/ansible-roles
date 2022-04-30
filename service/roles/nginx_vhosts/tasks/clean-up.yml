@@ -1,41 +1,26 @@
 ---
-- name: remove paths template
+- name: 'remove paths configuration: {{ vhost_uri }}'
   file:
     path: '{{ nginx_paths_full_dir }}/{{ vhost_path_name }}.conf'
     state: absent
   when:
     - vhost_path_name is defined
-    - vhost_template_file is defined
-    - vhost_state.path is defined
-    - vhost_state.path == "absent"
+    - (vhost_state.path is defined and vhost_state.path == "absent") or (vhost_state.uri is defined and vhost_state.uri == "absent")
   notify:
     - reload nginx
 
-- name: remove paths config
-  file:
-    path: '{{ nginx_paths_full_dir }}/{{ vhost_path_name }}.conf'
-    state: absent
-  when:
-    - vhost_path_name is defined
-    - vhost_template_file is undefined
-    - vhost_state.path is defined
-    - vhost_state.path == "absent"
-  notify:
-    - reload nginx
-
-- name: remove paths upstream config
+- name: 'remove upstreams: {{ vhost_uri }}'
   file:
     path: '{{ nginx_upstream_full_dir }}/{{ vhost_path_name }}.conf'
     state: absent
   when:
     - vhost_path_name is defined
     - vhost_upstream is defined
-    - vhost_state.path is defined
-    - vhost_state.path == "absent"
+    - (vhost_state.path is defined and vhost_state.path == "absent") or (vhost_state.uri is defined and vhost_state.uri == "absent")
   notify:
     - reload nginx
 
-- name: remove proxy cache directory
+- name: 'remove proxy cache directory: {{ vhost_uri }}'
   file:
     path: '{{ vhost_proxy_cache_path }}'
     state: absent
@@ -45,39 +30,10 @@
     - vhost_state.uri is defined
     - vhost_state.uri == "absent"
 
-- name: remove vhost template
+- name: 'remove domain configuration: {{ vhost_uri }}'
   file:
     path: '{{ nginx_domains_full_dir }}/{{ vhost_uri }}.conf'
     state: absent
-  when:
-    - vhost_uri is defined
-    - vhost_template_file is defined
-    - vhost_state.uri is defined
-    - vhost_state.uri == "absent"
-  notify:
-    - reload nginx
-
-- name: remove vhost config
-  file:
-    path: '{{ nginx_domains_full_dir }}/{{ vhost_uri }}.conf'
-    state: absent
-  when:
-    - vhost_uri is defined
-    - vhost_template_file is undefined
-    - vhost_state.uri is defined
-    - vhost_state.uri == "absent"
-  notify:
-    - reload nginx
-
-- name: remove designated dirs for uri
-  file:
-    path: '{{ dirs }}'
-    state: absent
-  with_items:
-    - '{{ nginx_paths_full_dir }}'
-    - '{{ nginx_upstream_full_dir }}'
-  loop_control:
-    loop_var: dirs
   when:
     - vhost_uri is defined
     - vhost_template_file is undefined

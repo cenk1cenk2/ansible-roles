@@ -7,7 +7,7 @@ galaxy_info:
   min_ansible_version: 2.9
   github_branch: main
   platforms:
-    - name: Archlinux
+    - name: ArchLinux
       versions: all
     - name: Debian
       versions: all

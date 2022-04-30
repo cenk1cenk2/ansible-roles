@@ -1,12 +1,12 @@
 - name: 'loading variables: {{ load_vars_file_filter }} from {{ load_vars_root }}'
   include_vars:
-    file: '{{ environment }}'
+    file: '{{ load_vars_files }}'
   with_fileglob:
     - '{{ load_vars_root }}/{{ load_vars_file_filter }}.yml'
     - '{{ load_vars_root }}/{{ load_vars_file_filter }}.json'
     - '{{ load_vars_root }}/{{ load_vars_file_filter }}.yaml'
   loop_control:
-    loop_var: environment
+    loop_var: load_vars_files
   register: loaded_variables
 
 - name: fail on no variables and strict mode

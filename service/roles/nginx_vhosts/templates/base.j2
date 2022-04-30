@@ -60,7 +60,7 @@ http {
   {% endif %}
 
   {% if vhost_proxy_locations is defined and vhost_proxy_cache_enable %}
-  proxy_cache_path  {{ vhost_proxy_cache_path }} levels=1:2 keys_zone={{ vhost_base_domain }}:{{ vhost_proxy_keys_zone_size }} max_size={{ vhost_proxy_cache_max_size }} inactive={{ vhost_proxy_cache_inactive_timeout }};
+  proxy_cache_path {{ vhost_proxy_cache_path }} levels=1:2 keys_zone={{ vhost_base_domain }}:{{ vhost_proxy_keys_zone_size }} max_size={{ vhost_proxy_cache_max_size }} inactive={{ vhost_proxy_cache_inactive_timeout }};
 
   {% endif %}
   proxy_buffers {{ vhost_proxy_buffer_count }} {{ vhost_proxy_response_buffer_size }};

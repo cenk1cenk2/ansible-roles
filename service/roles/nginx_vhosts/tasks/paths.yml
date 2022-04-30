@@ -1,15 +1,16 @@
 ---
-- name: copy paths template
+- name: 'copy paths template: {{ vhost_uri }} {{ vhost_path_name }}'
   template:
     src: '{{ vhost_template_file }}'
-    dest: "{{ nginx_paths_full_dir }}/{{ vhost_path_name | regex_replace('[$^*]', '_') }}.conf"
+    dest: '{{ nginx_paths_full_dir }}/{{ vhost_path_name | regex_replace("[$^*]", "_") }}.conf'
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
-  when: vhost_template_file is defined
+  when:
+    - vhost_template_file is defined
   notify:
     - reload nginx
 
-- name: copy paths config
+- name: 'copy paths configuration: {{ vhost_uri }} {{ vhost_path_name }}'
   template:
     src: '{{ vhost_path_template }}'
     dest: "{{ nginx_paths_full_dir }}/{{ vhost_path_name | regex_replace('[$^*]', '_') }}.conf"
@@ -20,7 +21,7 @@
   notify:
     - reload nginx
 
-- name: copy paths upstream config
+- name: 'copy paths upstream: {{ vhost_uri }} {{ vhost_path_name }}'
   template:
     src: '{{ vhost_upstream_template }}'
     dest: "{{ nginx_upstream_full_dir }}/{{ vhost_path_name | regex_replace('[$^*]', '_') }}.conf"
@@ -31,15 +32,17 @@
   notify:
     - reload nginx
 
-- name: create static directories
+- name: 'create static directories: {{ vhost_uri }} {{ vhost_path_name }}'
   file:
-    path: '{{ nginx_publish_full_dir }}/{{ location.static_directory }}'
+    path: '{{ nginx_publish_full_dir }}/{{ vhost_loop_location.static_directory }}'
     state: directory
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
   when:
-    - location.static_directory is defined
+    - vhost_loop_location.static_directory is defined
   with_items:
     - '{{ vhost_proxy_locations }}'
   loop_control:
-    loop_var: location
+    loop_var: vhost_loop_location
+  notify:
+    - reload nginx

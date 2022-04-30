@@ -1,21 +1,27 @@
 ---
+# nginx debugging
+nginx_debug: false
+
+# template files
 vhost_base_conf_template: base.j2
 vhost_conf_template: domains.j2
 vhost_path_template: paths.j2
 vhost_upstream_template: upstream.j2
 
+# default ssl configuration
 vhost_ssl: true
 vhost_ssl_port: 443
 vhost_non_ssl: false
 vhost_non_ssl_port: 80
-vhost_additional_ports: false
 vhost_http_redir: true
-nginx_client_max_body_size: 4096M
-vhost_max_body_size: '{{ nginx_client_max_body_size }}'
 
+# default nginx configuration
+vhost_additional_ports: false
+vhost_max_body_size: '4096M'
 vhost_keepalive_timeout: 5m
 vhost_default_mime_type: application/octet-stream
 
+# nginx gzip configuration
 vhost_use_gzip: true
 vhost_gzip_comp_level: 6
 vhost_gzip_vary: 'on'
@@ -38,15 +44,16 @@ vhost_gzip_types:
   - font/opentype
   - image/svg+xml
 
+# nginx proxy configuration
 vhost_proxy_buffer_count: 4
 vhost_proxy_response_buffer_size: 32k
 vhost_proxy_header_buffer_size: 4k
 vhost_proxy_busy_buffer_size: 64k
 vhost_proxy_temp_file_write_size: 64k
 
-vhost_uri: '{{ vhost_base_domain }}'
+# nginx cache configuration
 vhost_proxy_cache_enable: false
-vhost_proxy_cache_path: "{{ nginx_cache_path }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}"
+vhost_proxy_cache_path: '{{ nginx_cache_path }}/{{ vhost_uri | regex_replace("[$^*]", "_") }}'
 vhost_proxy_cache_max_size: 100m
 vhost_proxy_keys_zone_size: 20m
 vhost_proxy_cache_inactive_timeout: 10m
@@ -55,53 +62,60 @@ vhost_proxy_cache_key_base: '$scheme$proxy_host$uri$is_args$args' # see http://n
 nginx_ssl_profile: modern
 
 nginx_ssl_protocols:
-  modern: TLSv1.2
-  legacy: TLSv1 TLSv1.1 TLSv1.2
+  modern: TLSv1.2 TLSv1.3
+  legacy: TLSv1.2
 nginx_ssl_ciphers:
   modern: ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
   legacy: ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
 
+# nginx permission control
 nginx_service_name: nginx
 nginx_service_user: nginx
 nginx_service_group: nginx
-nginx_docker_service_name: 'nginx-reverse-proxy'
-letsencrypt_docker_service_name: 'certbot'
 
+# vhost containers
+nginx_docker_service_name: nginx-reverse-proxy
+letsencrypt_docker_service_name: certbot
+
+# vhost container directory configuration
 nginx_service_full_dir: '{{ scmd_base_dir }}/{{ nginx_docker_service_name }}'
 nginx_volumes_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_volume_dir }}/{{ nginx_docker_service_name }}'
 nginx_env_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_env_dir }}'
 
-nginx_paths_dir: 'paths'
-nginx_paths_full_dir: "{{ nginx_volumes_full_dir }}/{{ nginx_paths_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}"
-nginx_upstream_dir: 'upstream'
-nginx_upstream_full_dir: "{{ nginx_volumes_full_dir }}/{{ nginx_upstream_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}"
-nginx_domains_dir: 'domains'
+nginx_paths_dir: paths
+nginx_paths_full_dir: '{{ nginx_volumes_full_dir }}/{{ nginx_paths_dir }}/{{ vhost_uri | regex_replace("[$^*]", "_") }}'
+nginx_upstream_dir: upstream
+nginx_upstream_full_dir: '{{ nginx_volumes_full_dir }}/{{ nginx_upstream_dir }}/{{ vhost_uri | regex_replace("[$^*]", "_") }}'
+nginx_domains_dir: domains
 nginx_domains_full_dir: '{{ nginx_volumes_full_dir }}/{{ nginx_domains_dir }}'
-nginx_publish_dir: 'publish'
+nginx_publish_dir: publish
 nginx_publish_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_volume_dir }}'
 
+# nginx internal configuration for paths
 nginx_log_dir: /var/log/nginx
 nginx_cache_path: /var/cache/nginx
 
-nginx_debug: false
-
+# logging control
 vhost_main_access_logs: '/dev/stdout'
 vhost_main_error_logs: '/dev/stderr{{ " debug" if nginx_debug else "" }}'
 
+# letsencrypt configuration
 vhost_ssl_le: true
-letsencrypt_cert_dir: '/etc/letsencrypt'
-letsencyrpt_container_acme_root: '/var/www/certbot'
+letsencrypt_cert_dir: /etc/letsencrypt
+letsencyrpt_container_acme_root: /var/www/certbot
 vhost_ssl_domain: '{{ vhost_uri }}'
 vhost_ssl_bundle_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/fullchain.pem'
 vhost_ssl_key_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/privkey.pem'
 
+# openresty opt-in feature
 vhost_openresty: false
 
+# openresty oauth configuration
 openresty_enable_oauth: false
-openresty_oauth_redirect_url: '/.oauth/callback'
-openresty_oauth_logout_url: '/.oauth/logout'
-# openresty_oauth_redirect_after_logout_path: '/'
-openresty_oauth_scope: 'openid email profile offline_access'
+openresty_oauth_redirect_url: /.oauth/callback
+openresty_oauth_logout_url: /.oauth/logout
+openresty_oauth_redirect_after_logout_path: /
+openresty_oauth_scope: openid email profile offline_access
 openresty_oauth_ssl_verify: 'no'
 openresty_oauth_disable_cache: false
 openresty_oauth_session_contents:
@@ -109,5 +123,6 @@ openresty_oauth_session_contents:
   - user
   - access_token
 
+# openresty session configuration
 openresty_enable_redis_session: false
-openresty_redis_session_docker_service_name: 'nginx-reverse-proxy-redis-session'
+openresty_redis_session_host: nginx-reverse-proxy-redis-session

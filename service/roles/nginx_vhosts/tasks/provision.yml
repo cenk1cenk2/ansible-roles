@@ -1,41 +1,29 @@
 ---
-- name: create directories for domains nginx provision
+- name: 'create directories for domains nginx provision: {{ vhost_uri }}'
   file:
-    name: '{{ dirs }}'
+    name: '{{ nginx_domains_full_dir }}'
     state: directory
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
-  with_items:
-    - '{{ nginx_domains_full_dir }}'
-  loop_control:
-    loop_var: dirs
   when:
     - vhost_uri is defined
 
-- name: create directories for paths nginx provision
+- name: 'create directories for paths nginx provision: {{ vhost_uri }}'
   file:
-    name: '{{ dirs }}'
+    name: '{{ nginx_paths_full_dir }}'
     state: directory
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
-  with_items:
-    - '{{ nginx_paths_full_dir }}'
-  loop_control:
-    loop_var: dirs
   when:
     - vhost_uri is defined
     - vhost_path_name is defined
 
-- name: create directories for paths nginx provision upstream
+- name: 'create directories for paths nginx provision upstream: {{ vhost_uri }}'
   file:
-    name: '{{ dirs }}'
+    name: '{{ nginx_upstream_full_dir }}'
     state: directory
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
-  with_items:
-    - '{{ nginx_upstream_full_dir }}'
-  loop_control:
-    loop_var: dirs
   when:
     - vhost_uri is defined
     - vhost_path_name is defined

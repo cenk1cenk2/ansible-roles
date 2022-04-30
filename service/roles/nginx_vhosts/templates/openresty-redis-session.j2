@@ -7,7 +7,7 @@ set $session_redis_database                 0;
 set $session_redis_connect_timeout          1000; # (in milliseconds)
 set $session_redis_send_timeout             1000; # (in milliseconds)
 set $session_redis_read_timeout             1000; # (in milliseconds)
-set $session_redis_host                     {{ openresty_redis_session_host | default(openresty_redis_session_docker_service_name) }};
+set $session_redis_host                     {{ openresty_redis_session_host | default("localhost") }};
 set $session_redis_port                     {{ openresty_redis_session_port | default("6379") }};
 set $session_redis_ssl                      off;
 set $session_redis_ssl_verify               off;

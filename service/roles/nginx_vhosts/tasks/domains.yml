@@ -1,26 +1,28 @@
 ---
-- name: create proxy cache directory
+- name: 'create proxy cache directory: {{ vhost_proxy_cache_path }}'
   file:
     name: '{{ vhost_proxy_cache_path }}'
     state: directory
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
-  when: vhost_proxy_locations is defined and vhost_proxy_cache_enable
+  when:
+    - vhost_proxy_locations is defined and vhost_proxy_cache_enable
 
-- name: copy vhost template
+- name: 'copy vhost template: {{ vhost_uri }}'
   template:
     src: '{{ vhost_template_file }}'
-    dest: "{{ nginx_domains_full_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}.conf"
+    dest: '{{ nginx_domains_full_dir }}/{{ vhost_uri | regex_replace("[$^*]", "_") }}.conf'
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
-  when: vhost_template_file is defined
+  when:
+    - vhost_template_file is defined
   notify:
     - reload nginx
 
-- name: copy vhost config
+- name: 'copy vhost config: {{ vhost_uri }}'
   template:
     src: '{{ vhost_conf_template }}'
-    dest: "{{ nginx_domains_full_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}.conf"
+    dest: '{{ nginx_domains_full_dir }}/{{ vhost_uri | regex_replace("[$^*]", "_") }}.conf'
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
   when:
