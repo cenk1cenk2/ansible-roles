@@ -6,6 +6,8 @@
     project_src: '{{ scmd_service_dir }}'
     remove_volumes: true
     remove_images: true
+  async: 600
+  poll: 5
 
 - name: remove docker setup
   file:

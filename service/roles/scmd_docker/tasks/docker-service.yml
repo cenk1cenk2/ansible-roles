@@ -8,3 +8,5 @@
     build: true
     remove_orphans: true
     recreate: always
+  async: 600
+  poll: 5
