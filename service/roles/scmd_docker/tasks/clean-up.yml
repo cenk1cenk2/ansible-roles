@@ -5,7 +5,7 @@
     project_name: '{{ scmd_service_name }}'
     project_src: '{{ scmd_service_dir }}'
     remove_volumes: true
-    remove_images: true
+    remove_images: local
   async: 600
   poll: 5
 
