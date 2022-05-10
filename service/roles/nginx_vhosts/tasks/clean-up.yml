@@ -5,7 +5,7 @@
     state: absent
   when:
     - vhost_path_name is defined
-    - (vhost_state.path is defined and vhost_state.path == "absent") or (vhost_state.uri is defined and vhost_state.uri == "absent")
+    - (vhost_state.path is defined and vhost_state.path == "absent") or (vhost_state.uri is defined and vhost_state.uri == "absent") or (vhost_state.all is defined and vhost_state.all == "absent")
   notify:
     - reload nginx
 
@@ -16,7 +16,7 @@
   when:
     - vhost_path_name is defined
     - vhost_upstream is defined
-    - (vhost_state.path is defined and vhost_state.path == "absent") or (vhost_state.uri is defined and vhost_state.uri == "absent")
+    - (vhost_state.path is defined and vhost_state.path == "absent") or (vhost_state.uri is defined and vhost_state.uri == "absent") or (vhost_state.all is defined and vhost_state.all == "absent")
   notify:
     - reload nginx
 
@@ -27,8 +27,7 @@
   when:
     - vhost_uri is defined
     - vhost_proxy_locations is defined and vhost_proxy_cache_enable
-    - vhost_state.uri is defined
-    - vhost_state.uri == "absent"
+    - (vhost_state.uri is defined and vhost_state.uri == "absent") or (vhost_state.all is defined and vhost_state.all == "absent")
 
 - name: 'remove domain configuration: {{ vhost_uri }}'
   file:
@@ -36,8 +35,6 @@
     state: absent
   when:
     - vhost_uri is defined
-    - vhost_template_file is undefined
-    - vhost_state.uri is defined
-    - vhost_state.uri == "absent"
+    - (vhost_state.uri is defined and  vhost_state.uri == "absent") or (vhost_state.all is defined and vhost_state.all == "absent")
   notify:
     - reload nginx
