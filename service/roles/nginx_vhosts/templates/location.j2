@@ -12,7 +12,7 @@ try_files "${uri}.html" $uri $uri/ =404;
 {% endif %}
 {% if vhost_proxy_locations is defined %}
   {% if vhost_proxy_cache_enable %}
-{% include "./proxy-cache.j2" %}
+  {% filter indent(2, False) %}{% include "./proxy-cache.j2" %}{% endfilter %}
 
   {% endif %}
 {% for l in vhost_proxy_locations %}
