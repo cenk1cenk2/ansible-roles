@@ -19,7 +19,7 @@
   when:
     - cert.state == 'file'
     - cert.path is match("(" + ssl_certificate_domains | join("|") + ")/(fullchain|privkey).pem.secrets.j2") or cert.path is match("(" + ssl_certificate_domains | join("|") + ")/(cert).pfx.secrets.j2")
-  with_filetree: '{{ ssl_certificates_root }}'
+  with_community.general.filetree: '{{ ssl_certificates_root }}'
   loop_control:
     loop_var: cert
 
