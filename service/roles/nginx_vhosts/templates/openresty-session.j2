@@ -1,0 +1,10 @@
+{% if openresty_enable_session %}
+
+# session management
+set $session_secret {{ openresty_session_secret }};
+
+{% filter indent(0, True) %}{% include './openresty-cookie-session.j2' %}{% endfilter %}
+{% filter indent(0, True) %}{% include './openresty-redis-session.j2' %}{% endfilter %}
+{% filter indent(0, True) %}{% include './openresty-oauth-headers.j2' %}{% endfilter %}
+
+{% endif %}

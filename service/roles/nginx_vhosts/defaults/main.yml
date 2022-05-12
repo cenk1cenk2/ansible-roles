@@ -59,6 +59,9 @@ vhost_proxy_keys_zone_size: 20m
 vhost_proxy_cache_inactive_timeout: 10m
 vhost_proxy_cache_key_base: '$scheme$proxy_host$uri$is_args$args' # see http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_cache_key
 
+vhost_large_client_headers_chucks: 4
+vhost_large_client_headers_size: 64k
+
 nginx_ssl_profile: modern
 
 nginx_ssl_protocols:
@@ -102,6 +105,12 @@ vhost_ssl_key_file: '{{ letsencrypt_cert_dir }}/live/{{ vhost_ssl_domain }}/priv
 # openresty opt-in feature
 vhost_openresty: false
 
+# openresty session configuration
+openresty_enable_session: false
+openresty_enable_cookie_session: false
+openresty_enable_redis_session: false
+openresty_redis_session_host: nginx-reverse-proxy-redis-session
+
 # openresty oauth configuration
 openresty_enable_oauth: false
 openresty_oauth_redirect_url: /.oauth/callback
@@ -112,9 +121,5 @@ openresty_oauth_ssl_verify: 'no'
 openresty_oauth_disable_cache: false
 openresty_oauth_session_contents:
   - id_token
-  - user
-  - access_token
-
-# openresty session configuration
-openresty_enable_redis_session: false
-openresty_redis_session_host: nginx-reverse-proxy-redis-session
+  # - user
+  # - access_token

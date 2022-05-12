@@ -1,9 +1,11 @@
-{% if l.disable_logging is defined and l.disable_logging == true %}
-access_log off;
-error_log off;
-
+{% if l.disable_access_logs is defined and l.disable_access_logs == true %}
+access_log /dev/null;
+{% endif %}
+{% if l.disable_error_logs is defined and l.disable_error_logs == true %}
+error_log /dev/null;
 {% endif %}
 {% if l.auth_file is defined and l.auth_file != false %}
+
 auth_basic "{{ l.auth_name | default('Authentication required') }}";
 auth_basic_user_file {{ l.auth_file }};
 

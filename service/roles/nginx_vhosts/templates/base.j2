@@ -63,7 +63,8 @@ http {
   proxy_buffer_size {{ vhost_proxy_header_buffer_size }};
   proxy_busy_buffers_size {{ vhost_proxy_busy_buffer_size }};
   proxy_temp_file_write_size {{ vhost_proxy_temp_file_write_size }};
-  large_client_header_buffers 4 32k;
+
+  large_client_header_buffers {{ vhost_large_client_headers_chucks }} {{ vhost_large_client_headers_size }};
   {% if vhost_non_ssl_networks_allow is defined and vhost_non_ssl_networks_allow != False %}
 
   {% filter indent(2, True) %}{% include './geolocation.j2' %}{% endfilter %}
@@ -88,10 +89,16 @@ http {
   scgi_temp_path        /var/run/openresty/nginx-scgi;
 
   server_tokens off;
+  {% if openresty_enable_session %}
+  {% filter indent(2, True) %}{% include './openresty-session.j2' %}{% endfilter %}
+  {% endif %}
+  {% if openresty_enable_oauth is defined and openresty_enable_oauth %}
 
+  # discovery dictionary
   lua_shared_dict discovery 10m;
   lua_shared_dict jwks 10m;
 
+  {% endif %}
   {% endif %}
   include ./{{ nginx_domains_dir }}/*.conf;
 }
