@@ -33,6 +33,16 @@ server {
   client_max_body_size    {{ vhost_max_body_size }};
   default_type            {{ vhost_default_mime_type }};
   keepalive_timeout       {{ vhost_keepalive_timeout }};
+  {% if openresty_enable_session is defined and openresty_enable_session %}
+  {% filter indent(2, True) %}{% include './openresty-session.j2' %}{% endfilter %}
+  {% endif %}
+  {% if vhost_disallow_robots is defined and vhost_disallow_robots %}
+
+  location = /robots.txt {
+     add_header Content-Type text/plain;
+     return 200 "User-agent: *\nDisallow: /\n";
+  }
+  {% endif %}
 
   include ./{{ nginx_paths_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}/*.conf;
   {% endif %}
@@ -103,6 +113,9 @@ server {
   client_max_body_size    {{ vhost_max_body_size }};
   default_type            {{ vhost_default_mime_type }};
   keepalive_timeout       {{ vhost_keepalive_timeout }};
+  {% if openresty_enable_session is defined and openresty_enable_session %}
+  {% filter indent(2, True) %}{% include './openresty-session.j2' %}{% endfilter %}
+  {% endif %}
   {% if vhost_disallow_robots is defined and vhost_disallow_robots %}
 
   location = /robots.txt {

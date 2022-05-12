@@ -89,9 +89,6 @@ http {
   scgi_temp_path        /var/run/openresty/nginx-scgi;
 
   server_tokens off;
-  {% if openresty_enable_session %}
-  {% filter indent(2, True) %}{% include './openresty-session.j2' %}{% endfilter %}
-  {% endif %}
   {% if openresty_enable_oauth is defined and openresty_enable_oauth %}
 
   # discovery dictionary
