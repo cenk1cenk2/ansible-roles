@@ -2,4 +2,4 @@
 - name: clean role facts
   set_fact:
     scmd_env_files: null
-    scmd_volume_dirs: null
+    # scmd_volume_dirs: null
