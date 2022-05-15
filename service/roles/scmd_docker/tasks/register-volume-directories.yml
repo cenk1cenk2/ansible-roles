@@ -2,8 +2,14 @@
 - name: 'register volume directories: {{ scmd_service_name }}'
   set_fact:
     scmd_volume_dirs: |
-      {% if 'volumes' in volume_dir and scmd_volume_dir in volume_dir.volumes %}
-      {% set value = (scmd_volume_dirs | default([ ]) + [ '%s/%s' | format(scmd_full_volume_dir, scmd_service_name) ]) | unique %}
+      {% if 'volumes' in scmd_loop_services and scmd_volume_dir in scmd_loop_services.volumes %}
+      {% set value = (scmd_volume_dirs | default([ ]) + [
+        {
+          "mount": "%s/%s" | format(scmd_full_volume_dir, scmd_service_name),
+          "user": "%s" | format(scmd_loop_services.user | default(service_user)),
+          "group": "%s" | format(scmd_loop_services.group | default(service_group))
+        }
+      ]) | unique %}
       {% else %}
       {% set value = scmd_volume_dirs | default([ ]) %}
       {% endif %}
@@ -11,7 +17,7 @@
   with_items:
     - '{{ scmd_services }}'
   loop_control:
-    loop_var: volume_dir
+    loop_var: scmd_loop_services
   when:
     - scmd_services is defined
 
