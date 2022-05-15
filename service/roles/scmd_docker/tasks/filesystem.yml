@@ -5,16 +5,16 @@
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
 
-- name: 'create volume directories: {{ scmd_service_name }}'
-  file:
-    name: '{{ scmd_loop_volume_dir.mount }}'
-    state: directory
-    owner: '{{ scmd_loop_volume.user | default(service_user) }}'
-    group: '{{ scmd_loop_volume.group | default(service_group) }}'
-  with_items:
-    - '{{ scmd_volume_dirs }}'
-  loop_control:
-    loop_var: scmd_loop_volume_dir
+# - name: 'create volume directories: {{ scmd_service_name }}'
+#   file:
+#     name: '{{ scmd_loop_volume_dir.mount }}'
+#     state: directory
+#     owner: '{{ scmd_loop_volume.user | default(service_user) }}'
+#     group: '{{ scmd_loop_volume.group | default(service_group) }}'
+#   with_items:
+#     - '{{ scmd_volume_dirs }}'
+#   loop_control:
+#     loop_var: scmd_loop_volume_dir
 
 - name: 'create environment variable directory: {{ scmd_service_name }}'
   file:

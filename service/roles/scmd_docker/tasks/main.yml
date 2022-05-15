@@ -8,10 +8,10 @@
     - scmd_variables_only is not defined or not scmd_variables_only
     - scmd_state is not defined
 
-- include_tasks: register-volume-directories.yml
-  when:
-    - scmd_variables_only is not defined or not scmd_variables_only
-    - scmd_state is not defined
+# - include_tasks: register-volume-directories.yml
+#   when:
+#     - scmd_variables_only is not defined or not scmd_variables_only
+#     - scmd_state is not defined
 
 - import_tasks: filesystem.yml
   when:
