@@ -7,10 +7,10 @@
 
 - name: 'create volume directories: {{ scmd_service_name }}'
   file:
-    name: '{{ scmd_loop_volume_dir }}'
+    name: '{{ scmd_loop_volume_dir.mount }}'
     state: directory
-    owner: '{{ service_user }}'
-    group: '{{ service_group }}'
+    owner: '{{ scmd_loop_volume.user | default(service_user) }}'
+    group: '{{ scmd_loop_volume.group | default(service_group) }}'
   with_items:
     - '{{ scmd_volume_dirs }}'
   loop_control:
