@@ -1,8 +1,8 @@
 #jinja2:trim_blocks: True,lstrip_blocks: True
 # ansible generated config file for nginx vhost "{{ vhost_path_name }}" for domain "{{ vhost_uri }}"
 
-{% if vhost_directive is defined %}
-{% for h in vhost_directive %}
+{% if vhost_directives is defined %}
+{% for h in vhost_directives %}
 {{ h }}
 {% endfor %}
 
