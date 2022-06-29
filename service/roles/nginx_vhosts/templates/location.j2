@@ -25,19 +25,19 @@ location {{ l.location }} {
   {% endif %}
 
   {% endif %}
-  {% filter indent(2, False) %}{% include "./openresty-oauth.j2" %}{% endfilter %}
+  {% filter indent(2, True) %}{% include "./openresty-oauth.j2" %}{% endfilter %}
   {% if l.restrict_access is defined %}
-  {% filter indent(2, False) %}{% include "./restrict-access.j2" %}{% endfilter %}
+  {% filter indent(2, True) %}{% include "./restrict-access.j2" %}{% endfilter %}
 
   {% endif %}
   {% if l.redirect is defined %}
   return 302 {{ l.redirect }};
 
   {% elif l.static_directory is defined %}
-  {% filter indent(2, False) %}{% include "./static-directory.j2" %}{% endfilter %}
+  {% filter indent(2, True) %}{% include "./static-directory.j2" %}{% endfilter %}
 
   {% else %}
-  {% filter indent(2, False) %}{% include "./reverse-proxy.j2" %}{% endfilter %}
+  {% filter indent(2, True) %}{% include "./reverse-proxy.j2" %}{% endfilter %}
   {% if l.proxy_redirect is defined %}
 
   {% for r in l.proxy_redirect %}
