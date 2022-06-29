@@ -18,8 +18,7 @@
     ]
   },
   "simple-git-hooks": {
-    "pre-commit": "yarn exec lint-staged",
-    "pre-push": "yarn lint"
+    "pre-commit": "yarn exec lint-staged"
   },
   "devDependencies": {
     "@cenk1cenk2/cz-cc": "^1.4.11",
