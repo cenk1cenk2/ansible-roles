@@ -1,3 +1,4 @@
+---
 - name: 'ensure target directory exists: {{ copy_files_dest }}'
   file:
     path: '{{ copy_files_dest }}'
@@ -16,7 +17,7 @@
 - name: 'copying files from {{ copy_files_src }}'
   synchronize:
     src: '{{ file.src }}'
-    dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
+    dest: '{{ copy_files_dest }}/{{ file.path }}'
   with_items: '{{ copy_files_src_files }}'
   loop_control:
     loop_var: file

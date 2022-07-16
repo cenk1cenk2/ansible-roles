@@ -1,2 +1,3 @@
-- import_tasks: initiate-variables.yml
+---
+- import_tasks: scan.yml
 - import_tasks: copy-files.yml
