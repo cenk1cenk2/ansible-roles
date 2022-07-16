@@ -1,6 +1,7 @@
+---
 galaxy_info:
   author: Cenk Kilic
-  description: manage SSH Keys
+  description: Manage SSH keys on the given server.
   company: kilic.dev
   license: MIT
   min_ansible_version: '2.9'

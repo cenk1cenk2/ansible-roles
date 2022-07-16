@@ -1,9 +1,10 @@
+---
 galaxy_info:
   author: Cenk Kilic
   description: select specific environment depending on the ansible variable
   company: kilic.dev
   license: MIT
-  min_ansible_version: 2.9
+  min_ansible_version: '2.9'
   platforms:
     - name: ArchLinux
       versions:

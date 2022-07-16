@@ -1,0 +1,6 @@
+---
+- name: 'read authorized keys: {{ authorized_keys | join(", ") }}'
+  set_fact:
+    authorized_keys_authorized_keys: "{{ lookup('file', item) + '\n' }}"
+  with_fileglob:
+    - "{{ authorized_keys_root }}/({{ authorized_keys | join('|') }}).pub"

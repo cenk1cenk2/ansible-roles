@@ -1,3 +1,4 @@
+---
 - name: 'loading variables: {{ load_vars_file_filter }} from {{ load_vars_root }}'
   include_vars:
     file: '{{ load_vars_files }}'

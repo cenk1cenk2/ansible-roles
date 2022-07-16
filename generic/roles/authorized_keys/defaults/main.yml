@@ -1,2 +1,2 @@
-authorized_key_remove: false
-authorized_key_replace: false
+---
+authorized_keys_root: ./files/keys/

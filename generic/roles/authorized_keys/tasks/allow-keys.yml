@@ -1,0 +1,7 @@
+---
+- name: allow authorized keys to the host
+  authorized_key:
+    user: '{{ ansible_management_user }}'
+    key: '{{ authorized_keys_all_keys | default([]) + authorized_keys_authorized_keys | default([]) }}'
+    state: present
+    exclusive: true
