@@ -1,5 +1,5 @@
 ---
-- name: 'revoke keys from host: {{ revoked_keys | join(", ") }}'
+- name: 'revoke keys from host: {{ revoked_keys | default([]) | join(", ") }}'
   authorized_keys:
     user: '{{ ansible_management_user }}'
     state: absent

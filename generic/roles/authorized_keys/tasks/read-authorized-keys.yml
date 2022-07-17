@@ -1,5 +1,5 @@
 ---
-- name: 'read authorized keys: {{ authorized_keys | join(", ") }}'
+- name: 'read authorized keys: {{ authorized_keys | default([]) | join(", ") }}'
   set_fact:
     authorized_keys_authorized_keys: "{{ lookup('file', item) + '\n' }}"
   with_fileglob:

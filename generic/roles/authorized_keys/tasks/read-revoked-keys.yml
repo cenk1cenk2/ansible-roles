@@ -1,5 +1,5 @@
 ---
-- name: 'read revoked public keys: {{ revoked_keys | join(", ") }}'
+- name: 'read revoked public keys: {{ revoked_keys | default([]) | join(", ") }}'
   set_fact:
     authorized_keys_revoked_keys: "{{ lookup('file', item) + '\n' }}"
   with_fileglob:
