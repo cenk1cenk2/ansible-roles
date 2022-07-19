@@ -33,6 +33,7 @@ server {
   client_max_body_size    {{ vhost_max_body_size }};
   default_type            {{ vhost_default_mime_type }};
   keepalive_timeout       {{ vhost_keepalive_timeout }};
+  proxy_connect_timeout {{ vhost_proxy_connect_timeout }};
   {% if openresty_enable_session is defined and openresty_enable_session %}
   {% filter indent(2, True) %}{% include './openresty-session.j2' %}{% endfilter %}
   {% endif %}
@@ -113,6 +114,7 @@ server {
   client_max_body_size    {{ vhost_max_body_size }};
   default_type            {{ vhost_default_mime_type }};
   keepalive_timeout       {{ vhost_keepalive_timeout }};
+  proxy_connect_timeout {{ vhost_proxy_connect_timeout }};
   {% if openresty_enable_session is defined and openresty_enable_session %}
   {% filter indent(2, True) %}{% include './openresty-session.j2' %}{% endfilter %}
   {% endif %}
