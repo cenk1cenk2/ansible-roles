@@ -35,5 +35,3 @@
     dest: '{{ nginx_volumes_full_dir }}/nginx.conf'
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
-  notify:
-    - reload nginx
