@@ -29,6 +29,13 @@
     - vhost_path_name is defined
     - vhost_upstream is defined
 
+- name: 'create basic directory for nginx configuration'
+  file:
+    name: '{{ nginx_volumes_full_dir }}'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_group }}'
+
 - name: provision base nginx.conf
   template:
     src: '{{ vhost_base_conf_template }}'
