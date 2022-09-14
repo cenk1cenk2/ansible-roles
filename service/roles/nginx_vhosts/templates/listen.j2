@@ -1,13 +1,15 @@
 {% if ssl is defined and ssl == true %}
 {% set ssl_toggle = ' ssl' %}
+{% if vhost_listen_protocol is defined %}{% set listen_protocol = vhost_listen_protocol %}{% endif %}
 {% else %}
 {% set ssl_toggle = '' %}
+{% if vhost_listen_http_protocol is defined %}{% set listen_protocol = vhost_listen_http_protocol %}{% endif %}
 {% endif %}
 {% if vhost_real_ip_from is defined and vhost_real_ip_from | length > 0 %}
 {% set proxy_protocol_toggle = ' proxy_protocol' %}
 {% else %}
 {% set proxy_protocol_toggle = '' %}
 {% endif %}
-listen {{ listen_port }}{{ ssl_toggle }}{{ proxy_protocol_toggle }}{% if vhost_default_server is defined and vhost_default_server %} default_server{% endif %}{% if vhost_listen_protocol is defined %} {{ vhost_listen_protocol }}{% endif %};
-listen [::]:{{ listen_port }}{{ ssl_toggle }}{{ proxy_protocol_toggle }}{% if vhost_default_server is defined and vhost_default_server %} default_server{% endif %}{% if vhost_listen_protocol is defined %} {{ vhost_listen_protocol }}{% endif %};
+listen {{ listen_port }}{{ ssl_toggle }}{{ proxy_protocol_toggle }}{% if vhost_default_server is defined and vhost_default_server %} default_server{% endif %}{% if listen_protocol is defined %} {{ listen_protocol }}{% endif %};
+listen [::]:{{ listen_port }}{{ ssl_toggle }}{{ proxy_protocol_toggle }}{% if vhost_default_server is defined and vhost_default_server %} default_server{% endif %}{% if listen_protocol is defined %} {{ listen_protocol }}{% endif %};
 
