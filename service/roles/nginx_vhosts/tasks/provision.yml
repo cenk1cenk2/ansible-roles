@@ -29,7 +29,7 @@
     - vhost_path_name is defined
     - vhost_upstream is defined
 
-- name: 'create basic directory for nginx configuration'
+- name: create basic directory for nginx configuration
   file:
     name: '{{ nginx_volumes_full_dir }}'
     state: directory

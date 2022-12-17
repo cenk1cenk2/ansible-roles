@@ -16,7 +16,7 @@
 
 - name: set ssl certificates available
   set_fact:
-    ssl_certificates: '{{ ssl_certificates | default([]) + [ { "path": ssl_certificates_loop_filesystem_certs.path, "root": ssl_certificates_loop_filesystem_certs.root + "/" + ssl_certificates_loop_filesystem_certs.path } ] }}'
+    ssl_certificates: '{{ ssl_certificates | default([]) + [{"path": ssl_certificates_loop_filesystem_certs.path, "root": ssl_certificates_loop_filesystem_certs.root + "/" + ssl_certificates_loop_filesystem_certs.path}] }}'
   when:
     - ssl_certificates_loop_filesystem_certs.state == 'file'
     - ssl_certificates_loop_filesystem_certs.path is match("(" + ssl_certificate_domains | join("|") + ")/(fullchain|privkey).pem.secrets.j2") or ssl_certificates_loop_filesystem_certs.path is match("(" + ssl_certificate_domains | join("|") + ")/(ssl_certificates_loop_filesystem_certs).pfx.secrets.j2")

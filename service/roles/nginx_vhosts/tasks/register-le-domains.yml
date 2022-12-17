@@ -19,14 +19,15 @@
 
 - name: search for domains in certbot env file
   set_fact:
-    certbot_env_file_domains: '{{ certbot_env_file_contents | regex_search(''^domains="(.*)"'', ignorecase=True) | regex_replace(''.*"(.*)".*'', ''\1'', ignorecase=True) }}'
+    certbot_env_file_domains: "{{ certbot_env_file_contents | regex_search('^domains=\"(.*)\"', ignorecase=True) | regex_replace('.*\"(.*)\".*', '\\1', ignorecase=True)\
+      \ }}"
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_domain is defined
 
 - name: check if domain is already in certbot env file
   set_fact:
-    certbot_register_domains: '{{ (certbot_register_domains | default([ ]) + [ cert ]) | unique }}'
+    certbot_register_domains: '{{ (certbot_register_domains | default([]) + [cert]) | unique }}'
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_domain is defined
@@ -38,7 +39,8 @@
 
 - name: register letsencrypt domains
   set_fact:
-    certbot_env_file_contents: '{{ certbot_env_file_contents | regex_replace(''^domains="(.*)"'', ''DOMAINS="'' + certbot_env_file_domains + '' '' + certbot_register_domains | join('' '') + ''"'', ignorecase=True) }}'
+    certbot_env_file_contents: "{{ certbot_env_file_contents | regex_replace('^domains=\"(.*)\"', 'DOMAINS=\"' + certbot_env_file_domains + ' ' + certbot_register_domains\
+      \ | join(' ') + '\"', ignorecase=True) }}"
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_domain is defined
@@ -46,14 +48,15 @@
 
 - name: search for subdomains in certbot env file
   set_fact:
-    certbot_env_file_subdomains: '{{ certbot_env_file_contents | regex_search(''subdomains="(.*)"'', ignorecase=True) | regex_replace(''.*"(.*)".*'', ''\1'', ignorecase=True) }}'
+    certbot_env_file_subdomains: "{{ certbot_env_file_contents | regex_search('subdomains=\"(.*)\"', ignorecase=True) | regex_replace('.*\"(.*)\".*', '\\1', ignorecase=True)\
+      \ }}"
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_subdomain is defined
 
 - name: check if subdomain is already in certbot env file
   set_fact:
-    certbot_register_subdomains: '{{ (certbot_register_subdomains | default([ ]) + [ cert ]) | unique }}'
+    certbot_register_subdomains: '{{ (certbot_register_subdomains | default([]) + [cert]) | unique }}'
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_subdomain is defined
@@ -65,7 +68,9 @@
 
 - name: register letsencrypt subdomains
   set_fact:
-    certbot_env_file_contents: '{{ certbot_env_file_contents | regex_replace(''subdomains="(.*)"'', ''SUBDOMAINS="'' + certbot_env_file_subdomains + '' '' + certbot_register_subdomains | join('' '') + ''"'', ignorecase=True) }}'
+    certbot_env_file_contents:
+      "{{ certbot_env_file_contents | regex_replace('subdomains=\"(.*)\"', 'SUBDOMAINS=\"' + certbot_env_file_subdomains + ' ' + certbot_register_subdomains\
+      \ | join(' ') + '\"', ignorecase=True) }}"
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_subdomain is defined

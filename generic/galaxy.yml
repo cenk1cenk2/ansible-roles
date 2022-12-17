@@ -1,3 +1,4 @@
+---
 namespace: cenk1cenk2
 name: generic
 version: 1.0.0
@@ -11,7 +12,6 @@ license:
   - MIT
 
 tags: []
-
 # dependencies: {}
 
 repository: https://src.kilic.dev/ansible-roles

@@ -1,3 +1,4 @@
+---
 - name: 'fetching latest release: {{ github_latest_release_repo }}'
   uri:
     url: https://api.github.com/repos/{{ github_latest_release_repo }}/releases/latest
@@ -23,7 +24,7 @@
 
 - name: 'fetch: {{ github_latest_release_repo }}'
   get_url:
-    url: 'https://github.com/{{ github_latest_release_repo }}/releases/download/{{ json_response.json.tag_name }}/{{ github_latest_release_repo_filename }}{{ github_latest_release_archive | default("") }}'
+    url: https://github.com/{{ github_latest_release_repo }}/releases/download/{{ json_response.json.tag_name }}/{{ github_latest_release_repo_filename }}{{ github_latest_release_archive | default("") }}
     dest: '{{ temp.path }}'
   register: download
 

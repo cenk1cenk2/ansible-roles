@@ -6,6 +6,6 @@ tmux_conf_template: tmux.conf
 tmux_conf_dir: .tmux
 tmux_conf_file: .tmux.conf
 tmux_plugins:
-  - name: 'tpm'
-    repo: 'https://github.com/tmux-plugins/tpm.git'
-    version: 'v3.0.0'
+  - name: tpm
+    repo: https://github.com/tmux-plugins/tpm.git
+    version: v3.0.0

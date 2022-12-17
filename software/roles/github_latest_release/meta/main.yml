@@ -1,9 +1,10 @@
+---
 galaxy_info:
   author: Cenk Kilic
   description: pull latest release from github tags
   company: kilic.dev
   license: MIT
-  min_ansible_version: 2.9
+  min_ansible_version: '2.9'
   platforms:
     - name: ArchLinux
       versions:

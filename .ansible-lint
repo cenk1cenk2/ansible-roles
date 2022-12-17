@@ -1,10 +1,12 @@
 ---
+profile: production
+
 offline: true
 
 exclude_paths:
   - roles/
   - collections/
-  - '**/files/conf/**/*'
+  - "**/files/**/*"
 
 use_default_rules: true
 
@@ -17,6 +19,12 @@ skip_list:
   - package-latest
   - comments
   - fqcn-builtins
+  - yaml[line-length]
+  - schema[vars]
+  - name[casing]
+  - name[template]
+  - name[play]
+  - name[missing]
 
 enable_list:
   - command-shell
@@ -27,8 +35,11 @@ enable_list:
   - idempotency
   - idiom
   - metadata
+  - jinja
+  - partial-become
   - opt-in
   - security
+  - syntax-check
   - unpredictability
   - unskippable
   - yaml

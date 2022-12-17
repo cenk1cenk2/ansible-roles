@@ -1,7 +1,7 @@
 ---
 - name: combine ranger configuration
   ansible.builtin.set_fact:
-    ranger: '{{ _ranger|combine(ranger, recursive=True) }}'
+    ranger: '{{ _ranger | combine(ranger, recursive=True) }}'
 
 - name: install ranger
   become: true

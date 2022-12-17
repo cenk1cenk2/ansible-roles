@@ -1,4 +1,4 @@
 ---
 ssl_certificates_root: ./files/certificates
 ssl_certificate_domains:
-  - '.*'
+  - .*

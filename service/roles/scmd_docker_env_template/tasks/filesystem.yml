@@ -6,11 +6,11 @@
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
 
-- name: 'copy environment files: {{ scmd_docker_env_template.src }} -> {{ scmd_docker_env_template.dest }}'
+- name: 'copy environment files: {{ scmd_docker_env_template.src }} {{ scmd_docker_env_template.dest }}'
   template:
     src: '{{ scmd_docker_env_template.src }}'
     dest: '{{ scmd_full_env_dir }}/{{ scmd_docker_env_template.dest }}.env'
 
 - name: 'set facts for environment files: {{ scmd_docker_env_template.dest }}'
   set_fact:
-    scmd_docker_env_template_files: '{{ (scmd_docker_env_template_files | default([ ]) + [ scmd_docker_env_template.dest ]) | unique }}'
+    scmd_docker_env_template_files: '{{ (scmd_docker_env_template_files | default([]) + [scmd_docker_env_template.dest]) | unique }}'

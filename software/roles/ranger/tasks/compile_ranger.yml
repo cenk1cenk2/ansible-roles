@@ -34,7 +34,7 @@
   ansible.builtin.command: python3 setup.py install --optimize=1
   args:
     chdir: '{{ ranger.download_directory }}'
-    creates: '/usr/local/bin/ranger'
+    creates: /usr/local/bin/ranger
   when: not install_python3.failed
 
 - name: install legacy-python f00
@@ -51,5 +51,5 @@
   ansible.builtin.command: python setup.py install --optimize=1
   args:
     chdir: '{{ ranger.download_directory }}'
-    creates: '/usr/local/bin/ranger'
+    creates: /usr/local/bin/ranger
   when: install_python3.failed

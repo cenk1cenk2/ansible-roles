@@ -24,10 +24,10 @@ scmd_native_properties:
   - labels
   - scale
 
-scmd_volumes_dir_name: 'volumes'
-scmd_env_dir_name: 'env'
-scmd_logs_dir_name: 'logs'
-scmd_build_dir_name: '.docker'
+scmd_volumes_dir_name: volumes
+scmd_env_dir_name: env
+scmd_logs_dir_name: logs
+scmd_build_dir_name: .docker
 
 scmd_env_file_template_dir: files/env
 scmd_base_dir: /root/docker
@@ -40,7 +40,7 @@ scmd_log_driver: json-file
 scmd_log_file_max_size: 10m
 scmd_log_file_max_amount: 1
 
-scmd_docker_sock_volume: '/var/run/docker.sock:/var/run/docker.sock:ro'
-scmd_docker_config_volume: '/root/.docker/config.json:/root/.docker/config.json:ro'
-scmd_timezone_volume: '/etc/timezone:/etc/timezone:ro'
-scmd_localtime_volume: '/etc/localtime:/etc/localtime:ro'
+scmd_docker_sock_volume: /var/run/docker.sock:/var/run/docker.sock:ro
+scmd_docker_config_volume: /root/.docker/config.json:/root/.docker/config.json:ro
+scmd_timezone_volume: /etc/timezone:/etc/timezone:ro
+scmd_localtime_volume: /etc/localtime:/etc/localtime:ro

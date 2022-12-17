@@ -1,3 +1,4 @@
+---
 # this file is split into multiple small task files so other playbooks can
 # reuse parts of this role (see gatekeeper prod deployment for instance)
 - name: include scmd_docker
@@ -9,7 +10,7 @@
 
 - name: copy heartbeat monitor
   template:
-    src: 'elk-heartbeat-monitor.j2'
+    src: elk-heartbeat-monitor.j2
     dest: '{{ scmd_service_dir }}/{{ scmd_volume_dir }}/{{ heartbeat_container_name }}-config/monitor.d/{{ elk_client_name }}.yml'
   when:
     - elk_is_active is defined

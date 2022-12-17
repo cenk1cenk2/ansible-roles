@@ -1,3 +1,4 @@
+---
 - name: 'create service directory: {{ scmd_service_name }}'
   file:
     name: '{{ scmd_service_dir }}'

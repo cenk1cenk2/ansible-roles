@@ -1,6 +1,6 @@
 ---
-- name: 'allow all specified keys to host'
-  authorized_key:
+- name: allow all specified keys to host
+  ansible.posix.authorized_key:
     user: '{{ ansible_management_user }}'
     key: '{{ authorized_keys_all_keys }}'
     state: present
@@ -8,8 +8,8 @@
   when:
     - authorized_keys_all_keys is defined
 
-- name: 'allow authorized keys to the host'
-  authorized_key:
+- name: allow authorized keys to the host
+  ansible.posix.authorized_key:
     user: '{{ ansible_management_user }}'
     key: '{{ authorized_keys_authorized_keys }}'
     state: present

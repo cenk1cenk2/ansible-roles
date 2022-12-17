@@ -1,5 +1,5 @@
 ---
-- name: 'read key files from {{ authorized_keys_root }}'
+- name: read key files from {{ authorized_keys_root }}
   set_fact:
     authorized_keys_all_keys: "{{ (keys | default('')) + lookup('file', item) + '\n' }}"
   with_fileglob:

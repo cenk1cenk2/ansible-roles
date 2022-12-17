@@ -1,6 +1,6 @@
 ---
 - name: 'revoke keys from host: {{ revoked_keys | default([]) | join(", ") }}'
-  authorized_key:
+  ansible.posix.authorized_key:
     user: '{{ ansible_management_user }}'
     state: absent
     key: '{{ authorized_keys_revoked_keys }}'
