@@ -30,7 +30,7 @@ server {
   {% filter indent(2, True) %}{% include './gzip.j2' %}{% endfilter %}
   {% endif %}
 
-  {% if vhost_max_body_size %}
+  {% if vhost_max_body_size is defined %}
   client_max_body_size    {{ vhost_max_body_size }};
   {% endif %}
   default_type            {{ vhost_default_mime_type }};
@@ -113,7 +113,7 @@ server {
   {% filter indent(2, True) %}{% include './gzip.j2' %}{% endfilter %}
   {% endif %}
 
-  {% if vhost_max_body_size %}
+  {% if vhost_max_body_size is defined %}
   client_max_body_size    {{ vhost_max_body_size }};
   {% endif %}
   default_type            {{ vhost_default_mime_type }};
