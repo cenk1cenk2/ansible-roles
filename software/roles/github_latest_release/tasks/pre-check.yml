@@ -5,9 +5,7 @@
     gitlab_latest_release_up_to_date: null
 
 - name: 'check version for existing binary: {{ github_latest_release_repo }}'
-  shell: |
-    set -o pipefail
-    {{ github_latest_release_check_version_command }}
+  shell: '{{ github_latest_release_check_version_command }}'
   ignore_errors: true
   changed_when: false
   register: github_latest_release_check_result
@@ -16,7 +14,7 @@
 
 - name: 'set existing version of the binary: {{ github_latest_release_repo }}'
   set_fact:
-    github_latest_release_existing_version: '{{ github_latest_release_existing_version | default(github_latest_release_check_result.stdout_lines[0]) }}'
+    github_latest_release_existing_version: '{{ github_latest_release_existing_version | default(github_latest_release_check_result.stdout_lines) }}'
   when:
     - github_latest_release_check_result is defined
 
