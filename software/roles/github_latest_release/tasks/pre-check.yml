@@ -6,14 +6,16 @@
   ignore_errors: true
   changed_when: false
   register: github_latest_release_check_result
+  when:
+    - github_latest_release_check_version_command is defined
 
-- name: 'version of the binary: {{ github_latest_release_repo }}'
+- name: 'set existing version of the binary: {{ github_latest_release_repo }}'
   set_fact:
     github_latest_release_existing_version: '{{ github_latest_release_existing_version | default(github_latest_release_check_result.stdout_lines[0]) }}'
   when:
     - github_latest_release_check_result is defined
 
-- name: 'version of the binary: {{ github_latest_release_repo }}'
+- name: 'set existing version of the binary: {{ github_latest_release_repo }}'
   set_fact:
     github_latest_release_existing_version: null
   when:

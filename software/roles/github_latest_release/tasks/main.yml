@@ -2,9 +2,6 @@
 - import_tasks: fetch.yml
 
 - import_tasks: pre-check.yml
-  when:
-    - github_latest_release_check_version_binary is defined
-    - github_latest_release_check_version_command is defined
 
 - import_tasks: download.yml
   when:
