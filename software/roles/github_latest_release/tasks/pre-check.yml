@@ -1,0 +1,34 @@
+---
+- name: 'check version for existing binary: {{ github_latest_release_repo }}'
+  shell: |
+    set -o pipefail
+    {{ github_latest_release_check_version_command }}
+  ignore_errors: true
+  changed_when: false
+  register: github_latest_release_check_result
+
+- name: 'version of the binary: {{ github_latest_release_repo }}'
+  set_fact:
+    github_latest_release_existing_version: '{{ github_latest_release_existing_version | default(github_latest_release_check_result.stdout_lines[0]) }}'
+  when:
+    - github_latest_release_check_result is defined
+
+- name: 'version of the binary: {{ github_latest_release_repo }}'
+  set_fact:
+    github_latest_release_existing_version: null
+  when:
+    - github_latest_release_check_result is not defined
+
+- name: 'binary should be updated: {{ github_latest_release_repo }}'
+  set_fact:
+    gitlab_latest_release_up_to_date: true
+  when:
+    - github_latest_release_existing_version is defined
+    - github_latest_release_existing_version != github_latest_release_final_version
+
+- name: 'binary is up to date: {{ github_latest_release_repo }}'
+  set_fact:
+    gitlab_latest_release_up_to_date: true
+  when:
+    - github_latest_release_existing_version is defined
+    - github_latest_release_existing_version == github_latest_release_final_version
