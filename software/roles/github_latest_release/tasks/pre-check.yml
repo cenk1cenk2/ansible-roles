@@ -21,10 +21,9 @@
 
 - name: 'binary should be updated: {{ github_latest_release_repo }}'
   set_fact:
-    gitlab_latest_release_up_to_date: true
+    gitlab_latest_release_up_to_date: false
   when:
-    - github_latest_release_existing_version is defined
-    - github_latest_release_existing_version != github_latest_release_final_version
+    - gitlab_latest_release_existing_version is not defined or (github_latest_release_existing_version is defined and github_latest_release_existing_version != github_latest_release_final_version)
 
 - name: 'binary is up to date: {{ github_latest_release_repo }}'
   set_fact:
