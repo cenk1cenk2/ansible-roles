@@ -23,6 +23,7 @@ scmd_native_properties:
   - depends_on
   - labels
   - scale
+  - pid
 
 scmd_volumes_dir_name: volumes
 scmd_env_dir_name: env
