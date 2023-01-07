@@ -1,7 +1,7 @@
 #jinja2:trim_blocks: True,lstrip_blocks: True
 # Ansible generated docker-compose file for "{{ scmd_service_name }}" service.
 
-version: "3.7"
+version: "3.9"
 
 services:
   {% for container in scmd_services if (container.disabled is not defined or not container.disabled) %}
@@ -49,8 +49,7 @@ services:
     logging:
       driver: "{{ container.log_driver | default(scmd_log_driver) }}"
       options:
-        max-size: "{{ container.log_file_max_size | default(scmd_log_file_max_size) }}"
-        max-file: "{{ container.log_file_max_amount | default(scmd_log_file_max_amount) }}"
+        {{ container.log_options | default(scmd_log_options) | to_nice_yaml(indent=2) | indent(8) }}
 
   {% endfor %}
 {% if ((scmd_external_network is defined and scmd_external_network | length) or (scmd_network is defined and scmd_network | length)) %}

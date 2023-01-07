@@ -1,5 +1,5 @@
 ---
-scmd_compose_file_version: 3.7
+scmd_compose_file_version: 3.9
 
 scmd_compose_file_template: docker-compose-v{{ scmd_compose_file_version }}.j2
 
@@ -38,8 +38,9 @@ scmd_base_dir: /root/docker
 # scmd_registry_password:
 
 scmd_log_driver: json-file
-scmd_log_file_max_size: 10m
-scmd_log_file_max_amount: 1
+scmd_log_options:
+  max-size: 10m
+  max-file: 1
 
 scmd_docker_sock_volume: /var/run/docker.sock:/var/run/docker.sock:ro
 scmd_docker_config_volume: /root/.docker/config.json:/root/.docker/config.json:ro
