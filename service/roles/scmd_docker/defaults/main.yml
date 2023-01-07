@@ -40,7 +40,7 @@ scmd_base_dir: /root/docker
 scmd_log_driver: json-file
 scmd_log_options:
   max-size: 10m
-  max-file: 1
+  max-file: '1'
 
 scmd_docker_sock_volume: /var/run/docker.sock:/var/run/docker.sock:ro
 scmd_docker_config_volume: /root/.docker/config.json:/root/.docker/config.json:ro
