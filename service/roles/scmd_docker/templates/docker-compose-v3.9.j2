@@ -50,7 +50,6 @@ services:
       driver: "{{ container.log_driver | default(scmd_log_driver) }}"
       options:
         {{ container.log_options | default(scmd_log_options) | to_nice_yaml(indent=2) | indent(8) }}
-
   {% endfor %}
 {% if ((scmd_external_network is defined and scmd_external_network | length) or (scmd_network is defined and scmd_network | length)) %}
 networks:
