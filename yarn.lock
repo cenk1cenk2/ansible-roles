@@ -54,9 +54,9 @@
   integrity sha512-LIgYXuCSO5Gvtc0t9bebAMSwd68ewzmqLypqI2Kke1rqOqqDbMpYcYfoPfFlv9eyLIh4jocHWwCK5FS7z9icUA==
 
 "@commitlint/load@>6.1.1", "@commitlint/load@^17.3.0":
-  version "17.4.1"
-  resolved "https://registry.yarnpkg.com/@commitlint/load/-/load-17.4.1.tgz#e1073e0264c84b304f5ab22862217152daca5d27"
-  integrity sha512-6A7/LhIaQpL4ieciIDcVvK2d5z/UI1GBrtDaHm6sQSCL0265clB2/F7XKQNTJHXv9yG4LByT2r+QCpM4GugIfw==
+  version "17.4.2"
+  resolved "https://registry.yarnpkg.com/@commitlint/load/-/load-17.4.2.tgz#551875c3e1dce6dc0375dc9c8ad551de8ba35de4"
+  integrity sha512-Si++F85rJ9t4hw6JcOw1i2h0fdpdFQt0YKwjuK4bk9KhFjyFkRxvR3SB2dPaMs+EwWlDrDBGL+ygip1QD6gmPw==
   dependencies:
     "@commitlint/config-validator" "^17.4.0"
     "@commitlint/execute-rule" "^17.4.0"
@@ -1016,9 +1016,9 @@ npm-run-path@^5.1.0:
     path-key "^4.0.0"
 
 object-inspect@^1.12.2:
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.12.2.tgz#c0641f26394532f28ab8d796ab954e43c009a8ea"
-  integrity sha512-z+cPxW0QGUp0mcqcsgQyLVRDoXFQbXOwBaqyF7VIgI4TWNQsDHrBpUQslRmIfAoYWdYzs6UlKJtB2XJpTaNSpQ==
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.12.3.tgz#ba62dffd67ee256c8c086dfae69e016cd1f198b9"
+  integrity sha512-geUvdk7c+eizMNUDkRpW1wJwgfOiOeHbxBR/hLXK1aT6zmVSO0jsQcs7fj6MGw89jC/cjGfLcNOrtMYtGqm81g==
 
 once@^1.3.0:
   version "1.4.0"
