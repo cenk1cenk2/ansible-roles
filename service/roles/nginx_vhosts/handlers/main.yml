@@ -5,3 +5,4 @@
     chdir: '{{ nginx_service_full_dir }}'
   async: 60
   poll: 5
+  run_once: true
