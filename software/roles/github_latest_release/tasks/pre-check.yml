@@ -1,9 +1,8 @@
 ---
 - name: reset conditions
   set_fact:
-    github_latest_release_existing_version: null
-    gitlab_latest_release_up_to_date: null
-
+    github_latest_release_existing_version:
+    gitlab_latest_release_up_to_date:
 - name: 'check version for existing binary: {{ github_latest_release_repo }}'
   shell: '{{ github_latest_release_check_version_command }}'
   ignore_errors: true
