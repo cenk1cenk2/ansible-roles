@@ -89,13 +89,6 @@ http {
   scgi_temp_path        /var/run/openresty/nginx-scgi;
 
   server_tokens off;
-  {% if openresty_enable_oauth is defined and openresty_enable_oauth %}
-
-  # discovery dictionary
-  lua_shared_dict discovery 10m;
-  lua_shared_dict jwks 10m;
-
-  {% endif %}
   {% endif %}
   include ./{{ nginx_domains_dir }}/*.conf;
 }
