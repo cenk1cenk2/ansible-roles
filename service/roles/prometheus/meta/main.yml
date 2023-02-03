@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Cenk Kilic
-  description: Adds additional configuration to beats.
+  description: Adds additional configuration to Prometheus by file sd_config.
   company: kilic.dev
   license: MIT
   min_ansible_version: '2.9'

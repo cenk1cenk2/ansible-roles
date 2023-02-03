@@ -1,0 +1,6 @@
+---
+prometheus_service_name: prometheus
+
+prometheus_container_name: prometheus
+
+prometheus_file_sd_config_dir: targets.d

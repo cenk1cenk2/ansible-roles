@@ -1,0 +1,26 @@
+---
+- name: include scmd_docker
+  include_role:
+    name: cenk1cenk2.service.scmd_docker
+  vars:
+    scmd_variables_only: true
+    scmd_service_name: '{{ prometheus_service_name }}'
+
+- name: copy file-sd-config
+  template:
+    src: prometheus-file-sd-config.j2
+    dest: '{{ scmd_full_volume_dir }}/{{ prometheus_container_name }}/{{ prometheus_file_sd_config_dir }}/{{ item.path }}.yml'
+  vars:
+    config: '{{ item.config }}'
+  when:
+    - item.state is not defined or item.state == "present"
+  with_items: '{{ prometheus_configs }}'
+
+- name: remove file-sd-config
+  file:
+    dest: '{{ scmd_full_volume_dir }}/{{ prometheus_container_name }}/{{ prometheus_file_sd_config_dir }}/{{ item.path }}.yml'
+    state: absent
+  when:
+    - item.state is defined
+    - item.state == "absent"
+  with_items: '{{ prometheus_configs }}'
