@@ -1,9 +1,9 @@
 {% if openresty_enable_oauth %}
 {#{% filter indent(0, True) %}{% include './openresty-oauth-headers.j2' %}{% endfilter %}#}
 
-# discovery dictionary
-lua_shared_dict discovery 10m;
-lua_shared_dict jwks 10m;
+{# # discovery dictionary #}
+{# lua_shared_dict discovery 10m; #}
+{# lua_shared_dict jwks 10m; #}
 
 access_by_lua_block {
   local opts = {
