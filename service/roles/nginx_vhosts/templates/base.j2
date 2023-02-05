@@ -30,6 +30,10 @@ http {
   open_file_cache_min_uses 2;
   open_file_cache_errors on;
 
+  {% if vhost_main_access_logs_format is defined %}
+  log_format logger {{ vhost_main_access_logs_format }};
+  {% endif %}
+
   # to boost I/O on HDD we can disable access logs
   access_log {{ vhost_main_access_logs }};
   error_log {{ vhost_main_error_logs }};
