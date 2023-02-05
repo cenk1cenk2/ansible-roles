@@ -7,6 +7,7 @@
   set_fact:
     nginx_volumes_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_volume_dir }}/{{ nginx_docker_service_name }}'
     nginx_env_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_env_dir }}'
+    nginx_logs_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_logs_dir }}/{{ nginx_docker_service_name }}'
 
 - name: register generic directories
   set_fact:
