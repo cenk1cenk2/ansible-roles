@@ -23,6 +23,10 @@ server {
     return 302 https://$host$request_uri;
   }
 
+  {% if vhost_main_access_logs_format is defined %}
+  log_format default {{ vhost_main_access_logs_format }};
+  {% endif %}
+
   access_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-access.log{{ " default" if vhost_main_access_logs_format is defined else "" }};
   error_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-error.log{{ " debug" if nginx_debug else "" }};
 
@@ -105,6 +109,10 @@ server {
   {% filter indent(2, True) %}{% include './error-pages.j2' %}{% endfilter %}
 
   server_name {{ vhost_uri }}{% if vhost_server_alias is defined and vhost_server_alias != False %}{% for alias in vhost_server_alias %} {{ alias }}{% endfor %}{% endif %};
+
+  {% if vhost_main_access_logs_format is defined %}
+  log_format default {{ vhost_main_access_logs_format }};
+  {% endif %}
 
   access_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-access.log{{ " default" if vhost_main_access_logs_format is defined else "" }};
   error_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-error.log{{ " debug" if nginx_debug else "" }};
