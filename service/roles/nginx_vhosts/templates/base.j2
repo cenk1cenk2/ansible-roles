@@ -31,7 +31,7 @@ http {
   open_file_cache_errors on;
 
   {% if vhost_main_access_logs_format is defined %}
-  log_format default {{ vhost_main_access_logs_format }};
+  log_format {{ vhost_main_access_logs_format }};
   {% endif %}
 
   access_log {{ vhost_main_access_logs }};
