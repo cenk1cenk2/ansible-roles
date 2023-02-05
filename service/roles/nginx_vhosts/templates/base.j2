@@ -31,7 +31,7 @@ http {
   open_file_cache_errors on;
 
   {% if vhost_main_access_logs_format is defined %}
-  log_format combined {{ vhost_main_access_logs_format }};
+  log_format default {{ vhost_main_access_logs_format }};
   {% endif %}
 
   # to boost I/O on HDD we can disable access logs
