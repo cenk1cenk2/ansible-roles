@@ -93,8 +93,8 @@ nginx_log_dir: /var/log/nginx
 nginx_cache_path: /var/cache/nginx
 
 # logging control
-vhost_main_access_logs: /dev/stdout
-vhost_main_error_logs: /dev/stderr{{ " debug" if nginx_debug else "" }}
+vhost_main_access_logs: '{{ nginx_log_dir }}/access.log'
+vhost_main_error_logs: '{{ nginx_log_dir }}/error.log{{ " debug" if nginx_debug else "" }}'
 vhost_main_access_logs_format: |-
   escape=json '{'
     '"msec": "$msec", ' # request unixtime in seconds with a milliseconds resolution

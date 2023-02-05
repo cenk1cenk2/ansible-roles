@@ -23,12 +23,10 @@ server {
     return 302 https://$host$request_uri;
   }
 
-  {% if vhost_main_access_logs_format is defined %}
-  log_format default {{ vhost_main_access_logs_format }};
+  {% if vhost_main_access_logs_format is not defined %}
+  access_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-access.log;
+  error_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-error.log;
   {% endif %}
-
-  access_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-access.log{{ " default" if vhost_main_access_logs_format is defined else "" }};
-  error_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-error.log{{ " debug" if nginx_debug else "" }};
 
   {% if vhost_use_gzip %}
   {% filter indent(2, True) %}{% include './gzip.j2' %}{% endfilter %}
@@ -110,12 +108,10 @@ server {
 
   server_name {{ vhost_uri }}{% if vhost_server_alias is defined and vhost_server_alias != False %}{% for alias in vhost_server_alias %} {{ alias }}{% endfor %}{% endif %};
 
-  {% if vhost_main_access_logs_format is defined %}
-  log_format default {{ vhost_main_access_logs_format }};
-  {% endif %}
-
+  {% if vhost_main_access_logs_format is not defined %}
   access_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-access.log{{ " default" if vhost_main_access_logs_format is defined else "" }};
   error_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-error.log{{ " debug" if nginx_debug else "" }};
+  {% endif %}
 
   {% if vhost_use_gzip %}
   {% filter indent(2, True) %}{% include './gzip.j2' %}{% endfilter %}
