@@ -30,7 +30,7 @@ http {
   open_file_cache_min_uses 2;
   open_file_cache_errors on;
 
-  {% if vhost_main_access_logs_format is defined %}
+  {% if vhost_main_access_logs_format is not none %}
   log_format {{ vhost_main_access_logs_format }};
   {% endif %}
 
