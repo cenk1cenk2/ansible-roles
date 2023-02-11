@@ -17,8 +17,4 @@ galaxy_info:
   galaxy_tags:
     - tmux
 
-dependencies:
-  - role: nephelaiio.git
-    version: 2.1.0
-  - role: nephelaiio.xclip
-    version: 2.1.0
+dependencies: []
