@@ -94,7 +94,7 @@ nginx_cache_path: /var/cache/nginx
 
 # logging control
 vhost_main_access_logs_format:
-vhost_main_access_logs: '{{ nginx_log_dir }}/access.log {{ " default" if vhost_main_access_logs_format is not none }}'
+vhost_main_access_logs: '{{ nginx_log_dir }}/access.log{{ " default" if vhost_main_access_logs_format is not none }}'
 vhost_main_error_logs: '{{ nginx_log_dir }}/error.log{{ " debug" if nginx_debug else "" }}'
 
 # letsencrypt configuration
