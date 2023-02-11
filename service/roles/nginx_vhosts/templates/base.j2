@@ -2,7 +2,7 @@
 # ansible generated config file
 
 worker_processes {{ ansible_processor_vcpus | default(ansible_processor_count) }};
-worker_rlimit_nofile 100000;
+worker_rlimit_nofile 1048576;
 {% if vhost_modules is defined %}
 
 {% for m in vhost_modules %}
@@ -17,7 +17,7 @@ pcre_jit on;
 
 {% endif %}
 events {
-  worker_connections 1024;
+  worker_connections 65536;
   use epoll;
   multi_accept on;
 }
