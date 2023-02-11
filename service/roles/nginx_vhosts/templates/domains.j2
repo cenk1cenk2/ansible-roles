@@ -23,7 +23,7 @@ server {
     return 302 https://$host$request_uri;
   }
 
-  {% if vhost_main_access_logs_format is not defined %}
+  {% if vhost_main_access_logs_format is none %}
   access_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-access.log;
   error_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-error.log;
   {% endif %}
