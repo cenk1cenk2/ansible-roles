@@ -15,10 +15,6 @@
   when:
     - item.state is not defined or item.state == "present"
   with_items: '{{ prometheus_configs }}'
-  changed_when: false
-  async: 300
-  poll: 0
-  register: create_file_sd_configs_async_job
 
 - name: remove file-sd-config
   file:
@@ -28,19 +24,3 @@
     - item.state is defined
     - item.state == "absent"
   with_items: '{{ prometheus_configs }}'
-  changed_when: false
-  async: 300
-  poll: 0
-  register: remove_file_sd_configs_async_job
-
-- name: wait for job to end
-  ansible.builtin.async_status:
-    jid: '{{ item.ansible_job_id }}'
-    mode: status
-  register: async_result
-  until: async_result.finished
-  retries: 100
-  delay: 2
-  with_items:
-    - '{{ create_file_sd_configs_async_job.results | default([]) }}'
-    - '{{ remove_file_sd_configs_async_job.results | default([]) }}'

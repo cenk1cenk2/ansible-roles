@@ -29,48 +29,54 @@
   with_items:
     - '{{ ensure_directories_async_job.results }}'
 
-- name: copying files from {{ copy_files_src }}
-  ansible.posix.synchronize:
-    src: '{{ file.src }}'
-    dest: '{{ copy_files_dest }}/{{ file.path }}'
-  with_items: '{{ copy_files_src_files }}'
-  loop_control:
-    loop_var: file
-  when:
-    - copy_files_src_files | length > 0
-  changed_when: false
-  async: 300
+- async: 300
   poll: 0
   register: copy_files_async_job
-
-- name: copying secrets from {{ copy_files_src }}
-  copy:
-    src: '{{ file.src }}'
-    dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
-    decrypt: true
-  with_items: '{{ copy_files_src_secrets }}'
-  loop_control:
-    loop_var: file
-  when:
-    - copy_files_src_secrets | length > 0
   changed_when: false
-  async: 300
+  block:
+    - name: copying files from {{ copy_files_src }}
+      ansible.posix.synchronize:
+        src: '{{ file.src }}'
+        dest: '{{ copy_files_dest }}/{{ file.path }}'
+      with_items: '{{ copy_files_src_files }}'
+      loop_control:
+        loop_var: file
+      when:
+        - copy_files_src_files | length > 0
+      changed_when: false
+      async: 300
+      poll: 0
+
+- async: 300
   poll: 0
   register: copy_secrets_async_job
-
-- name: copying templates from {{ copy_files_src }}
-  template:
-    src: '{{ file.src }}'
-    dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
-  with_items: '{{ copy_files_src_templates }}'
-  loop_control:
-    loop_var: file
-  when:
-    - copy_files_src_templates | length > 0
   changed_when: false
-  async: 300
+  block:
+    - name: copying secrets from {{ copy_files_src }}
+      copy:
+        src: '{{ file.src }}'
+        dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
+        decrypt: true
+      with_items: '{{ copy_files_src_secrets }}'
+      loop_control:
+        loop_var: file
+      when:
+        - copy_files_src_secrets | length > 0
+
+- async: 300
   poll: 0
   register: copy_templates_async_job
+  changed_when: false
+  block:
+    - name: copying templates from {{ copy_files_src }}
+      template:
+        src: '{{ file.src }}'
+        dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
+      with_items: '{{ copy_files_src_templates }}'
+      loop_control:
+        loop_var: file
+      when:
+        - copy_files_src_templates | length > 0
 
 - name: wait for job to end
   ansible.builtin.async_status:
