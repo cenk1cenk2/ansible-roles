@@ -32,10 +32,13 @@
     src: '{{ scmd_loop_env_file.path }}'
     dest: "{{ scmd_full_env_dir }}/{% if scmd_loop_env_file.name != 'env' %}{{ scmd_loop_env_file.name }}{% endif %}.env"
   with_items: '{{ scmd_env_files }}'
-  async: 120
-  poll: 5
   loop_control:
     loop_var: scmd_loop_env_file
   when:
     - scmd_env_files is defined
     - scmd_env_files | length > 0
+  changed_when: false
+  no_log: true
+  async: 300
+  poll: 0
+  register: scmd_copy_environment_files_async_job

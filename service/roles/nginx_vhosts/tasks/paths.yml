@@ -40,8 +40,6 @@
     group: '{{ service_group }}'
   when:
     - vhost_loop_location.static_directory is defined
-  async: 300
-  poll: 5
   with_items:
     - '{{ vhost_proxy_locations }}'
   loop_control:

@@ -14,8 +14,6 @@
       {% set value = scmd_volume_dirs | default([ ]) %}
       {% endif %}
       {{ value }}
-  async: 120
-  poll: 5
   with_items:
     - '{{ scmd_services }}'
   loop_control:

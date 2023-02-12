@@ -23,16 +23,6 @@
     src: '{{ tmux_conf_template }}'
     dest: ~/{{ tmux_conf_file }}
 
-- name: manage configuration overrides
-  file:
-    path: ~/{{ item }}
-    state: absent
-  async: 300
-  poll: 5
-  with_items:
-    - '{{ tmux_conf_dir }}/tmux_20.conf'
-    - '{{ tmux_conf_dir }}/tmux_21.conf'
-
 - name: create plugin directory
   file:
     dest: ~/{{ tmux_plugin_dir }}
@@ -44,7 +34,5 @@
     dest: ~/{{ tmux_plugin_dir }}/{{ item['name'] }}
     version: "{{ item['version'] }}"
     force: true
-  async: 300
-  poll: 5
   with_items:
     - '{{ tmux_plugins }}'

@@ -6,7 +6,7 @@
     scmd_variables_only: true
     scmd_service_name: '{{ prometheus_service_name }}'
 
-- name: copy file-sd-config
+- name: create file-sd-config
   template:
     src: prometheus-file-sd-config.j2
     dest: '{{ scmd_full_volume_dir }}/{{ prometheus_container_name }}/{{ prometheus_file_sd_config_dir }}/{{ item.path }}.yml'
@@ -14,9 +14,12 @@
     config: '{{ item.config }}'
   when:
     - item.state is not defined or item.state == "present"
-  async: 300
-  poll: 5
   with_items: '{{ prometheus_configs }}'
+  changed_when: false
+  no_log: true
+  async: 300
+  poll: 0
+  register: create_file_sd_configs_async_job
 
 - name: remove file-sd-config
   file:
@@ -25,6 +28,21 @@
   when:
     - item.state is defined
     - item.state == "absent"
-  async: 300
-  poll: 5
   with_items: '{{ prometheus_configs }}'
+  changed_when: false
+  no_log: true
+  async: 300
+  poll: 0
+  register: remove_file_sd_configs_async_job
+
+- name: wait for job to end
+  ansible.builtin.async_status:
+    jid: '{{ item.ansible_job_id }}'
+    mode: status
+  register: async_result
+  until: async_result.finished
+  retries: 100
+  delay: 2
+  with_items:
+    - '{{ create_file_sd_configs_async_job.results | default([]) }}'
+    - '{{ remove_file_sd_configs_async_job.results | default([]) }}'

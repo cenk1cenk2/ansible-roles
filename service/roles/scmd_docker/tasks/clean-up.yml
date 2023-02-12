@@ -1,13 +1,11 @@
 ---
-- name: 'start docker service: {{ scmd_service_name }}'
+- name: 'remove docker service: {{ scmd_service_name }}'
   community.docker.docker_compose:
     state: absent
     project_name: '{{ scmd_service_name }}'
     project_src: '{{ scmd_service_dir }}'
     remove_volumes: true
     remove_images: local
-  async: 600
-  poll: 5
   ignore_errors: true
 
 - name: remove docker setup
@@ -20,8 +18,6 @@
     - scmd_state.setup == "absent"
   loop_control:
     loop_var: scmd_loop_setup_dirs
-  async: 120
-  poll: 5
   with_items:
     - '{{ scmd_full_env_dir }}'
     - '{{ scmd_full_build_dir }}'
@@ -31,8 +27,6 @@
   file:
     path: '{{ scmd_loop_all_dirs }}'
     state: absent
-  async: 120
-  poll: 5
   with_items:
     - '{{ scmd_full_logs_dir }}'
     - '{{ scmd_full_volume_dir }}'

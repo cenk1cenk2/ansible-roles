@@ -39,11 +39,7 @@
     - scmd_private_registry_only is not defined or not scmd_private_registry_only
     - scmd_state is not defined
 
-- include_tasks: docker-service.yml
-  when:
-    - scmd_variables_only is not defined or not scmd_variables_only
-    - scmd_private_registry_only is not defined or not scmd_private_registry_only
-    - scmd_state is not defined
+- import_tasks: async.yml
 
 - include_tasks: clean-up.yml
   when:
