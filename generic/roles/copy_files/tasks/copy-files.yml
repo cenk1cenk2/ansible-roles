@@ -14,20 +14,6 @@
   when:
     - copy_files_src_all_directories | length > 0
   changed_when: false
-  async: 300
-  poll: 0
-  register: ensure_directories_async_job
-
-- name: wait for job to end
-  ansible.builtin.async_status:
-    jid: '{{ item.ansible_job_id }}'
-    mode: status
-  register: async_result
-  until: async_result.finished
-  retries: 100
-  delay: 2
-  with_items:
-    - '{{ ensure_directories_async_job.results }}'
 
 - name: copying files from {{ copy_files_src }}
   ansible.posix.synchronize:
