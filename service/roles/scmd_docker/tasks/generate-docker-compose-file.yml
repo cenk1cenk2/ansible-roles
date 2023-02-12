@@ -4,4 +4,3 @@
     src: '{{ scmd_compose_file_template }}'
     dest: '{{ scmd_service_dir }}/docker-compose.yml'
   changed_when: false
-  no_log: true

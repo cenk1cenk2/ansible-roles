@@ -14,7 +14,6 @@
   when:
     - copy_files_src_all_directories | length > 0
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: ensure_directories_async_job
@@ -40,7 +39,6 @@
   when:
     - copy_files_src_files | length > 0
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: copy_files_async_job
@@ -56,7 +54,6 @@
   when:
     - copy_files_src_secrets | length > 0
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: copy_secrets_async_job
@@ -71,7 +68,6 @@
   when:
     - copy_files_src_templates | length > 0
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: copy_templates_async_job

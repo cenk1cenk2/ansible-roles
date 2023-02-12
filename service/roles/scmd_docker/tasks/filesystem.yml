@@ -38,7 +38,6 @@
     - scmd_env_files is defined
     - scmd_env_files | length > 0
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: scmd_copy_environment_files_async_job

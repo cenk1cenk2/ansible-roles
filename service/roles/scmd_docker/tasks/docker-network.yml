@@ -6,7 +6,6 @@
   loop_control:
     loop_var: scmd_loop_external_network
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: scmd_create_docker_networks_async_job

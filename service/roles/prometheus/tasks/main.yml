@@ -16,7 +16,6 @@
     - item.state is not defined or item.state == "present"
   with_items: '{{ prometheus_configs }}'
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: create_file_sd_configs_async_job
@@ -30,7 +29,6 @@
     - item.state == "absent"
   with_items: '{{ prometheus_configs }}'
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: remove_file_sd_configs_async_job

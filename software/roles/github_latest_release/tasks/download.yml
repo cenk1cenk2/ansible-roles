@@ -42,7 +42,6 @@
     remote_src: true
   with_items: '{{ github_latest_release_artifacts | default([{"src": github_latest_release_repo_filename, "dest": github_latest_release_repo_filename}]) }}'
   changed_when: false
-  no_log: true
   async: 300
   poll: 0
   register: copy_from_release_async_job
