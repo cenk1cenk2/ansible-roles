@@ -1,5 +1,5 @@
 ---
-- name: 'start docker service'
+- name: start docker service
   community.docker.docker_compose:
     state: present
     project_name: '{{ scmd_service_name }}'

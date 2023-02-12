@@ -3,4 +3,5 @@
   template:
     src: '{{ scmd_compose_file_template }}'
     dest: '{{ scmd_service_dir }}/docker-compose.yml'
-  changed_when: false
+  notify:
+    - start docker service
