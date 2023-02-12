@@ -20,6 +20,8 @@
     - scmd_state.setup == "absent"
   loop_control:
     loop_var: scmd_loop_setup_dirs
+  async: 120
+  poll: 5
   with_items:
     - '{{ scmd_full_env_dir }}'
     - '{{ scmd_full_build_dir }}'
@@ -29,6 +31,8 @@
   file:
     path: '{{ scmd_loop_all_dirs }}'
     state: absent
+  async: 120
+  poll: 5
   with_items:
     - '{{ scmd_full_logs_dir }}'
     - '{{ scmd_full_volume_dir }}'

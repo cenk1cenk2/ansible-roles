@@ -32,6 +32,8 @@
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_domain is defined
     - cert not in certbot_env_file_domains
+  async: 300
+  poll: 5
   with_items:
     - '{{ letsencrypt_register_domain }}'
   loop_control:
@@ -61,6 +63,8 @@
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_subdomain is defined
     - cert not in certbot_env_file_subdomains
+  async: 300
+  poll: 5
   with_items:
     - '{{ letsencrypt_register_subdomain }}'
   loop_control:

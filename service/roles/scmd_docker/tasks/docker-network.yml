@@ -3,5 +3,7 @@
   community.docker.docker_network:
     name: '{{ scmd_loop_external_network }}'
   with_items: '{{ scmd_external_network }}'
+  async: 120
+  poll: 5
   loop_control:
     loop_var: scmd_loop_external_network

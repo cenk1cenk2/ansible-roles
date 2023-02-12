@@ -11,6 +11,8 @@
   with_items: '{{ copy_files_src_all_directories }}'
   loop_control:
     loop_var: file
+  async: 120
+  poll: 5
   when:
     - copy_files_src_all_directories | length > 0
 
@@ -19,6 +21,8 @@
     src: '{{ file.src }}'
     dest: '{{ copy_files_dest }}/{{ file.path }}'
   with_items: '{{ copy_files_src_files }}'
+  async: 120
+  poll: 5
   loop_control:
     loop_var: file
   when:
@@ -30,6 +34,8 @@
     dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
     decrypt: true
   with_items: '{{ copy_files_src_secrets }}'
+  async: 120
+  poll: 5
   loop_control:
     loop_var: file
   when:
@@ -40,6 +46,8 @@
     src: '{{ file.src }}'
     dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
   with_items: '{{ copy_files_src_templates }}'
+  async: 120
+  poll: 5
   loop_control:
     loop_var: file
   when:
