@@ -20,7 +20,7 @@
   when:
     - ssl_certificates_loop_filesystem_certs.state == 'file'
     - ssl_certificates_loop_filesystem_certs.path is match("(" + ssl_certificate_domains | join("|") + ")/(fullchain|privkey).pem.secrets.j2") or ssl_certificates_loop_filesystem_certs.path is match("(" + ssl_certificate_domains | join("|") + ")/(ssl_certificates_loop_filesystem_certs).pfx.secrets.j2")
-  with_community.general.filetree: '{{ ssl_certificates_root }}'
+  loop: '{{ lookup("filetree", ssl_certificates_root, wantlist=True) }}'
   loop_control:
     loop_var: ssl_certificates_loop_filesystem_certs
 
