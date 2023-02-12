@@ -38,9 +38,6 @@
     loop_var: file
   when:
     - copy_files_src_files | length > 0
-  changed_when: false
-  async: 300
-  poll: 0
 
 - name: copying secrets from {{ copy_files_src }}
   copy:

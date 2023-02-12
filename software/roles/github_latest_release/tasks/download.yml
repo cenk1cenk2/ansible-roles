@@ -41,18 +41,3 @@
     force: '{{ github_latest_release_force | bool }}'
     remote_src: true
   with_items: '{{ github_latest_release_artifacts | default([{"src": github_latest_release_repo_filename, "dest": github_latest_release_repo_filename}]) }}'
-  changed_when: false
-  async: 300
-  poll: 0
-  register: copy_from_release_async_job
-
-- name: wait for job to end
-  ansible.builtin.async_status:
-    jid: '{{ item.ansible_job_id }}'
-    mode: status
-  register: async_result
-  until: async_result.finished
-  retries: 100
-  delay: 2
-  with_items:
-    - '{{ copy_from_release_async_job.results }}'
