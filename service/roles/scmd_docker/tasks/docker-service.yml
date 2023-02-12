@@ -1,5 +1,5 @@
 ---
-- name: start docker service
+- name: 'start docker service: {{ scmd_service_name }}'
   community.docker.docker_compose:
     state: present
     project_name: '{{ scmd_service_name }}'
@@ -8,4 +8,3 @@
     build: true
     remove_orphans: true
     recreate: always
-  run_once: true

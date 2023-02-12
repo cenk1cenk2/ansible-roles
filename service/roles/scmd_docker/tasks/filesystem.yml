@@ -37,5 +37,3 @@
   when:
     - scmd_env_files is defined
     - scmd_env_files | length > 0
-  notify:
-    - start docker service
