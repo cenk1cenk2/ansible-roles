@@ -9,7 +9,6 @@
   delay: 2
   with_items:
     - '{{ scmd_login_docker_registries_async_job.results | default([]) }}'
-    - '{{ scmd_copy_environment_files_async_job.results | default([]) }}'
     - '{{ scmd_create_docker_networks_async_job.results | default([]) }}'
   notify:
     - start docker service
