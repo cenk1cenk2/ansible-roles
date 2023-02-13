@@ -92,10 +92,19 @@ nginx_publish_dir: publish
 nginx_log_dir: /var/log/nginx
 nginx_cache_path: /var/cache/nginx
 
+nginx_stub_status_enable: true
+nginx_stub_status_path: /stub_status
+nginx_stub_status_allow:
+  - 127.0.0.1
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+
 # logging control
+vhost_main_access_logs_format_name: default
 vhost_main_access_logs_format:
-vhost_main_access_logs: '{{ nginx_log_dir }}/access.log{{ " default" if vhost_main_access_logs_format is not none }}'
-vhost_main_error_logs: '{{ nginx_log_dir }}/error.log{{ " debug" if nginx_debug else "" }}'
+vhost_main_access_logs: '{{ nginx_log_dir }}/access.log{{ " " + vhost_main_access_logs_format_name if vhost_main_access_logs_format }}'
+vhost_main_error_logs: '{{ nginx_log_dir }}/error.log{{ " debug" if nginx_debug }}'
 
 # letsencrypt configuration
 vhost_ssl_le: true

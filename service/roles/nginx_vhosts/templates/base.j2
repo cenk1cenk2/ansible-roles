@@ -31,7 +31,7 @@ http {
   open_file_cache_errors on;
 
   {% if vhost_main_access_logs_format is not none %}
-  log_format {{ vhost_main_access_logs_format }};
+  log_format {{ vhost_main_access_logs_format_name }} {{ vhost_main_access_logs_format }};
   {% endif %}
 
   access_log {{ vhost_main_access_logs }};
@@ -93,5 +93,16 @@ http {
 
   server_tokens off;
   {% endif %}
+
+  {% if nginx_stub_status_enable %}
+  location /{{ nginx_stub_status_path }} {
+    stub_status;
+    {% for allow in nginx_stub_status_allow %}
+    allow {{ allow }};
+    {% endfor %}
+    deny all;
+  }
+  {% endif %}
+
   include ./{{ nginx_domains_dir }}/*.conf;
 }
