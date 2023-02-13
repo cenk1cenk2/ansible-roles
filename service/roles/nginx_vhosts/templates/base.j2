@@ -97,6 +97,8 @@ http {
 
   {% if nginx_stub_status_enable %}
   server {
+    listen {{ nginx_stub_status_port}} default_server;
+
     location {{ nginx_stub_status_path }} {
       stub_status;
       {% for allow in nginx_stub_status_allow %}

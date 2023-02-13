@@ -94,6 +94,7 @@ nginx_cache_path: /var/cache/nginx
 
 nginx_stub_status_enable: true
 nginx_stub_status_path: /stub_status
+nginx_stub_status_port: 8080
 nginx_stub_status_allow:
   - 127.0.0.1
   - 10.0.0.0/8
