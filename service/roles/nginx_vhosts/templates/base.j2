@@ -76,7 +76,7 @@ http {
 
   {% if vhost_http_custom is defined %}
   {% for c in vhost_http_custom %}
-  {{ c }}
+  {{ c | indent(2, False) }}
   {% endfor %}
 
   {% endif %}
