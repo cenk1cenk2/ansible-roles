@@ -37,7 +37,7 @@ services:
     {% endif %}
   {% endif %}
   {% if container.environment is defined %}
-    {{ '{"%s": %s}' | format("environment", container.environment | to_json) | from_json | to_nice_yaml(indent=2) | indent(6) | trim }}
+    {{ '{"environment": %s}' | format(container.environment | to_json) | from_json | to_nice_yaml(indent=2) | indent(6) | trim }}
   {% endif %}
   {% for prop in scmd_native_properties %}
   {% if prop in container and ((container[prop] is not iterable and container[prop] | string | length > 0) or (container[prop] is iterable and container[prop] | list | length > 0)) %}
