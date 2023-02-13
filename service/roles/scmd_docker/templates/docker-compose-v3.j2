@@ -37,10 +37,7 @@ services:
     {% endif %}
   {% endif %}
   {% if scmd_environment is defined or container.environment is defined %}
-  {% set environment = scmd_environment | default({}) %}
-  {% if container.environment is defined %}
-  {% set environment = environment.update(container.environment) | default({}) %}
-  {% endif %}
+  {% set environment = scmd_environment | default({}) | combine(container.environment | default({})) %}
     {{ '{"environment": %s}' | format(environment | to_json) | from_json | to_nice_yaml(indent=2) | indent(6) | trim }}
   {% endif %}
   {% for prop in scmd_native_properties %}
