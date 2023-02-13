@@ -95,7 +95,7 @@ http {
   {% endif %}
 
   {% if nginx_stub_status_enable %}
-  location /{{ nginx_stub_status_path }} {
+  location {{ nginx_stub_status_path }} {
     stub_status;
     {% for allow in nginx_stub_status_allow %}
     allow {{ allow }};
