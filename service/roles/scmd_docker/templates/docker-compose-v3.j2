@@ -38,7 +38,10 @@ services:
   {% endif %}
   {% if scmd_environment is defined or container.environment is defined %}
   {% set environment = scmd_environment | default({}) %}
-    {{ '{"environment": %s}' | format(environment.update(container.environment) | to_json) | from_json | to_nice_yaml(indent=2) | indent(6) | trim }}
+  {% if container.environment is defined %}
+  {% set environment = environment.update(container.environment) | default({}) %}
+  {% endif %}
+    {{ '{"environment": %s}' | format(environment | to_json) | from_json | to_nice_yaml(indent=2) | indent(6) | trim }}
   {% endif %}
   {% for prop in scmd_native_properties %}
   {% if prop in container and ((container[prop] is not iterable and container[prop] | string | length > 0) or (container[prop] is iterable and container[prop] | list | length > 0)) %}
