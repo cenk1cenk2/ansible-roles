@@ -39,18 +39,6 @@
     - scmd_private_registry_only is not defined or not scmd_private_registry_only
     - scmd_state is not defined
 
-- name: wait for job to end
-  ansible.builtin.async_status:
-    jid: '{{ item.ansible_job_id }}'
-    mode: status
-  register: async_result
-  until: async_result.finished
-  retries: 100
-  delay: 2
-  with_items:
-    - '{{ scmd_login_docker_registries_async_job.results | default([]) if scmd_login_docker_registries_async_job.changed else [] }}'
-    - '{{ scmd_create_docker_networks_async_job.results | default([]) if scmd_create_docker_networks_async_job.changed else [] }}'
-
 - include_tasks: docker-service.yml
   when:
     - scmd_variables_only is not defined or not scmd_variables_only

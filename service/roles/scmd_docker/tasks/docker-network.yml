@@ -5,7 +5,3 @@
   with_items: '{{ scmd_external_network }}'
   loop_control:
     loop_var: scmd_loop_external_network
-  changed_when: false
-  async: 300
-  poll: 0
-  register: scmd_create_docker_networks_async_job
