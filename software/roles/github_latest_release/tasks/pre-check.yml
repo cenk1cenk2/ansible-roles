@@ -2,7 +2,7 @@
 - name: reset conditions
   set_fact:
     github_latest_release_existing_version:
-    gitlab_latest_release_up_to_date:
+    github_latest_release_up_to_date:
 - name: 'check version for existing binary: {{ github_latest_release_repo }}'
   shell: '{{ github_latest_release_check_version_command }}'
   ignore_errors: true
@@ -19,7 +19,7 @@
 
 - name: 'binary is up to date: {{ github_latest_release_repo }}'
   set_fact:
-    gitlab_latest_release_up_to_date: true
+    github_latest_release_up_to_date: true
   when:
     - github_latest_release_existing_version is defined
     - github_latest_release_existing_version == github_latest_release_final_version

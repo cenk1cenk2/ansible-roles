@@ -5,4 +5,4 @@
 
 - import_tasks: download.yml
   when:
-    - gitlab_latest_release_up_to_date is not defined or not gitlab_latest_release_up_to_date
+    - github_latest_release_up_to_date is not defined or not github_latest_release_up_to_date
