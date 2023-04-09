@@ -11,7 +11,8 @@ description: Service related roles for provisioning.
 license:
   - MIT
 
-tags: []
+tags:
+  - infrastructure
 # dependencies: {}
 
 repository: https://src.kilic.dev/ansible-roles

@@ -11,7 +11,8 @@ description: Generic set of ansible roles for basic provisioning actions.
 license:
   - MIT
 
-tags: []
+tags:
+  - infrastructure
 # dependencies: {}
 
 repository: https://src.kilic.dev/ansible-roles
