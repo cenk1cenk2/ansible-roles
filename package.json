@@ -9,10 +9,8 @@
   "root": true,
   "type": "module",
   "scripts": {
-    "format": "prettier . --loglevel warn --write",
-    "format:check": "prettier --check . --loglevel warn",
-    "lint": "yarn run lint:check --write && yarn run format",
-    "lint:check": "ansible-lint -v"
+    "format": "ansible-lint -v --write && prettier --loglevel warn --write .",
+    "lint": "ansible-lint -v && prettier  --loglevel warn --check ."
   },
   "lint-staged": {
     "*.{yml,yml.j2,json}": [
@@ -20,12 +18,12 @@
     ]
   },
   "simple-git-hooks": {
-    "pre-commit": "yarn exec lint-staged",
-    "pre-push": "yarn run lint:check && yarn run format:check"
+    "pre-commit": "pnpm exec lint-staged",
+    "pre-push": "pnpm run lint"
   },
   "devDependencies": {
     "@cenk1cenk2/cz-cc": "^1.6.0",
-    "lint-staged": "^13.2.0",
+    "lint-staged": "^13.2.1",
     "prettier": "^2.8.7",
     "simple-git-hooks": "^2.8.1"
   }

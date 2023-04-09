@@ -1,7 +1,7 @@
 #jinja2:trim_blocks: True,lstrip_blocks: True
 # Ansible generated docker-compose file for "{{ scmd_service_name }}" service.
 
-version: "{{ scmd_compose_spec }}"
+version: "3"
 
 services:
   {% for container in scmd_services if (container.disabled is not defined or not container.disabled) %}
