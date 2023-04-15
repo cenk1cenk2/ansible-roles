@@ -92,9 +92,6 @@ http {
   scgi_temp_path        /var/run/openresty/nginx-scgi;
 
   server_tokens off;
-
-  # shared dictionaries
-  lua_shared_dict discovery 15m;
   {% endif %}
 
 
