@@ -4,7 +4,6 @@
     user: '{{ ansible_management_user }}'
     key: '{{ authorized_keys_all_keys }}'
     state: present
-    exclusive: true
   when:
     - authorized_keys_all_keys is defined
 
@@ -13,6 +12,5 @@
     user: '{{ ansible_management_user }}'
     key: '{{ authorized_keys_authorized_keys }}'
     state: present
-    exclusive: true
   when:
     - authorized_keys_authorized_keys is defined
