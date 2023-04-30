@@ -11,10 +11,6 @@ try_files "${uri}.html" $uri $uri/ =404;
 
 {% endif %}
 {% if vhost_proxy_locations is defined %}
-  {% if vhost_proxy_cache_enable %}
-  {% filter indent(2, False) %}{% include "./proxy-cache.j2" %}{% endfilter %}
-
-  {% endif %}
 {% for l in vhost_proxy_locations %}
 location {{ l.location }} {
   {% if vhost_resolver is defined and vhost_resolver != false %}
@@ -37,6 +33,10 @@ location {{ l.location }} {
   {% filter indent(2, True) %}{% include "./static-directory.j2" %}{% endfilter %}
 
   {% else %}
+  {% if vhost_proxy_cache_enable %}
+  {% filter indent(2, False) %}{% include "./proxy-cache.j2" %}{% endfilter %}
+
+  {% endif %}
   {% filter indent(2, True) %}{% include "./reverse-proxy.j2" %}{% endfilter %}
   {% if l.proxy_redirect is defined %}
 
