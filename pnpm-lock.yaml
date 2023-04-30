@@ -582,8 +582,8 @@ packages:
     engines: {node: '>=0.8.0'}
     dev: true
 
-  /eventemitter3@5.0.0:
-    resolution: {integrity: sha512-riuVbElZZNXLeLEoprfNYoDSwTBRR44X3mnhdI1YcnENpWTCsTTVZ2zFuqQcpoyqPQIUXdiPEU0ECAq0KQRaHg==}
+  /eventemitter3@5.0.1:
+    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
     dev: true
 
   /execa@7.1.1:
@@ -961,7 +961,7 @@ packages:
       cli-truncate: 3.1.0
       colorette: 2.0.20
       enquirer: 2.3.6
-      eventemitter3: 5.0.0
+      eventemitter3: 5.0.1
       log-update: 5.0.1
       rfdc: 1.3.0
       wrap-ansi: 8.1.0
