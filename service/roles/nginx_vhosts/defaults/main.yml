@@ -56,9 +56,9 @@ vhost_proxy_connect_timeout: 600s
 # nginx cache configuration
 vhost_proxy_cache_enable: false
 vhost_proxy_cache_path: '{{ nginx_cache_path }}'
-vhost_proxy_cache_max_size: 100m
-vhost_proxy_keys_zone_size: 20m
-vhost_proxy_cache_inactive_timeout: 10m
+vhost_proxy_cache_max_size: 500m
+vhost_proxy_keys_zone_size: 30m
+vhost_proxy_cache_inactive_timeout: 60m
 vhost_proxy_cache_key_base: $scheme$proxy_host$uri$is_args$args # see http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_cache_key
 
 vhost_large_client_headers_chucks: 4
