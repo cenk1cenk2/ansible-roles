@@ -1,9 +1,9 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 # ansible generated config file for nginx vhost "{{ vhost_uri }}"
 
-include ./{{ nginx_upstream_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}/*.conf;
+include ./{{ nginx_upstream_dir }}/{{ vhost_escaped_uri }}/*.conf;
 
-proxy_cache_path {{ vhost_proxy_cache_path }} levels=1:2 keys_zone={{ vhost_uri }}:{{ vhost_proxy_keys_zone_size }} max_size={{ vhost_proxy_cache_max_size }} inactive={{ vhost_proxy_cache_inactive_timeout }};
+proxy_cache_path {{ vhost_proxy_cache_path }}/{{ vhost_escaped_uri }} levels=1:2 keys_zone={{ vhost_uri }}:{{ vhost_proxy_keys_zone_size }} max_size={{ vhost_proxy_cache_max_size }} inactive={{ vhost_proxy_cache_inactive_timeout }};
 
 {% if vhost_ssl == true and vhost_non_ssl != true and vhost_http_redir == true %}
 server {
@@ -26,8 +26,8 @@ server {
   }
 
   {% if vhost_main_access_logs_format is none %}
-  access_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-access.log;
-  error_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-error.log;
+  access_log {{ nginx_log_dir }}/{{ vhost_escaped_uri }}-access.log;
+  error_log {{ nginx_log_dir }}/{{ vhost_escaped_uri }}-error.log;
   {% endif %}
 
   {% if vhost_use_gzip %}
@@ -51,7 +51,7 @@ server {
   }
   {% endif %}
 
-  include ./{{ nginx_paths_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}/*.conf;
+  include ./{{ nginx_paths_dir }}/{{ vhost_escaped_uri }}/*.conf;
   {% endif %}
 }
 {% endif %}
@@ -111,8 +111,8 @@ server {
   server_name {{ vhost_uri }}{% if vhost_server_alias is defined and vhost_server_alias != False %}{% for alias in vhost_server_alias %} {{ alias }}{% endfor %}{% endif %};
 
   {% if vhost_main_access_logs_format is none %}
-  access_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-access.log;
-  error_log {{ nginx_log_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}-error.log{{ " debug" if nginx_debug }};
+  access_log {{ nginx_log_dir }}/{{ vhost_escaped_uri }}-access.log;
+  error_log {{ nginx_log_dir }}/{{ vhost_escaped_uri }}-error.log{{ " debug" if nginx_debug }};
   {% endif %}
 
   {% if vhost_use_gzip %}
@@ -136,5 +136,5 @@ server {
   }
   {% endif %}
 
-  include ./{{ nginx_paths_dir }}/{{ vhost_uri | regex_replace('[$^*]', '_') }}/*.conf;
+  include ./{{ nginx_paths_dir }}/{{ vhost_escaped_uri }}/*.conf;
 }

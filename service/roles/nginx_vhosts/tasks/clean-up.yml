@@ -22,7 +22,7 @@
 
 - name: 'remove proxy cache directory: {{ vhost_uri }}'
   file:
-    path: '{{ vhost_proxy_cache_path }}'
+    path: '{{ vhost_proxy_cache_path }}/{{ vhost_escaped_uri }}'
     state: absent
   when:
     - vhost_uri is defined
