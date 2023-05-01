@@ -2,8 +2,10 @@
 # ansible generated config file for nginx vhost "{{ vhost_uri }}"
 
 include ./{{ nginx_upstream_dir }}/{{ vhost_escaped_uri }}/*.conf;
+{% if vhost_proxy_cache_enable %}
 
 proxy_cache_path {{ vhost_proxy_cache_path }}/{{ vhost_escaped_uri }} levels=1:2 keys_zone={{ vhost_uri }}:{{ vhost_proxy_keys_zone_size }} max_size={{ vhost_proxy_cache_max_size }} inactive={{ vhost_proxy_cache_inactive_timeout }};
+{% endif %}
 
 {% if vhost_ssl == true and vhost_non_ssl != true and vhost_http_redir == true %}
 server {
