@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 devDependencies:
   '@cenk1cenk2/cz-cc':
-    specifier: ^1.6.4
-    version: 1.6.4
+    specifier: ^1.6.5
+    version: 1.6.5
   lint-staged:
     specifier: ^13.2.2
     version: 13.2.2
@@ -40,8 +40,8 @@ packages:
     dev: true
     optional: true
 
-  /@cenk1cenk2/cz-cc@1.6.4:
-    resolution: {integrity: sha512-Wp8me0WaEYxXO9I3E6pTjPyRVJQkNq/w3wxjT6VBQrY9sf2LGs62ZOnul5K6Ys5GpDEh81bD/dgh4Vf7aQoBZQ==}
+  /@cenk1cenk2/cz-cc@1.6.5:
+    resolution: {integrity: sha512-/ZY2Dh2UQe7MDGat51wi/HlVbUJ1qZSnViB44DCBjocxELxEhperCgk/0Losstho+8C/09IBSbCqiZ/AxknRgQ==}
     engines: {node: '>= 16'}
     dependencies:
       commitizen: 4.3.0
