@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 devDependencies:
   '@cenk1cenk2/cz-cc':
-    specifier: ^1.6.4
-    version: 1.6.4
+    specifier: ^1.6.5
+    version: 1.6.5
   lint-staged:
     specifier: ^13.2.2
     version: 13.2.2
@@ -40,8 +40,8 @@ packages:
     dev: true
     optional: true
 
-  /@cenk1cenk2/cz-cc@1.6.4:
-    resolution: {integrity: sha512-Wp8me0WaEYxXO9I3E6pTjPyRVJQkNq/w3wxjT6VBQrY9sf2LGs62ZOnul5K6Ys5GpDEh81bD/dgh4Vf7aQoBZQ==}
+  /@cenk1cenk2/cz-cc@1.6.5:
+    resolution: {integrity: sha512-/ZY2Dh2UQe7MDGat51wi/HlVbUJ1qZSnViB44DCBjocxELxEhperCgk/0Losstho+8C/09IBSbCqiZ/AxknRgQ==}
     engines: {node: '>= 16'}
     dependencies:
       commitizen: 4.3.0
@@ -49,7 +49,7 @@ packages:
       enquirer: 2.3.6
       external-editor: 3.1.0
       find-git-root: 1.0.4
-      listr2: 6.4.2(enquirer@2.3.6)
+      listr2: 6.5.0(enquirer@2.3.6)
     optionalDependencies:
       '@commitlint/load': 17.5.0
     transitivePeerDependencies:
@@ -949,8 +949,8 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
-  /listr2@6.4.2(enquirer@2.3.6):
-    resolution: {integrity: sha512-v55SFIDP7SiPEYFeIFGbKW44B4NPpqGEklbAc1EKacMxIqFVXpDlc93e/Q6hE3IgIGRu5870rh5yJc+ESwGUpQ==}
+  /listr2@6.5.0(enquirer@2.3.6):
+    resolution: {integrity: sha512-eqoKu2VsiZS6rr+2tCjVbWNKdWD6g8qRCKWLJKbT+R1LwLWZaWggcNvvZgezMTecf8XVz5WLLwo4UFnEdNsvXA==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       enquirer: '>= 2.3.0 < 3'
