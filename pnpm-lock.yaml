@@ -53,10 +53,10 @@ packages:
     dependencies:
       commitizen: 4.3.0
       conventional-commit-types: 3.0.0
-      enquirer: 2.3.6
+      enquirer: 2.4.0
       external-editor: 3.1.0
       find-git-root: 1.0.4
-      listr2: 6.6.0(enquirer@2.3.6)
+      listr2: 6.6.0(enquirer@2.4.0)
     optionalDependencies:
       '@commitlint/load': 17.6.7
     transitivePeerDependencies:
@@ -593,11 +593,12 @@ packages:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
     dev: true
 
-  /enquirer@2.3.6:
-    resolution: {integrity: sha512-yjNnPr315/FjS4zIsUxYguYUPP2e1NK4d7E7ZOLiyYCcbFBiTMyID+2wvm2w6+pZ/odMA7cRkjhsPbltwBOrLg==}
+  /enquirer@2.4.0:
+    resolution: {integrity: sha512-ehu97t6FTYK2I3ZYtnp0BZ9vt0mvEL/cnHBds7Ct6jo9VX1VIkiFhOvVRWh6eblQqd7KOoICIQV+syZ3neXO/Q==}
     engines: {node: '>=8.6'}
     dependencies:
       ansi-colors: 4.1.3
+      strip-ansi: 6.0.1
     dev: true
 
   /error-ex@1.3.2:
@@ -990,7 +991,7 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
-  /listr2@6.6.0(enquirer@2.3.6):
+  /listr2@6.6.0(enquirer@2.4.0):
     resolution: {integrity: sha512-qkLg7IeYcZGkxo5sZzl676xHwQzNZ8qAQLQSDMA88sLM1SDcabwyXD1mXHi/PGQHyt/mu81adJdkqsCSUSuQzQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
@@ -1001,7 +1002,7 @@ packages:
     dependencies:
       cli-truncate: 3.1.0
       colorette: 2.0.20
-      enquirer: 2.3.6
+      enquirer: 2.4.0
       eventemitter3: 5.0.1
       log-update: 5.0.1
       rfdc: 1.3.0
