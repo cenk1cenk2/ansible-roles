@@ -6,8 +6,8 @@ settings:
 
 devDependencies:
   '@cenk1cenk2/cz-cc':
-    specifier: ^1.6.6
-    version: 1.6.6
+    specifier: ^1.6.7
+    version: 1.6.7
   lint-staged:
     specifier: ^13.2.3
     version: 13.2.3
@@ -47,8 +47,8 @@ packages:
     dev: true
     optional: true
 
-  /@cenk1cenk2/cz-cc@1.6.6:
-    resolution: {integrity: sha512-HCLEBeXfVqJd/9vWje6Pr5PPeIIPdhWGjBlPg/+B7VZ3jJgNekBXCcMJKbpXXDexAn5onqcQ7cjRlyo+l1EJLQ==}
+  /@cenk1cenk2/cz-cc@1.6.7:
+    resolution: {integrity: sha512-yGmBR11AYSB16rfAEbZnpzXEgKxfq79j6vl1RZWWiG6eKivifWsmneVpgdxbC9zg+aGV7p5SIx/oVOsgY8w/qw==}
     engines: {node: '>= 16'}
     dependencies:
       commitizen: 4.3.0
@@ -56,7 +56,7 @@ packages:
       enquirer: 2.4.1
       external-editor: 3.1.0
       find-git-root: 1.0.4
-      listr2: 6.6.0(enquirer@2.4.1)
+      listr2: 6.6.1(enquirer@2.4.1)
     optionalDependencies:
       '@commitlint/load': 17.6.7
     transitivePeerDependencies:
@@ -991,8 +991,8 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
-  /listr2@6.6.0(enquirer@2.4.1):
-    resolution: {integrity: sha512-qkLg7IeYcZGkxo5sZzl676xHwQzNZ8qAQLQSDMA88sLM1SDcabwyXD1mXHi/PGQHyt/mu81adJdkqsCSUSuQzQ==}
+  /listr2@6.6.1(enquirer@2.4.1):
+    resolution: {integrity: sha512-+rAXGHh0fkEWdXBmX+L6mmfmXmXvDGEKzkjxO+8mP3+nI/r/CWznVBvsibXdxda9Zz0OW2e2ikphN3OwCT/jSg==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       enquirer: '>= 2.3.0 < 3'
