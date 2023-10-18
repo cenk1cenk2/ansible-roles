@@ -6,8 +6,8 @@ settings:
 
 devDependencies:
   '@cenk1cenk2/cz-cc':
-    specifier: ^1.7.1
-    version: 1.7.1
+    specifier: ^1.7.2
+    version: 1.7.2
   lint-staged:
     specifier: ^14.0.1
     version: 14.0.1(enquirer@2.4.1)
@@ -48,17 +48,17 @@ packages:
     dev: true
     optional: true
 
-  /@cenk1cenk2/cz-cc@1.7.1:
-    resolution: {integrity: sha512-v4/vT83yWiUFYbiau35v5feTvmZ/dvQyNJTWIe9YKfyvO0Th/xCwtYG/gFoUQV598QGvBdgfIhd0L9EtsVGKWA==}
+  /@cenk1cenk2/cz-cc@1.7.2:
+    resolution: {integrity: sha512-345p2T9LlhWIDGgk966cyjwbVhDsdzuFMiHpV7RhwQBUPASQTaF1bZ2c08BQYHLA/lQ5Ux7NXw88pBxfY+k7Cw==}
     engines: {node: '>= 16'}
     dependencies:
-      '@listr2/prompt-adapter-enquirer': 1.0.1(enquirer@2.4.1)
+      '@listr2/prompt-adapter-enquirer': 1.0.2(enquirer@2.4.1)
       commitizen: 4.3.0
       conventional-commit-types: 3.0.0
       enquirer: 2.4.1
       external-editor: 3.1.0
       find-git-root: 1.0.4
-      listr2: 7.0.1
+      listr2: 7.0.2
     optionalDependencies:
       '@commitlint/load': 17.8.0
     transitivePeerDependencies:
@@ -162,8 +162,8 @@ packages:
     dev: true
     optional: true
 
-  /@listr2/prompt-adapter-enquirer@1.0.1(enquirer@2.4.1):
-    resolution: {integrity: sha512-gC+0QFhX9ysk0n40036Fvt8U7ZIu805gSO4vVQBlOw2syPr60vWWgNI9hONPq47XOOqAMdax8fEcwlYsB7KtSg==}
+  /@listr2/prompt-adapter-enquirer@1.0.2(enquirer@2.4.1):
+    resolution: {integrity: sha512-+hFHGKuACQ/0FRMmnwRe8QpdXlYJG8LhkKC0/ftf6LptWAZDBuziWnqilWHCcInnQTtUsYXD2Sra1Oxjb5q0Dg==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       enquirer: '>= 2.3.0 < 3'
@@ -413,6 +413,7 @@ packages:
   /color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
     engines: {node: '>=7.0.0'}
+    requiresBuild: true
     dependencies:
       color-name: 1.1.4
     dev: true
@@ -423,6 +424,7 @@ packages:
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+    requiresBuild: true
     dev: true
 
   /colorette@2.0.20:
@@ -973,8 +975,8 @@ packages:
       wrap-ansi: 8.1.0
     dev: true
 
-  /listr2@7.0.1:
-    resolution: {integrity: sha512-nz+7hwgbDp8eWNoDgzdl4hA/xDSLrNRzPu1TLgOYs6l5Y+Ma6zVWWy9Oyt9TQFONwKoSPoka3H50D3vD5EuNwg==}
+  /listr2@7.0.2:
+    resolution: {integrity: sha512-rJysbR9GKIalhTbVL2tYbF2hVyDnrf7pFUZBwjPaMIdadYHmeT+EVi/Bu3qd7ETQPahTotg2WRCatXwRBW554g==}
     engines: {node: '>=16.0.0'}
     dependencies:
       cli-truncate: 3.1.0
