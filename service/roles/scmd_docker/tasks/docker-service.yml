@@ -9,4 +9,3 @@
     remove_orphans: true
     recreate: always
     remove_volumes: '{{ scmd_remove_volumes | default(false) }}'
-    remove_images: '{{ scmd_remove_images | default(false) }}'
