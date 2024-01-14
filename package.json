@@ -24,7 +24,7 @@
   "devDependencies": {
     "@cenk1cenk2/cz-cc": "^1.7.4",
     "lint-staged": "^15.2.0",
-    "prettier": "^3.2.1",
+    "prettier": "^3.2.2",
     "simple-git-hooks": "^2.9.0"
   }
 }
