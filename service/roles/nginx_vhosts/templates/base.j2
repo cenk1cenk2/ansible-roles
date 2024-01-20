@@ -37,11 +37,6 @@ http {
   access_log {{ vhost_main_access_logs }};
   error_log {{ vhost_main_error_logs }};
 
-  map $http_upgrade $connection_upgrade {
-    default upgrade;
-    ''      close;
-  }
-
   client_max_body_size {{ vhost_main_max_body_size }};
 
   {% filter indent(2, True) %}{% include './gzip.j2' %}{% endfilter %}
