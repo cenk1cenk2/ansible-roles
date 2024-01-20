@@ -37,6 +37,11 @@ http {
   access_log {{ vhost_main_access_logs }};
   error_log {{ vhost_main_error_logs }};
 
+  map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+  }
+
   client_max_body_size {{ vhost_main_max_body_size }};
 
   {% filter indent(2, True) %}{% include './gzip.j2' %}{% endfilter %}
@@ -96,12 +101,7 @@ http {
   # shared dictionaries
   lua_shared_dict discovery 15m;
   {# lua_shared_dict jwks 15m; #}
-{% endif %}
-
-  map $http_upgrade $connection_upgrade {
-    default upgrade;
-    ''      close;
-  }
+  {% endif %}
 
   {% if nginx_stub_status_enable %}
   server {

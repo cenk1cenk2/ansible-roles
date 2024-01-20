@@ -26,7 +26,7 @@ proxy_intercept_errors on;
 error_page 404 = {% if l.location != '/' %}{{ l.location }}{% endif %}/{{ l.index_page | default('index.html') }};
 
 {% endif %}
-{% if l.retarded_spa is defined and l.retarded_spa %}
+{% if l.spa is defined and l.spa %}
 proxy_intercept_errors on;
 error_page 404 = /{{ l.index_page | default('index.html') }};
 
