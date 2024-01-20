@@ -2,6 +2,7 @@
 # ansible generated config file for nginx vhost "{{ vhost_path_name }}" for domain "{{ vhost_uri }}"
 
 {% if vhost_server_directives is defined %}
+
 {% for h in vhost_server_directives %}
 {{ h }}
 {% endfor %}
