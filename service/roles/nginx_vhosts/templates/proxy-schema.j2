@@ -17,7 +17,7 @@ proxy_set_header X-Forwarded-Proto  $scheme;
 {% if l.connection_upgrade is defined and l.connection_upgrade == true %}
 proxy_set_header Upgrade $http_upgrade;
 {% endif %}
-proxy_set_header Connection {% if l.connection_upgrade is defined and l.connection_upgrade == true %}"upgrade"{% else %}""{% endif %};
+proxy_set_header Connection {% if l.connection_upgrade is defined and l.connection_upgrade == true %}"Upgrade"{% else %}""{% endif %};
 proxy_pass_request_headers on;
 proxy_read_timeout {{ vhost_proxy_read_timeout }};
 
