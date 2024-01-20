@@ -44,6 +44,7 @@ error_page 404 = /{{ l.index_page | default('index.html') }};
 
 {% endif %}
 {% if l.directives is defined %}
+
 {% for h in l.directives %}
 {{ h }}
 {% endfor %}
