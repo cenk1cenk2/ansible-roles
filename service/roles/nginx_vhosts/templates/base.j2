@@ -96,8 +96,12 @@ http {
   # shared dictionaries
   lua_shared_dict discovery 15m;
   {# lua_shared_dict jwks 15m; #}
-  {% endif %}
+{% endif %}
 
+  map $http_upgrade $connection_upgrade {
+      default upgrade;
+      ''      close;
+  }
 
   {% if nginx_stub_status_enable %}
   server {
