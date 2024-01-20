@@ -73,9 +73,9 @@ http {
   {% filter indent(2, True) %}{% include './geolocation.j2' %}{% endfilter %}
 
   {% endif %}
+  {% if vhost_http_root_directives is defined %}
 
-  {% if vhost_http_custom is defined %}
-  {% for c in vhost_http_custom %}
+  {% for c in vhost_http_root_directives %}
   {{ c | indent(2, False) }}
   {% endfor %}
 
