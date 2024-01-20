@@ -2,6 +2,12 @@
 # ansible generated config file for nginx vhost "{{ vhost_uri }}"
 
 include ./{{ nginx_upstream_dir }}/{{ vhost_escaped_uri }}/*.conf;
+
+map $http_upgrade $connection_upgrade {
+    default Upgrade;
+    ''      close;
+}
+
 {% if vhost_proxy_cache_enable %}
 
 proxy_cache_path {{ vhost_proxy_cache_path }}/{{ vhost_escaped_uri }} levels=1:2 keys_zone={{ vhost_uri }}:{{ vhost_proxy_keys_zone_size }} max_size={{ vhost_proxy_cache_max_size }} inactive={{ vhost_proxy_cache_inactive_timeout }};
