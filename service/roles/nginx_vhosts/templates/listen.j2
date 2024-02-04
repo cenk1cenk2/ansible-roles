@@ -10,6 +10,9 @@
 {% else %}
 {% set proxy_protocol_toggle = '' %}
 {% endif %}
-listen {{ listen_port }}{{ ssl_toggle }}{{ proxy_protocol_toggle }}{% if vhost_default_server is defined and vhost_default_server %} default_server{% endif %}{% if listen_protocol is defined %} {{ listen_protocol }}{% endif %};
-listen [::]:{{ listen_port }}{{ ssl_toggle }}{{ proxy_protocol_toggle }}{% if vhost_default_server is defined and vhost_default_server %} default_server{% endif %}{% if listen_protocol is defined %} {{ listen_protocol }}{% endif %};
+listen {{ listen_port }}{{ ssl_toggle }}{{ proxy_protocol_toggle }}{% if vhost_default_server is defined and vhost_default_server %} default_server{% endif %};
+listen [::]:{{ listen_port }}{{ ssl_toggle }}{{ proxy_protocol_toggle }}{% if vhost_default_server is defined and vhost_default_server %} default_server{% endif %};
+{% if listen_protocol is defined %}
 
+{{ listen_protocol }} on;
+{% endif %}
