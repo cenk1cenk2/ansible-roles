@@ -55,7 +55,7 @@ server {
   keepalive_timeout       {{ vhost_keepalive_timeout }};
   proxy_connect_timeout   {{ vhost_proxy_connect_timeout }};
   proxy_read_timeout      {{ vhost_proxy_read_timeout }};
-  proxy_write_timeout     {{ vhost_proxy_write_timeout }};
+  proxy_send_timeout      {{ vhost_proxy_send_timeout }};
   {% if openresty_enable_session is defined and openresty_enable_session %}
   {% filter indent(2, True) %}{% include './openresty-session.j2' %}{% endfilter %}
   {% endif %}
@@ -142,7 +142,7 @@ server {
   keepalive_timeout       {{ vhost_keepalive_timeout }};
   proxy_connect_timeout   {{ vhost_proxy_connect_timeout }};
   proxy_read_timeout      {{ vhost_proxy_read_timeout }};
-  proxy_write_timeout     {{ vhost_proxy_write_timeout }};
+  proxy_send_timeout      {{ vhost_proxy_send_timeout }};
   {% if openresty_enable_session is defined and openresty_enable_session %}
   {% filter indent(2, True) %}{% include './openresty-session.j2' %}{% endfilter %}
   {% endif %}
