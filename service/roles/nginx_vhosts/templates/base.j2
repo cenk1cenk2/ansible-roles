@@ -110,7 +110,12 @@ http {
       deny all;
     }
   }
-  {% endif %}
+{% endif %}
+
+  map $http_upgrade $connection_upgrade {
+      default upgrade;
+      ''      close;
+  }
 
   include ./{{ nginx_domains_dir }}/*.conf;
 }
