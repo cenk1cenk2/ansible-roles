@@ -19,7 +19,6 @@ proxy_set_header Upgrade $http_upgrade;
 {% endif %}
 proxy_set_header Connection {% if l.connection_upgrade is defined and l.connection_upgrade == true %}$connection_upgrade{% else %}""{% endif %};
 proxy_pass_request_headers on;
-proxy_read_timeout {{ vhost_proxy_read_timeout }};
 
 {% if l.spa is defined and l.spa %}
 proxy_intercept_errors on;
