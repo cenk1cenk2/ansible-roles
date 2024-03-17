@@ -9,3 +9,18 @@
     remove_orphans: true
     recreate: always
     remove_volumes: '{{ scmd_remove_volumes | default(false) }}'
+  when:
+    - not scmd_use_docker_compose_v2
+
+- name: 'start docker service v2: {{ scmd_service_name }}'
+  community.docker.docker_compose_v2:
+    state: present
+    project_name: '{{ scmd_service_name }}'
+    project_src: '{{ scmd_service_dir }}'
+    pull: true
+    build: true
+    remove_orphans: true
+    recreate: always
+    remove_volumes: '{{ scmd_remove_volumes | default(false) }}'
+  when:
+    - scmd_use_docker_compose_v2

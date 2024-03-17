@@ -7,6 +7,19 @@
     remove_volumes: true
     remove_images: local
   ignore_errors: true
+  when:
+    - not scmd_use_docker_compose_v2
+
+- name: 'remove docker service v2: {{ scmd_service_name }}'
+  community.docker.docker_compose_v2:
+    state: absent
+    project_name: '{{ scmd_service_name }}'
+    project_src: '{{ scmd_service_dir }}'
+    remove_volumes: true
+    remove_images: local
+  ignore_errors: true
+  when:
+    - scmd_use_docker_compose_v2
 
 - name: remove docker setup
   file:
