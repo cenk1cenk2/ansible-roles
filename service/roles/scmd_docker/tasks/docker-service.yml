@@ -17,8 +17,8 @@
     state: present
     project_name: '{{ scmd_service_name }}'
     project_src: '{{ scmd_service_dir }}'
-    pull: true
-    build: true
+    pull: always
+    build: always
     remove_orphans: true
     recreate: always
     remove_volumes: '{{ scmd_remove_volumes | default(false) }}'
