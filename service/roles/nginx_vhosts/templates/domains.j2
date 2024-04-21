@@ -5,7 +5,8 @@ include ./{{ nginx_upstream_dir }}/{{ vhost_escaped_uri }}/*.conf;
 
 map $http_upgrade $connection_upgrade {
     default      keep-alive;
-    'websocket'  upgrade;
+    SPDY/3.1     upgrade;
+    websocket    upgrade;
     ''           close;
 }
 
