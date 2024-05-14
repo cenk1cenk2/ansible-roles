@@ -11,7 +11,7 @@ auth_basic_user_file {{ l.auth_file }};
 
 {% endif %}
 {% include './proxy-schema.j2' %}
-{% if vhost_resolver is defined and vhost_resolver != false %}
+{% if vhost_resolver is defined and vhost_resolver and (l.resolver is not defined or not l.resolver) %}
 set $upstream_resolver {% if l.url is defined %}{{ l.url }}{% elif l.upstream is defined %}http://{{ l.upstream }}{% else %}http://localhost:{{ l.port }}{% endif %};
 
 {% endif %}
@@ -20,5 +20,5 @@ rewrite {{ l.rewrite | default(l.location) }}(:?/?(.*)) /$1 break;
 
 {% endif %}
 {% if l.url is defined or l.upstream is defined or l.port is defined %}
-proxy_pass {% if vhost_resolver is defined and vhost_resolver != false %}$upstream_resolver{% elif l.url is defined %}{{ l.url }}{% elif l.upstream is defined %}{{ l.upstream_protocol | default('http') }}://{{ l.upstream }}{% else %}http://localhost:{{ l.port }}{% endif %};
+proxy_pass {% if vhost_resolver is defined and vhost_resolver and (l.resolver is not defined or not l.resolver) %}$upstream_resolver{% elif l.url is defined %}{{ l.url }}{% elif l.upstream is defined %}{{ l.upstream_protocol | default('http') }}://{{ l.upstream }}{% else %}http://localhost:{{ l.port }}{% endif %};
 {% endif %}

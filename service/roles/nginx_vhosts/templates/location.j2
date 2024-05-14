@@ -13,7 +13,7 @@ try_files "${uri}.html" $uri $uri/ =404;
 {% if vhost_proxy_locations is defined %}
 {% for l in vhost_proxy_locations %}
 location {{ l.location }} {
-  {% if vhost_resolver is defined and vhost_resolver != false %}
+  {% if vhost_resolver is defined and vhost_resolver and (l.resolver is not defined or not l.resolver) %}
   {% if vhost_resolver.ip is defined and vhost_resolver.valid is defined %}
   resolver {{ vhost_resolver.ip }} valid={{ vhost_resolver.valid }};
   {% else %}
@@ -50,4 +50,3 @@ location {{ l.location }} {
 
 {% endfor %}
 {% endif %}
-
