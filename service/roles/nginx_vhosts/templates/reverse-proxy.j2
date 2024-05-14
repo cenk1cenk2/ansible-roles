@@ -20,7 +20,7 @@ auth_basic_user_file {{ l.auth_file }};
 set $upstream_resolver {% if l.url is defined %}{{ l.url }}{% elif l.upstream is defined %}http://{{ l.upstream }}{% else %}http://localhost:{{ l.port }}{% endif %};
 
 {% endif %}
-{% if  l.rewrite is defined and l.retain_path is defined and not l.retain_path %}
+{% if l.retain_path is defined and not l.retain_path %}
 rewrite {{ l.rewrite | default(l.location) }}(:?/?(.*)) /$1 break;
 
 {% endif %}
