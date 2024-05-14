@@ -11,8 +11,12 @@ auth_basic_user_file {{ l.auth_file }};
 
 {% endif %}
 {% include './proxy-schema.j2' %}
-{% set resolver = l.resolver or vhost_resolver %}
-{% if resolver is defined and resolver != false%}
+{% if l.resolver is defined %}
+{%- set resolver = l.resolver %}
+{% elif vhost_resolver is defined %}
+{%- set resolver = vhost_resolver %}
+{% endif %}
+{% if resolver is defined and resolver != false %}
 set $upstream_resolver {% if l.url is defined %}{{ l.url }}{% elif l.upstream is defined %}http://{{ l.upstream }}{% else %}http://localhost:{{ l.port }}{% endif %};
 
 {% endif %}
