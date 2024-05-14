@@ -10,11 +10,11 @@
   "type": "module",
   "scripts": {
     "format": "ansible-lint -v --write && prettier --log-level warn --write .",
-    "lint": "ansible-lint -v && prettier  --log-level warn --check ."
+    "lint": "ansible-lint -v && prettier --log-level warn --check ."
   },
   "lint-staged": {
     "*.{yml,yml.j2,json}": [
-      "prettier --loglevel warn --write"
+      "prettier --log-level warn --write"
     ]
   },
   "simple-git-hooks": {

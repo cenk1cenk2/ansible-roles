@@ -1,16 +1,6 @@
 ---
 - name: reload nginx
   shell:
-    cmd: docker-compose exec -T {{ nginx_docker_service_name | default('nginx-reverse-proxy') }} nginx -s reload
+    cmd: '{{ "docker-compose" if scmd_use_docker_compose_v2 is not defined or not scmd_use_docker_compose_v2 else "docker compose"}} exec -T {{ nginx_docker_service_name | default("nginx-reverse-proxy") }} nginx -s reload'
     chdir: '{{ nginx_service_full_dir }}'
   run_once: true
-  when:
-    - scmd_use_docker_compose_v2 is not defined or not scmd_use_docker_compose_v2
-
-- name: reload nginx v2
-  shell:
-    cmd: docker compose exec -T {{ nginx_docker_service_name | default('nginx-reverse-proxy') }} nginx -s reload
-    chdir: '{{ nginx_service_full_dir }}'
-  run_once: true
-  when:
-    - scmd_use_docker_compose_v2 is defined and scmd_use_docker_compose_v2
