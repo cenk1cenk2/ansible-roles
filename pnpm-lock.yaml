@@ -59,8 +59,8 @@ packages:
     resolution: {integrity: sha512-DSHae2obMSMkAtTBSOulg5X7/z+rGLxcXQIkg3OmWvY6wifojge5uVMydfhUvs7yQj+V7jNmRZ2Xzl8GJyqRgg==}
     engines: {node: '>=v18'}
 
-  '@listr2/prompt-adapter-enquirer@2.0.11':
-    resolution: {integrity: sha512-4xmQnYzB06d1iiutJdTZyEcvCR9RVC6QehogRqDQckBNfwD7i+6hEntFVAtewI1/52lT3HkgKptJeFwCwmjX0g==}
+  '@listr2/prompt-adapter-enquirer@2.0.12':
+    resolution: {integrity: sha512-WR1RvaiRuSOQ8i8Hr6CLlPXFsL2u9xwoADKYD2GeUsk7EBOx7cb9GFvJhHnlVUZq4LaPvY1U1NtrgXoslteaVA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       enquirer: '>= 2.3.0 < 3'
@@ -488,8 +488,8 @@ packages:
     engines: {node: '>=18.12.0'}
     hasBin: true
 
-  listr2@8.2.4:
-    resolution: {integrity: sha512-opevsywziHd3zHCVQGAj8zu+Z3yHNkkoYhWIGnq54RrCVwLz0MozotJEDnKsIBLvkfLGN6BLOyAeRrYI0pKA4g==}
+  listr2@8.2.5:
+    resolution: {integrity: sha512-iyAZCeyD+c1gPyE9qpFu8af0Y+MRtmKOncdGoA2S5EY8iFq99dmmvkNnHiWo+pj0s7yH7l3KPIgee77tKpXPWQ==}
     engines: {node: '>=18.0.0'}
 
   lodash.isplainobject@4.0.6:
@@ -824,13 +824,13 @@ snapshots:
 
   '@cenk1cenk2/cz-cc@1.7.10(@types/node@22.7.4)(typescript@5.6.2)':
     dependencies:
-      '@listr2/prompt-adapter-enquirer': 2.0.11(enquirer@2.4.1)
+      '@listr2/prompt-adapter-enquirer': 2.0.12(enquirer@2.4.1)
       commitizen: 4.3.1(@types/node@22.7.4)(typescript@5.6.2)
       conventional-commit-types: 3.0.0
       enquirer: 2.4.1
       external-editor: 3.1.0
       find-git-root: 1.0.4
-      listr2: 8.2.4
+      listr2: 8.2.5
     optionalDependencies:
       '@commitlint/load': 19.5.0(@types/node@22.7.4)(typescript@5.6.2)
     transitivePeerDependencies:
@@ -879,7 +879,7 @@ snapshots:
       chalk: 5.3.0
     optional: true
 
-  '@listr2/prompt-adapter-enquirer@2.0.11(enquirer@2.4.1)':
+  '@listr2/prompt-adapter-enquirer@2.0.12(enquirer@2.4.1)':
     dependencies:
       enquirer: 2.4.1
 
@@ -1324,7 +1324,7 @@ snapshots:
       debug: 4.3.7
       execa: 8.0.1
       lilconfig: 3.1.2
-      listr2: 8.2.4
+      listr2: 8.2.5
       micromatch: 4.0.8
       pidtree: 0.6.0
       string-argv: 0.3.2
@@ -1332,7 +1332,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  listr2@8.2.4:
+  listr2@8.2.5:
     dependencies:
       cli-truncate: 4.0.0
       colorette: 2.0.20
