@@ -1,8 +1,5 @@
 ---
-scmd_compose_file_version: 3
-scmd_use_docker_compose_v2: false
-
-scmd_compose_file_template: docker-compose-v{{ scmd_compose_file_version }}.j2
+scmd_compose_file_template: docker-compose-{{ scmd_compose_file_version }}.j2
 
 scmd_native_properties:
   - build
