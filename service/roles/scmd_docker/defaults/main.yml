@@ -1,4 +1,5 @@
 ---
+scmd_compose_file_version: unrestricted
 scmd_compose_file_template: docker-compose-{{ scmd_compose_file_version }}.j2
 
 scmd_native_properties:
