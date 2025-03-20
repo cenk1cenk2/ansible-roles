@@ -1,0 +1,19 @@
+---
+- name: create temporary file for templating manifests
+  become: false
+  delegate_to: localhost
+  ansible.builtin.tempfile: {}
+  register: podman_kube_quadlet_tempfile
+
+- name: create temporary manifests
+  become: false
+  delegate_to: localhost
+  ansible.builtin.copy:
+    dest: '{{ podman_kube_quadlet_tempfile.path }}'
+    content: '{{ lookup("kubernetes.core.kustomize", dir=[playbook_dir, podman_kube_quadlet_kustomize_dir] | path_join) }}'
+
+- name: generate manifests
+  ansible.builtin.copy:
+    dest: '{{ podman_kube_quadlet_dir }}/{{ podman_kube_quadlet_manifests }}'
+    mode: '0644'
+    content: '{{ lookup("template", podman_kube_quadlet_tempfile.path) }}'
