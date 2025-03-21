@@ -5,15 +5,17 @@
 
 - name: set systemd service state
   ansible.builtin.systemd:
-    name: '{{ item.name }}'
+    name: '{{ podman_quadlet_systemd_service.name }}'
     state: |-
-      {%- if item.state | default(podman_quadlet_systemd_state) == 'reloaded' -%}
+      {%- if podman_quadlet_systemd_service.state | default(podman_quadlet_systemd_state) == 'reloaded' -%}
         {%- if podman_quadlet_systemd_triggers is not defined -%}
         restarted
         {%- else -%}
         {{- "restarted" if True in podman_quadlet_systemd_triggers else "started" -}}
         {%- endif -%}
       {%- else -%}
-        {{- item.state | default(podman_quadlet_systemd_services_state) -}}
+        {{- podman_quadlet_systemd_service.state | default(podman_quadlet_systemd_services_state) -}}
       {%- endif -%}
   with_items: '{{ podman_quadlet_systemd_services }}'
+  loop_control:
+    loop_var: podman_quadlet_systemd_service
