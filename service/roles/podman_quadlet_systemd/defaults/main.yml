@@ -1,2 +1,2 @@
 ---
-podman_quadlet_systemd_state: started
+podman_quadlet_systemd_state: reloaded
