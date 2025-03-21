@@ -1,0 +1,19 @@
+---
+- name: 'daemon reload'
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: 'set systemd service state: {{ podman_quadlet_systemd_services_state }}'
+  ansible.builtin.systemd:
+    name: '{{ item.name }}'
+    state: |-
+      {%- if item | default(podman_quadlet_systemd_state) == 'started' -%}
+        {%- if podman_quadlet_systemd_manifests is not defined and podman_quadlet_systemd_manifests is not defined -%}
+        restarted
+        {%- else -%}
+        {{- "restarted" if podman_quadlet_systemd_manifests is defined and podman_quadlet_systemd_manifests.changed or podman_quadlet_systemd_quadlet is defined and podman_quadlet_systemd_quadlet.changed else "started" -}}
+        {%- endif -%}
+      {%- else -%}
+        {{- item.state | default(podman_quadlet_systemd_services_state) -}}
+      {%- endif -%}
+  with_items: '{{ podman_quadlet_systemd_services }}'
