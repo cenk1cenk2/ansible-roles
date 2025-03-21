@@ -7,7 +7,7 @@
   ansible.builtin.systemd:
     name: '{{ item.name }}'
     state: |-
-      {%- if item.state | default(podman_quadlet_systemd_state) == 'started' -%}
+      {%- if item.state | default(podman_quadlet_systemd_state) == 'reloaded' -%}
         {%- if podman_quadlet_systemd_triggers is not defined -%}
         restarted
         {%- else -%}
