@@ -11,7 +11,7 @@
         {%- if podman_quadlet_systemd_triggers is not defined -%}
         restarted
         {%- else -%}
-        {{- "restarted" if true in (podman_quadlet_systemd_triggers | map("changed")) else "started" -}}
+        {{- "restarted" if True in podman_quadlet_systemd_triggers else "started" -}}
         {%- endif -%}
       {%- else -%}
         {{- item.state | default(podman_quadlet_systemd_services_state) -}}
