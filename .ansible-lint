@@ -27,6 +27,7 @@ skip_list:
   - name[play]
   - name[missing]
   - galaxy[no-runtime]
+  - jinjaspacing
 
 enable_list:
   - command-shell
