@@ -1,9 +1,9 @@
 ---
-- name: 'daemon reload'
+- name: daemon reload
   ansible.builtin.systemd:
     daemon_reload: true
 
-- name: 'set systemd service state: {{ podman_quadlet_systemd_services_state }}'
+- name: set systemd service state
   ansible.builtin.systemd:
     name: '{{ item.name }}'
     state: |-
