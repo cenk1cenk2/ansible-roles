@@ -1,2 +1,3 @@
 ---
 podman_quadlet_systemd_state: reloaded
+podman_quadlet_systemd_scope: system

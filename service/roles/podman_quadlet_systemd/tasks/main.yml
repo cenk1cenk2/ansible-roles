@@ -16,6 +16,7 @@
       {%- else -%}
         {{- podman_quadlet_systemd_service.state | default(podman_quadlet_systemd_services_state) -}}
       {%- endif -%}
+    scope: '{{ podman_quadlet_systemd_service.scope | default(podman_quadlet_systemd_scope) }}'
   with_items: '{{ podman_quadlet_systemd_services }}'
   loop_control:
     loop_var: podman_quadlet_systemd_service
