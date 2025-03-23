@@ -3,7 +3,7 @@
   ansible.builtin.file:
     src: '{{ podman_quadlet_systemd_link.path }}'
     dest: |-
-      {%- set path = podman_quadlet_systemd_link.path | dirname -%}
+      {%- set path = podman_quadlet_systemd_link.path | basename -%}
       {%- if podman_quadlet_systemd_scope == 'system' -%}
         {{- ["/etc/containers/systemd/", path] | path_join -}}
       {%- else -%}
