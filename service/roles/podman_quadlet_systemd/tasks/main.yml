@@ -1,8 +1,22 @@
 ---
+- name: create systemd service files
+  ansible.builtin.file:
+    path: |-
+      {%- set path = podman_quadlet_systemd_service.path -%}
+      {%- if podman_quadlet_systemd_scope == 'system' -%}
+        {{- ["/etc/systemd/system/", path | relpath("/")] | path_join | dirname -}}
+      {%- else -%}
+        {{- [ansible_env.HOME, ".config/systemd/user/", path | relpath(ansible_env.HOME)] | path_join | dirname -}}
+      {%- endif -%}
+    state: directory
+  with_items: '{{ podman_quadlet_systemd_links }}'
+  loop_control:
+    loop_var: podman_quadlet_systemd_link
+
 - name: link container systemd services
   ansible.builtin.file:
-    dest: '{{ podman_quadlet_systemd_link.path }}'
-    src: |-
+    src: '{{ podman_quadlet_systemd_link.path }}'
+    dest: |-
       {%- set path = podman_quadlet_systemd_link.path -%}
       {%- if podman_quadlet_systemd_scope == 'system' -%}
         {{- ["/etc/containers/systemd/", path | relpath("/")] | path_join -}}
@@ -14,8 +28,6 @@
   with_items: '{{ podman_quadlet_systemd_links }}'
   loop_control:
     loop_var: podman_quadlet_systemd_link
-  when:
-    - podman_quadlet_systemd_links is defined
 
 - name: daemon reload
   ansible.builtin.systemd:
