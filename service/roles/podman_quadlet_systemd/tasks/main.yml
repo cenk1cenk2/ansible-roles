@@ -1,8 +1,8 @@
 ---
-- name: create systemd service files
+- name: create link folders
   ansible.builtin.file:
     path: |-
-      {%- set path = podman_quadlet_systemd_service.path -%}
+      {%- set path = podman_quadlet_systemd_link.path -%}
       {%- if podman_quadlet_systemd_scope == 'system' -%}
         {{- ["/etc/systemd/system/", path | relpath("/")] | path_join | dirname -}}
       {%- else -%}
