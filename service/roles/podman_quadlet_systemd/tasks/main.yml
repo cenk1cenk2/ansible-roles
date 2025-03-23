@@ -1,4 +1,18 @@
 ---
+- name: link container systemd service
+  ansible.builtin.file:
+    src: '{{ podman_quadlet_systemd_link }}'
+    dest: |-
+      {%- if podman_quadlet_systemd_scope == 'system' -%}
+        /etc/systemd/system
+      {%- else -%}
+        {{ ansible_env.HOME }}/.config/containers/systemd
+      {%- endif -%}
+    state: link
+  when:
+    - podman_quadlet_systemd_link is defined
+    - podman_quadlet_systemd_scope == 'system'
+
 - name: daemon reload
   ansible.builtin.systemd:
     daemon_reload: true
