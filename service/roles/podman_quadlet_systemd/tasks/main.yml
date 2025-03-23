@@ -1,8 +1,8 @@
 ---
 - name: link container systemd services
   ansible.builtin.file:
-    src: '{{ podman_quadlet_systemd_link.path }}'
-    dest: |-
+    dest: '{{ podman_quadlet_systemd_link.path }}'
+    src: |-
       {%- set path = podman_quadlet_systemd_link.path -%}
       {%- if podman_quadlet_systemd_scope == 'system' -%}
         {{- ["/etc/containers/systemd/", path | relpath("/")] | path_join -}}
