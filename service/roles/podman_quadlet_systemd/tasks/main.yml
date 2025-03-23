@@ -1,27 +1,13 @@
 ---
-- name: create link folders
-  ansible.builtin.file:
-    path: |-
-      {%- set path = podman_quadlet_systemd_link.path -%}
-      {%- if podman_quadlet_systemd_scope == 'system' -%}
-        {{- ["/etc/systemd/system/", path | relpath("/")] | path_join | dirname -}}
-      {%- else -%}
-        {{- [ansible_env.HOME, ".config/systemd/user/", path | relpath(ansible_env.HOME)] | path_join | dirname -}}
-      {%- endif -%}
-    state: directory
-  with_items: '{{ podman_quadlet_systemd_links }}'
-  loop_control:
-    loop_var: podman_quadlet_systemd_link
-
 - name: link container systemd services
   ansible.builtin.file:
     src: '{{ podman_quadlet_systemd_link.path }}'
     dest: |-
-      {%- set path = podman_quadlet_systemd_link.path -%}
+      {%- set path = podman_quadlet_systemd_link.path | dirname -%}
       {%- if podman_quadlet_systemd_scope == 'system' -%}
-        {{- ["/etc/containers/systemd/", path | relpath("/")] | path_join -}}
+        {{- ["/etc/containers/systemd/", path] | path_join -}}
       {%- else -%}
-        {{- [ansible_env.HOME, ".config/containers/systemd/", path | relpath(ansible_env.HOME)] | path_join -}}
+        {{- [ansible_env.HOME, ".config/containers/systemd/", path] | path_join -}}
       {%- endif -%}
     state: link
     follow: true
