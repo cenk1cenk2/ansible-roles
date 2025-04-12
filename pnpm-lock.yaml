@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@cenk1cenk2/cz-cc':
-        specifier: ^1.8.0
-        version: 1.8.0(@types/node@22.13.7)(typescript@5.8.2)
+        specifier: ^1.8.1
+        version: 1.8.1(@types/node@22.13.7)(typescript@5.8.2)
       lint-staged:
         specifier: ^15.5.1
         version: 15.5.1
@@ -31,8 +31,8 @@ packages:
     resolution: {integrity: sha512-Ed61U6XJc3CVRfkERJWDz4dJwKe7iLmmJsbOGu9wSloNSFttHV0I8g6UAgb7qnK5ly5bGLPd4oXZlxCdANBOWQ==}
     engines: {node: '>=6.9.0'}
 
-  '@cenk1cenk2/cz-cc@1.8.0':
-    resolution: {integrity: sha512-BNCK1mWSoKCsiHIqx251KE+rrCOr36y+d6pEOCayNB690g9Tk7L/eJhfAdZg1dI0KNSfBA/dzS7bcVgo+EEP+A==}
+  '@cenk1cenk2/cz-cc@1.8.1':
+    resolution: {integrity: sha512-OXigQ4AtdZ2+WN3Ogdnwq4pmv68cQWFJujXI1fMJ1UdRPI0G978EOisAO/zFAo0DwMbFOyRqKUj+A4K5dcnbMA==}
     engines: {node: '>= 16'}
 
   '@commitlint/config-validator@19.5.0':
@@ -55,8 +55,8 @@ packages:
     resolution: {integrity: sha512-DSHae2obMSMkAtTBSOulg5X7/z+rGLxcXQIkg3OmWvY6wifojge5uVMydfhUvs7yQj+V7jNmRZ2Xzl8GJyqRgg==}
     engines: {node: '>=v18'}
 
-  '@listr2/prompt-adapter-enquirer@2.0.12':
-    resolution: {integrity: sha512-WR1RvaiRuSOQ8i8Hr6CLlPXFsL2u9xwoADKYD2GeUsk7EBOx7cb9GFvJhHnlVUZq4LaPvY1U1NtrgXoslteaVA==}
+  '@listr2/prompt-adapter-enquirer@2.0.15':
+    resolution: {integrity: sha512-o/mvK72xAGZf9/50rVbmdD8f/RMwSHDk94mw6k4ZZGTFKYbuLrbQJwh+GWbmB0+bDxjsR9CiQ79Pzd46FkLDxA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       enquirer: '>= 2.3.0 < 3'
@@ -488,6 +488,10 @@ packages:
     resolution: {integrity: sha512-iyAZCeyD+c1gPyE9qpFu8af0Y+MRtmKOncdGoA2S5EY8iFq99dmmvkNnHiWo+pj0s7yH7l3KPIgee77tKpXPWQ==}
     engines: {node: '>=18.0.0'}
 
+  listr2@8.3.2:
+    resolution: {integrity: sha512-vsBzcU4oE+v0lj4FhVLzr9dBTv4/fHIa57l+GCwovP8MoFNZJTOhGU8PXd4v2VJCbECAaijBiHntiekFMLvo0g==}
+    engines: {node: '>=18.0.0'}
+
   lodash.isplainobject@4.0.6:
     resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
 
@@ -811,15 +815,15 @@ snapshots:
   '@babel/helper-validator-identifier@7.25.9':
     optional: true
 
-  '@cenk1cenk2/cz-cc@1.8.0(@types/node@22.13.7)(typescript@5.8.2)':
+  '@cenk1cenk2/cz-cc@1.8.1(@types/node@22.13.7)(typescript@5.8.2)':
     dependencies:
-      '@listr2/prompt-adapter-enquirer': 2.0.12(enquirer@2.4.1)
+      '@listr2/prompt-adapter-enquirer': 2.0.15(enquirer@2.4.1)
       commitizen: 4.3.1(@types/node@22.13.7)(typescript@5.8.2)
       conventional-commit-types: 3.0.0
       enquirer: 2.4.1
       external-editor: 3.1.0
       find-git-root: 1.0.4
-      listr2: 8.2.5
+      listr2: 8.3.2
     transitivePeerDependencies:
       - '@types/node'
       - typescript
@@ -866,7 +870,7 @@ snapshots:
       chalk: 5.4.1
     optional: true
 
-  '@listr2/prompt-adapter-enquirer@2.0.12(enquirer@2.4.1)':
+  '@listr2/prompt-adapter-enquirer@2.0.15(enquirer@2.4.1)':
     dependencies:
       enquirer: 2.4.1
 
@@ -1320,6 +1324,15 @@ snapshots:
       - supports-color
 
   listr2@8.2.5:
+    dependencies:
+      cli-truncate: 4.0.0
+      colorette: 2.0.20
+      eventemitter3: 5.0.1
+      log-update: 6.1.0
+      rfdc: 1.4.1
+      wrap-ansi: 9.0.0
+
+  listr2@8.3.2:
     dependencies:
       cli-truncate: 4.0.0
       colorette: 2.0.20
