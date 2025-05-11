@@ -1,0 +1,11 @@
+[tool.pyright]
+include = ["."]
+exclude = ["**/__pycache__"]
+venvPath = "."
+venv = ".venv"
+
+[project]
+requires-python = ">= 3.13"
+name = "ansible-roles"
+version = "1.0.0"
+dependencies = ["ansible"]
