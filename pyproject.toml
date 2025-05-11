@@ -1,6 +1,4 @@
 [tool.pyright]
-include = ["."]
-exclude = ["**/__pycache__"]
 venvPath = "."
 venv = ".venv"
 
