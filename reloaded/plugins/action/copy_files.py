@@ -1,15 +1,29 @@
 from __future__ import annotations
 
+__metaclass__ = type
+
 from ansible.plugins.action import ActionBase
 from ansible.utils.display import Display
 
-__metaclass__ = type
-
 display = Display()
 
+DOCUMENTATION = """
+---
+"""
+
+EXAMPLES = """
+"""
+
+RETURN = """
+"""
+
 class ActionModule(ActionBase):
-    def __init__(self, *args, **kwargs):
-        super(ActionModule, self).__init__(*args, **kwargs)
+    _VALID_ARGS = frozenset(
+        (
+            "at",
+            "verbosity",
+        )
+    )
 
     def run(self, tmp=None, task_vars=None):
         self._supports_check_mode = True
@@ -23,12 +37,9 @@ class ActionModule(ActionBase):
         )
 
         result = super(ActionModule, self).run(tmp, task_vars)
-        del tmp
+
+        result.update(dict(changed=False, failed=False, msg="", skipped=False))
 
         display.vv("Hello world!")
-
-        result["changed"] = True
-        result["failed"] = False
-        result["msg"] = "yes hello"
 
         return result
