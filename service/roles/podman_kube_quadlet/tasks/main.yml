@@ -8,6 +8,7 @@
 - name: create temporary manifests
   become: false
   delegate_to: localhost
+  no_log: true
   ansible.builtin.copy:
     dest: '{{ podman_kube_quadlet_tempfile.path }}'
     content: '{{ lookup("kubernetes.core.kustomize", dir=[playbook_dir, podman_kube_quadlet_kustomize_dir] | path_join) }}'
