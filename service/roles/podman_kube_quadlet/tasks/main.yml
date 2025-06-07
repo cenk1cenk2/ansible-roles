@@ -17,4 +17,4 @@
     dest: '{{ podman_kube_quadlet_dir }}/{{ podman_kube_quadlet_manifests }}'
     mode: '0644'
     content: '{{ lookup("template", podman_kube_quadlet_tempfile.path) }}'
-  register: '{{ podman_kube_quadlet_changed }}'
+  register: '{{ podman_kube_quadlet_manifests_file }}'
