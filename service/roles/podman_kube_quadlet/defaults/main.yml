@@ -1,3 +1,4 @@
 ---
 podman_kube_quadlet_dir: /etc/containers/systemd/
 podman_kube_quadlet_kustomize_dir: ./files/manifests
+podman_kube_quadlet_changed: podman_kube_quadlet_manifests_file
