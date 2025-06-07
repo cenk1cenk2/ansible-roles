@@ -2,6 +2,7 @@
 - name: create temporary file for templating manifests
   become: false
   delegate_to: localhost
+  changed_when: false
   ansible.builtin.tempfile: {}
   register: podman_kube_quadlet_tempfile
 
