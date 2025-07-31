@@ -25,6 +25,6 @@
     "@cenk1cenk2/cz-cc": "^1.8.1",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
-    "simple-git-hooks": "^2.13.0"
+    "simple-git-hooks": "^2.13.1"
   }
 }
