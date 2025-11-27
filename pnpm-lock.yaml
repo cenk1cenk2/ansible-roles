@@ -16,7 +16,7 @@ importers:
         version: 16.2.7
       prettier:
         specifier: ^3.6.2
-        version: 3.7.0
+        version: 3.7.1
       simple-git-hooks:
         specifier: ^2.13.1
         version: 2.13.1
@@ -698,8 +698,8 @@ packages:
     engines: {node: '>=0.10'}
     hasBin: true
 
-  prettier@3.7.0:
-    resolution: {integrity: sha512-pBiBj/gjRY9Qpk1b7cDda6Rbwvkaggos779AHQ0Ek/odwDx6xG6DRBxtnp1QmxbuD7pAO8/SQ8vuhtGv9LoLWA==}
+  prettier@3.7.1:
+    resolution: {integrity: sha512-RWKXE4qB3u5Z6yz7omJkjWwmTfLdcbv44jUVHC5NpfXwFGzvpQM798FGv/6WNK879tc+Cn0AAyherCl1KjbyZQ==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -1599,7 +1599,7 @@ snapshots:
 
   pidtree@0.6.0: {}
 
-  prettier@3.7.0: {}
+  prettier@3.7.1: {}
 
   readable-stream@3.6.2:
     dependencies:
