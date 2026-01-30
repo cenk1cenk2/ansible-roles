@@ -1,6 +1,6 @@
 ---
 - name: 'copy paths template: {{ vhost_uri }} {{ vhost_path_name }}'
-  template:
+  ansible.builtin.template:
     src: '{{ vhost_template_file }}'
     dest: '{{ nginx_paths_full_dir }}/{{ vhost_path_name | regex_replace("[$^*]", "_") }}.conf'
     owner: '{{ service_user }}'
@@ -11,7 +11,7 @@
     - reload nginx
 
 - name: 'copy paths configuration: {{ vhost_uri }}/{{ vhost_path_name }}'
-  template:
+  ansible.builtin.template:
     src: '{{ vhost_path_template }}'
     dest: "{{ nginx_paths_full_dir }}/{{ vhost_path_name | regex_replace('[$^*]', '_') }}.conf"
     owner: '{{ service_user }}'
@@ -22,7 +22,7 @@
     - reload nginx
 
 - name: 'copy paths upstream: {{ vhost_uri }}/{{ vhost_path_name }}'
-  template:
+  ansible.builtin.template:
     src: '{{ vhost_upstream_template }}'
     dest: "{{ nginx_upstream_full_dir }}/{{ vhost_path_name | regex_replace('[$^*]', '_') }}.conf"
     owner: '{{ service_user }}'
@@ -33,7 +33,7 @@
     - reload nginx
 
 - name: 'create static directories: {{ vhost_uri }}/{{ vhost_path_name }}'
-  file:
+  ansible.builtin.file:
     path: '{{ nginx_publish_full_dir }}/{{ vhost_loop_location.static_directory }}'
     state: directory
     owner: '{{ service_user }}'

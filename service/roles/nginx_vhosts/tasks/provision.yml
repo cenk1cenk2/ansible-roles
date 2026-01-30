@@ -1,6 +1,6 @@
 ---
 - name: 'create directories for domains nginx provision: {{ vhost_uri }}'
-  file:
+  ansible.builtin.file:
     name: '{{ nginx_domains_full_dir }}'
     state: directory
     owner: '{{ service_user }}'
@@ -9,7 +9,7 @@
     - vhost_uri is defined
 
 - name: 'create directories for paths nginx provision: {{ vhost_uri }}'
-  file:
+  ansible.builtin.file:
     name: '{{ nginx_paths_full_dir }}'
     state: directory
     owner: '{{ service_user }}'
@@ -19,7 +19,7 @@
     - vhost_path_name is defined
 
 - name: 'create directories for paths nginx provision upstream: {{ vhost_uri }}'
-  file:
+  ansible.builtin.file:
     name: '{{ nginx_upstream_full_dir }}'
     state: directory
     owner: '{{ service_user }}'
@@ -30,14 +30,14 @@
     - vhost_upstream is defined
 
 - name: create basic directory for nginx configuration
-  file:
+  ansible.builtin.file:
     name: '{{ nginx_volumes_full_dir }}'
     state: directory
     owner: '{{ service_user }}'
     group: '{{ service_group }}'
 
 - name: provision base nginx.conf
-  template:
+  ansible.builtin.template:
     src: '{{ vhost_base_conf_template }}'
     dest: '{{ nginx_volumes_full_dir }}/nginx.conf'
     owner: '{{ service_user }}'

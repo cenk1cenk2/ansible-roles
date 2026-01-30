@@ -1,6 +1,6 @@
 ---
 - name: 'create service directory: {{ scmd_service_name }}'
-  file:
+  ansible.builtin.file:
     name: '{{ scmd_service_dir }}'
     state: directory
     owner: '{{ service_user }}'
@@ -18,7 +18,7 @@
 #     loop_var: scmd_loop_volume_dir
 
 - name: 'create environment variable directory: {{ scmd_service_name }}'
-  file:
+  ansible.builtin.file:
     name: '{{ scmd_full_env_dir }}'
     state: directory
     owner: '{{ service_user }}'
@@ -28,7 +28,7 @@
     - scmd_env_files | length > 0
 
 - name: 'copy environment files: {{ scmd_service_name }}'
-  template:
+  ansible.builtin.template:
     src: '{{ scmd_loop_env_file.path }}'
     dest: "{{ scmd_full_env_dir }}/{% if scmd_loop_env_file.name != 'env' %}{{ scmd_loop_env_file.name }}{% endif %}.env"
   with_items: '{{ scmd_env_files }}'

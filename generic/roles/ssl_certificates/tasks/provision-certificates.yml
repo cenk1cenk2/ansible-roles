@@ -15,7 +15,7 @@
     vhost_variables_only: true
 
 - name: set ssl certificates available
-  set_fact:
+  ansible.builtin.set_fact:
     ssl_certificates: '{{ ssl_certificates | default([]) + [{"path": ssl_certificates_loop_filesystem_certs.path, "root": ssl_certificates_loop_filesystem_certs.root + "/" + ssl_certificates_loop_filesystem_certs.path}] }}'
   when:
     - ssl_certificates_loop_filesystem_certs.state == 'file'
@@ -25,7 +25,7 @@
     loop_var: ssl_certificates_loop_filesystem_certs
 
 - name: ensure certificate directories
-  file:
+  ansible.builtin.file:
     path: '{{ letsencrypt_cert_dir }}/live/{{ ssl_certificates_loop_certificate_directory.path | dirname }}'
     state: directory
   with_items:
@@ -36,7 +36,7 @@
     - ssl_certificates is defined
 
 - name: copy ssl certificates
-  template:
+  ansible.builtin.template:
     src: '{{ ssl_certificates_loop_certificate_file.root }}'
     dest: "{{ letsencrypt_cert_dir }}/live/{{ ssl_certificates_loop_certificate_file.path | regex_replace('.secrets.j2$', '') }}"
   with_items:

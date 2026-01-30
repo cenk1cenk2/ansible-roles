@@ -1,27 +1,27 @@
 ---
 - name: 'register nginx docker service directory: {{ nginx_docker_service_name }}'
-  set_fact:
+  ansible.builtin.set_fact:
     nginx_service_full_dir: '{{ scmd_base_dir }}/{{ nginx_docker_service_name }}'
 
 - name: register nginx docker helper directories
-  set_fact:
+  ansible.builtin.set_fact:
     nginx_volumes_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_volume_dir }}/{{ nginx_docker_service_name }}'
     nginx_env_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_env_dir }}'
     nginx_logs_full_dir: '{{ nginx_service_full_dir }}/{{ scmd_logs_dir }}/{{ nginx_docker_service_name }}'
 
 - name: register generic directories
-  set_fact:
+  ansible.builtin.set_fact:
     nginx_domains_full_dir: '{{ nginx_volumes_full_dir }}/{{ nginx_domains_dir }}'
     nginx_publish_full_dir: '{{ nginx_volumes_full_dir }}/{{ nginx_publish_dir }}'
 
 - name: register vhost variables
-  set_fact:
+  ansible.builtin.set_fact:
     vhost_escaped_uri: '{{ vhost_uri | regex_replace("[$^*]", "_") }}'
   when:
     - vhost_uri is defined
 
 - name: register vhost directories
-  set_fact:
+  ansible.builtin.set_fact:
     nginx_paths_full_dir: '{{ nginx_volumes_full_dir }}/{{ nginx_paths_dir }}/{{ vhost_escaped_uri }}'
     nginx_upstream_full_dir: '{{ nginx_volumes_full_dir }}/{{ nginx_upstream_dir }}/{{ vhost_escaped_uri }}'
   when:

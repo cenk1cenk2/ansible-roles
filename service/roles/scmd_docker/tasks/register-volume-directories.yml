@@ -1,6 +1,6 @@
 ---
 - name: 'register volume directories: {{ scmd_service_name }}'
-  set_fact:
+  ansible.builtin.set_fact:
     scmd_volume_dirs: |
       {% if 'volumes' in scmd_loop_services and scmd_volume_dir in (scmd_loop_services.volumes | join(',')) %}
       {% set value = (scmd_volume_dirs | default([ ]) + [
@@ -22,7 +22,7 @@
     - scmd_services is defined
 
 - name: 'volume directories: {{ scmd_service_name }}'
-  debug:
+  ansible.builtin.debug:
     msg: '{{ scmd_volume_dirs }}'
   when:
     - ansible_check_mode

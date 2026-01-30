@@ -7,7 +7,7 @@
     scmd_service_name: '{{ prometheus_service_name }}'
 
 - name: create file-sd-config
-  template:
+  ansible.builtin.template:
     src: prometheus-file-sd-config.j2
     dest: '{{ scmd_full_volume_dir }}/{{ prometheus_container_name }}/{{ prometheus_file_sd_config_dir }}/{{ item.path }}.yml'
   vars:
@@ -17,7 +17,7 @@
   with_items: '{{ prometheus_configs }}'
 
 - name: remove file-sd-config
-  file:
+  ansible.builtin.file:
     dest: '{{ scmd_full_volume_dir }}/{{ prometheus_container_name }}/{{ prometheus_file_sd_config_dir }}/{{ item.path }}.yml'
     state: absent
   when:

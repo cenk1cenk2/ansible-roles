@@ -1,11 +1,11 @@
 ---
 - name: 'ensure target directory exists: {{ copy_files_dest }}'
-  file:
+  ansible.builtin.file:
     path: '{{ copy_files_dest }}'
     state: directory
 
 - name: ensure directories in the tree exists in {{ copy_files_dest }}
-  file:
+  ansible.builtin.file:
     path: '{{ copy_files_dest }}/{{ file.path }}'
     state: directory
   with_items: '{{ copy_files_src_all_directories }}'
@@ -26,7 +26,7 @@
     - copy_files_src_files | length > 0
 
 - name: copying secrets from {{ copy_files_src }}
-  copy:
+  ansible.builtin.copy:
     src: '{{ file.src }}'
     dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
     decrypt: true
@@ -37,7 +37,7 @@
     - copy_files_src_secrets | length > 0
 
 - name: copying templates from {{ copy_files_src }}
-  template:
+  ansible.builtin.template:
     src: '{{ file.src }}'
     dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
   with_items: '{{ copy_files_src_templates }}'

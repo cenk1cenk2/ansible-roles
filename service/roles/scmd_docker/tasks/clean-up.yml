@@ -9,7 +9,7 @@
   ignore_errors: true
 
 - name: remove docker setup
-  file:
+  ansible.builtin.file:
     path: '{{ scmd_loop_setup_dirs }}'
     state: absent
   when:
@@ -24,7 +24,7 @@
     - '{{ scmd_service_dir }}/docker-compose.yml'
 
 - name: remove persistent docker volumes
-  file:
+  ansible.builtin.file:
     path: '{{ scmd_loop_all_dirs }}'
     state: absent
   with_items:

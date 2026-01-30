@@ -1,15 +1,15 @@
 ---
 - name: 'scanning required files: {{ copy_files_src }}'
-  set_fact:
+  ansible.builtin.set_fact:
     copy_files_src_all: '{{ lookup("filetree", copy_files_src, wantlist=True) }}'
 
 - name: 'filtering files and directories: {{ copy_files_src }}'
-  set_fact:
+  ansible.builtin.set_fact:
     copy_files_src_all_directories: '{{ copy_files_src_all | selectattr("state", "==", "directory") }}'
     copy_files_src_all_files: '{{ copy_files_src_all | selectattr("state", "==", "file") }}'
 
 - name: 'filtering file types: {{ copy_files_src }}'
-  set_fact:
+  ansible.builtin.set_fact:
     copy_files_src_files: '{{ copy_files_src_all_files | rejectattr("path", "match", ".*\.j2$") | rejectattr("path", "match", ".*\.secrets.*") }}'
     copy_files_src_secrets: '{{ copy_files_src_all_files | rejectattr("path", "match", ".*\.j2$") | selectattr("path", "match", ".*\.secrets.*") }}'
     copy_files_src_templates: '{{ copy_files_src_all_files | selectattr("path", "match", ".*\.j2$") }}'

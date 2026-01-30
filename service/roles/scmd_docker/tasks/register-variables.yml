@@ -1,10 +1,10 @@
 ---
 - name: 'register service dir: {{ scmd_service_name }}'
-  set_fact:
+  ansible.builtin.set_fact:
     scmd_service_dir: '{{ scmd_base_dir }}/{{ scmd_service_name }}'
 
 - name: 'register component directories: {{ scmd_service_name }}'
-  set_fact:
+  ansible.builtin.set_fact:
     scmd_volume_dir: ./{{ scmd_volumes_dir_name }}
     scmd_full_volume_dir: '{{ scmd_service_dir }}/{{ scmd_volumes_dir_name }}'
     scmd_env_dir: ./{{ scmd_env_dir_name }}

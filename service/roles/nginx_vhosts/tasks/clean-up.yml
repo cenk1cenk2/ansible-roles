@@ -1,6 +1,6 @@
 ---
 - name: 'remove paths configuration: {{ vhost_uri }}'
-  file:
+  ansible.builtin.file:
     path: '{{ nginx_paths_full_dir }}/{{ vhost_path_name }}.conf'
     state: absent
   when:
@@ -10,7 +10,7 @@
     - reload nginx
 
 - name: 'remove upstreams: {{ vhost_uri }}'
-  file:
+  ansible.builtin.file:
     path: '{{ nginx_upstream_full_dir }}/{{ vhost_path_name }}.conf'
     state: absent
   when:
@@ -21,7 +21,7 @@
     - reload nginx
 
 - name: 'remove proxy cache directory: {{ vhost_uri }}'
-  file:
+  ansible.builtin.file:
     path: '{{ vhost_proxy_cache_path }}/{{ vhost_escaped_uri }}'
     state: absent
   when:
@@ -30,7 +30,7 @@
     - (vhost_state.uri is defined and vhost_state.uri == "absent") or (vhost_state.all is defined and vhost_state.all == "absent")
 
 - name: 'remove domain configuration: {{ vhost_uri }}'
-  file:
+  ansible.builtin.file:
     path: '{{ nginx_domains_full_dir }}/{{ vhost_uri }}.conf'
     state: absent
   when:
