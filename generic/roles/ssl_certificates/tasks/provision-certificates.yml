@@ -28,8 +28,7 @@
   ansible.builtin.file:
     path: '{{ letsencrypt_cert_dir }}/live/{{ ssl_certificates_loop_certificate_directory.path | dirname }}'
     state: directory
-  with_items:
-    - '{{ ssl_certificates }}'
+  loop: '{{ ssl_certificates }}'
   loop_control:
     loop_var: ssl_certificates_loop_certificate_directory
   when:
@@ -39,8 +38,7 @@
   ansible.builtin.template:
     src: '{{ ssl_certificates_loop_certificate_file.root }}'
     dest: "{{ letsencrypt_cert_dir }}/live/{{ ssl_certificates_loop_certificate_file.path | regex_replace('.secrets.j2$', '') }}"
-  with_items:
-    - '{{ ssl_certificates }}'
+  loop: '{{ ssl_certificates }}'
   loop_control:
     loop_var: ssl_certificates_loop_certificate_file
   when:
