@@ -121,7 +121,38 @@ class ActionModule(ActionBase):
                 result["msg"] = f"In strict mode, at least one file must match pattern '{pattern}' in directory '{root}'"
                 return result
 
+            # Load variables from each matched file using include_vars
+            loaded_files = []
+            ansible_facts = {}
+            verbosity = args.get("verbosity", 0)
+
+            for vars_file in matched_files:
+                if verbosity >= 1:
+                    display.v(f"Loading variables from: {vars_file}")
+
+                # Execute include_vars action plugin for this file
+                include_vars_result = self._execute_module(
+                    module_name="ansible.builtin.include_vars",
+                    module_args=dict(file=vars_file),
+                    task_vars=task_vars,
+                    tmp=tmp,
+                )
+
+                # Check if include_vars succeeded
+                if include_vars_result.get("failed", False):
+                    result["failed"] = True
+                    result["msg"] = f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    return result
+
+                # Collect the loaded variables (they are in ansible_facts)
+                if "ansible_facts" in include_vars_result:
+                    ansible_facts.update(include_vars_result["ansible_facts"])
+                    loaded_files.append(vars_file)
+
+            # Update result with loaded variables
+            result["ansible_facts"] = ansible_facts
             result["matched_files"] = matched_files
-            result["msg"] = f"Found {len(matched_files)} file(s) matching pattern '{pattern}'"
+            result["loaded_files"] = loaded_files
+            result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) matching pattern '{pattern}'"
 
         return result
