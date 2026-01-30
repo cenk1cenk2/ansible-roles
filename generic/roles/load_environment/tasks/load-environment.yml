@@ -11,6 +11,7 @@
         wantlist=True)
     }}
 
+
   loop_control:
     loop_var: load_environment_cle_files
   when:
@@ -27,6 +28,7 @@
         load_environment_root ~ '/' ~ load_environment ~ '/*.yaml',
         wantlist=True)
     }}
+
 
   loop_control:
     loop_var: load_environment_le_files
