@@ -69,4 +69,19 @@ class ActionModule(ActionBase):
             result["msg"] = f"Root directory '{root}' does not exist"
             return result
 
+        # Validate mode-specific required parameters
+        if mode == "pattern":
+            pattern = args.get("pattern")
+            if not pattern:
+                result["failed"] = True
+                result["msg"] = "Pattern mode requires 'pattern' parameter"
+                return result
+
+        if mode == "environment":
+            environment = args.get("environment")
+            if not environment:
+                result["failed"] = True
+                result["msg"] = "Environment mode requires 'environment' parameter"
+                return result
+
         return result
