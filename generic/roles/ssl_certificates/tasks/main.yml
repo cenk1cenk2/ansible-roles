@@ -1,2 +1,2 @@
 ---
-- import_tasks: provision-certificates.yml
+- ansible.builtin.import_tasks: provision-certificates.yml

@@ -1,6 +1,6 @@
 ---
 - name: 'create proxy cache directory: {{ vhost_proxy_cache_path }}'
-  file:
+  ansible.builtin.file:
     name: '{{ vhost_proxy_cache_path }}/{{ vhost_escaped_uri }}'
     state: directory
     owner: '{{ service_user }}'
@@ -9,7 +9,7 @@
     - vhost_proxy_locations is defined and vhost_proxy_cache_enable
 
 - name: 'copy vhost template: {{ vhost_uri }}'
-  template:
+  ansible.builtin.template:
     src: '{{ vhost_template_file }}'
     dest: '{{ nginx_domains_full_dir }}/{{ vhost_escaped_uri }}.conf'
     owner: '{{ service_user }}'
@@ -20,7 +20,7 @@
     - reload nginx
 
 - name: 'copy vhost config: {{ vhost_uri }}'
-  template:
+  ansible.builtin.template:
     src: '{{ vhost_conf_template }}'
     dest: '{{ nginx_domains_full_dir }}/{{ vhost_escaped_uri }}.conf'
     owner: '{{ service_user }}'

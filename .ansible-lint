@@ -19,7 +19,6 @@ skip_list:
   - line-length
   - package-latest
   - comments
-  - fqcn-builtins
   - yaml[line-length]
   - schema[vars]
   - name[casing]

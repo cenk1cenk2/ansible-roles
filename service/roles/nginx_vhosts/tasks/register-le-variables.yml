@@ -1,20 +1,20 @@
 ---
 - name: set letsencrypt variables
-  set_fact:
+  ansible.builtin.set_fact:
     letsencrypt_env_path_dir: '{{ nginx_env_full_dir }}'
 
 - name: set letsencrypt environment variable file
-  set_fact:
+  ansible.builtin.set_fact:
     letsencrypt_env_path: '{{ letsencrypt_env_path_dir }}/{{ letsencrypt_docker_service_name }}.env'
 
 - name: letsencrypt register domain
-  set_fact:
+  ansible.builtin.set_fact:
     letsencrypt_provision_domains: '{{ (letsencrypt_provision_domains | default([]) + letsencrypt_register_domain) | unique }}'
   when:
     - letsencrypt_register_domain is defined
 
 - name: letsencrypt register subdomain
-  set_fact:
+  ansible.builtin.set_fact:
     letsencrypt_provision_subdomains: '{{ (letsencrypt_provision_subdomains | default([]) + letsencrypt_register_subdomain) | unique }}'
   when:
     - letsencrypt_register_subdomain is defined

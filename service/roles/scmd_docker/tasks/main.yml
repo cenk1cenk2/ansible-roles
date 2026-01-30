@@ -1,54 +1,54 @@
 ---
-- import_tasks: register-variables.yml
+- ansible.builtin.import_tasks: register-variables.yml
   when:
     - scmd_private_registry_only is not defined or not scmd_private_registry_only
 
-- include_tasks: register-environment-variables.yml
+- ansible.builtin.include_tasks: register-environment-variables.yml
   when:
     - scmd_variables_only is not defined or not scmd_variables_only
     - scmd_state is not defined
 
-# - include_tasks: register-volume-directories.yml
+# - ansible.builtin.include_tasks: register-volume-directories.yml
 #   when:
 #     - scmd_variables_only is not defined or not scmd_variables_only
 #     - scmd_state is not defined
 
-- import_tasks: filesystem.yml
+- ansible.builtin.import_tasks: filesystem.yml
   when:
     - scmd_variables_only is not defined
     - scmd_private_registry_only is not defined
     - scmd_state is not defined
 
-- import_tasks: generate-docker-compose-file.yml
+- ansible.builtin.import_tasks: generate-docker-compose-file.yml
   when:
     - scmd_variables_only is not defined or not scmd_variables_only
     - scmd_private_registry_only is not defined or not scmd_private_registry_only
     - scmd_state is not defined
 
-- import_tasks: registry-login.yml
+- ansible.builtin.import_tasks: registry-login.yml
   when:
     - scmd_private_registry_only is defined and scmd_private_registry_only
     - scmd_private_registry is defined
     - scmd_external_network is not defined
     - scmd_state is not defined
 
-- import_tasks: docker-network.yml
+- ansible.builtin.import_tasks: docker-network.yml
   when:
     - scmd_external_network is defined
     - scmd_external_network | length > 0
     - scmd_private_registry_only is not defined or not scmd_private_registry_only
     - scmd_state is not defined
 
-- include_tasks: docker-service.yml
+- ansible.builtin.include_tasks: docker-service.yml
   when:
     - scmd_variables_only is not defined or not scmd_variables_only
     - scmd_private_registry_only is not defined or not scmd_private_registry_only
     - scmd_state is not defined
 
-- include_tasks: clean-up.yml
+- ansible.builtin.include_tasks: clean-up.yml
   when:
     - scmd_state is defined
 
-- include_tasks: clean-up-variables.yml
+- ansible.builtin.include_tasks: clean-up-variables.yml
   when:
     - scmd_variables_only is not defined or not scmd_variables_only

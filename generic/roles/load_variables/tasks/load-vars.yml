@@ -1,17 +1,23 @@
 ---
 - name: 'loading variables: {{ load_vars_file_filter }} from {{ load_vars_root }}'
-  include_vars:
+  ansible.builtin.include_vars:
     file: '{{ load_vars_files }}'
-  with_fileglob:
-    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.yml'
-    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.json'
-    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.yaml'
+  loop: >-
+    {{
+      lookup('ansible.builtin.fileglob',
+        load_vars_root ~ '/' ~ load_vars_file_filter ~ '.yml',
+        load_vars_root ~ '/' ~ load_vars_file_filter ~ '.json',
+        load_vars_root ~ '/' ~ load_vars_file_filter ~ '.yaml',
+        wantlist=True)
+    }}
+
+
   loop_control:
     loop_var: load_vars_files
   register: loaded_variables
 
 - name: fail on no variables and strict mode
-  fail:
+  ansible.builtin.fail:
     msg: 'In strict mode, variables files should be matched in the given directory: {{ load_vars_root }}'
   when:
     - load_vars_strict

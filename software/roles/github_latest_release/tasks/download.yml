@@ -1,11 +1,11 @@
 ---
 - name: 'create temporary download directory: {{ github_latest_release_repo }}'
-  tempfile:
+  ansible.builtin.tempfile:
     state: directory
   register: temp
 
 - name: 'create temporary unarchive directory: {{ github_latest_release_repo }}'
-  tempfile:
+  ansible.builtin.tempfile:
     state: directory
   register: temp_unarchive
   when:
@@ -13,13 +13,13 @@
     - github_latest_release_archive
 
 - name: 'fetch: {{ github_latest_release_repo }}'
-  get_url:
+  ansible.builtin.get_url:
     url: https://github.com/{{ github_latest_release_repo }}/releases/download/{{ json_response.json.tag_name }}/{{ github_latest_release_repo_filename }}{{ github_latest_release_archive | default("") }}
     dest: '{{ temp.path }}'
   register: download
 
 - name: 'unarchive: {{ github_latest_release_repo }}'
-  unarchive:
+  ansible.builtin.unarchive:
     src: '{{ download.dest }}'
     dest: '{{ temp_unarchive.path }}'
     remote_src: true
@@ -28,16 +28,16 @@
     - github_latest_release_archive
 
 - name: 'set download directory: {{ github_latest_release_repo }}'
-  set_fact:
+  ansible.builtin.set_fact:
     github_latest_release_repo_download_directory: '{{ temp_unarchive.path if temp_unarchive.path is defined else temp.path }}'
 
 - name: 'copy from release: {{ github_latest_release_repo }}'
   become: true
   become_user: root
-  copy:
+  ansible.builtin.copy:
     src: '{{ github_latest_release_repo_download_directory }}/{{ item.src }}'
     dest: '{{ github_latest_release_dest }}/{{ item.dest | default(item.src) }}'
     mode: '{{ github_latest_release_mode }}'
     force: '{{ github_latest_release_force | bool }}'
     remote_src: true
-  with_items: '{{ github_latest_release_artifacts | default([{"src": github_latest_release_repo_filename, "dest": github_latest_release_repo_filename}]) }}'
+  loop: '{{ github_latest_release_artifacts | default([{"src": github_latest_release_repo_filename, "dest": github_latest_release_repo_filename}]) }}'

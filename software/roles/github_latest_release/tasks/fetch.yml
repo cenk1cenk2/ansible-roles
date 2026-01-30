@@ -1,10 +1,10 @@
 ---
 - name: 'fetching latest release: {{ github_latest_release_repo }}'
-  uri:
+  ansible.builtin.uri:
     url: https://api.github.com/repos/{{ github_latest_release_repo }}/releases/{{ github_latest_release_version }}
     return_content: true
   register: json_response
 
 - name: register last release version
-  set_fact:
+  ansible.builtin.set_fact:
     github_latest_release_final_version: '{{ json_response.json.tag_name }}'

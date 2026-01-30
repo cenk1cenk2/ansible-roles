@@ -1,22 +1,22 @@
 ---
-- import_tasks: read-all-keys.yml
+- ansible.builtin.import_tasks: read-all-keys.yml
   when:
     - authorized_keys is not defined
 
-- import_tasks: read-authorized-keys.yml
+- ansible.builtin.import_tasks: read-authorized-keys.yml
   when:
     - authorized_keys is defined
 
-- import_tasks: read-revoked-keys.yml
+- ansible.builtin.import_tasks: read-revoked-keys.yml
   when:
     - revoked_keys is defined
     - revoked_keys | length > 0
 
-- import_tasks: allow-keys.yml
+- ansible.builtin.import_tasks: allow-keys.yml
   when:
     - authorized_keys_all_keys | default([]) | length > 0 or authorized_keys_authorized_keys | default([]) | length > 0
 
-- import_tasks: revoke-keys.yml
+- ansible.builtin.import_tasks: revoke-keys.yml
   when:
     - revoked_keys is defined
     - revoked_keys | length > 0

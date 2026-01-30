@@ -1,4 +1,4 @@
 ---
-- import_tasks: filesystem.yml
+- ansible.builtin.import_tasks: filesystem.yml
   when:
     - scmd_docker_env_template is defined

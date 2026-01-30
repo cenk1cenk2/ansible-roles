@@ -1,24 +1,24 @@
 ---
 - name: check that the env file already exists
-  stat:
+  ansible.builtin.stat:
     path: '{{ letsencrypt_env_path }}'
   register: certbot_env_file_exists
 
 - name: importing the file contents to variable
-  slurp:
+  ansible.builtin.slurp:
     src: '{{ letsencrypt_env_path }}'
   register: certbot_env_file_contents
   when:
     - certbot_env_file_exists.stat.exists
 
 - name: data
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_env_file_contents: '{{ certbot_env_file_contents.content | b64decode }}'
   when:
     - certbot_env_file_exists.stat.exists
 
 - name: search for domains in certbot env file
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_env_file_domains: "{{ certbot_env_file_contents | regex_search('^domains=\"(.*)\"', ignorecase=True) | regex_replace('.*\"(.*)\".*', '\\1', ignorecase=True)\
       \ }}"
   when:
@@ -26,19 +26,18 @@
     - letsencrypt_register_domain is defined
 
 - name: check if domain is already in certbot env file
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_register_domains: '{{ (certbot_register_domains | default([]) + [cert]) | unique }}'
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_domain is defined
     - cert not in certbot_env_file_domains
-  with_items:
-    - '{{ letsencrypt_register_domain }}'
+  loop: '{{ letsencrypt_register_domain }}'
   loop_control:
     loop_var: cert
 
 - name: register letsencrypt domains
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_env_file_contents: "{{ certbot_env_file_contents | regex_replace('^domains=\"(.*)\"', 'DOMAINS=\"' + certbot_env_file_domains + ' ' + certbot_register_domains\
       \ | join(' ') + '\"', ignorecase=True) }}"
   when:
@@ -47,7 +46,7 @@
     - certbot_register_domains | default([]) | length > 0
 
 - name: search for subdomains in certbot env file
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_env_file_subdomains: "{{ certbot_env_file_contents | regex_search('subdomains=\"(.*)\"', ignorecase=True) | regex_replace('.*\"(.*)\".*', '\\1', ignorecase=True)\
       \ }}"
   when:
@@ -55,19 +54,18 @@
     - letsencrypt_register_subdomain is defined
 
 - name: check if subdomain is already in certbot env file
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_register_subdomains: '{{ (certbot_register_subdomains | default([]) + [cert]) | unique }}'
   when:
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_subdomain is defined
     - cert not in certbot_env_file_subdomains
-  with_items:
-    - '{{ letsencrypt_register_subdomain }}'
+  loop: '{{ letsencrypt_register_subdomain }}'
   loop_control:
     loop_var: cert
 
 - name: register letsencrypt subdomains
-  set_fact:
+  ansible.builtin.set_fact:
     certbot_env_file_contents:
       "{{ certbot_env_file_contents | regex_replace('subdomains=\"(.*)\"', 'SUBDOMAINS=\"' + certbot_env_file_subdomains + ' ' + certbot_register_subdomains\
       \ | join(' ') + '\"', ignorecase=True) }}"
@@ -77,7 +75,7 @@
     - certbot_register_subdomains | default([]) | length > 0
 
 - name: write back to certbot environment file
-  copy:
+  ansible.builtin.copy:
     content: '{{ certbot_env_file_contents }}'
     dest: '{{ letsencrypt_env_path }}'
   when:
