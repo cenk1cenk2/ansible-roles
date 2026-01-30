@@ -118,8 +118,12 @@ class ActionModule(ActionBase):
             strict = args.get("strict", False)
             if strict and len(matched_files) == 0:
                 result["failed"] = True
-                result["msg"] = f"In strict mode, at least one file must match pattern '{pattern}' in directory '{root}'"
+                result["msg"] = f"In strict mode, variables files should be matched in the given directory: {root}"
                 return result
+
+            # Warn if no files matched in non-strict mode
+            if not strict and len(matched_files) == 0:
+                display.warning(f"No files matched pattern '{pattern}' in directory '{root}'")
 
             # Load variables from each matched file using include_vars
             loaded_files = []
