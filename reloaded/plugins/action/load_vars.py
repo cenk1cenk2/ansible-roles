@@ -35,6 +35,18 @@ class ActionModule(ActionBase):
         self._supports_check_mode = True
         self._supports_async = False
 
+        _, args = self.validate_argument_spec(
+            argument_spec=dict(
+                mode=dict(type="str"),
+                root=dict(type="str"),
+                pattern=dict(type="str"),
+                environment=dict(type="str"),
+                common=dict(type="bool"),
+                strict=dict(type="bool"),
+                verbosity=dict(type="int", default=0),
+            ),
+        )
+
         result = super(ActionModule, self).run(tmp, task_vars)
 
         result.update(dict(changed=False, failed=False, msg="", skipped=False))
