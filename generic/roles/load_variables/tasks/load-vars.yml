@@ -2,10 +2,16 @@
 - name: 'loading variables: {{ load_vars_file_filter }} from {{ load_vars_root }}'
   ansible.builtin.include_vars:
     file: '{{ load_vars_files }}'
-  with_fileglob:
-    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.yml'
-    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.json'
-    - '{{ load_vars_root }}/{{ load_vars_file_filter }}.yaml'
+  loop: >-
+    {{
+      lookup('ansible.builtin.fileglob',
+        load_vars_root ~ '/' ~ load_vars_file_filter ~ '.yml',
+        load_vars_root ~ '/' ~ load_vars_file_filter ~ '.json',
+        load_vars_root ~ '/' ~ load_vars_file_filter ~ '.yaml',
+        wantlist=True)
+    }}
+
+
   loop_control:
     loop_var: load_vars_files
   register: loaded_variables
