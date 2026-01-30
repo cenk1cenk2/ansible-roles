@@ -2,5 +2,4 @@
 - name: read key files from {{ authorized_keys_root }}
   ansible.builtin.set_fact:
     authorized_keys_all_keys: "{{ (authorized_keys_all_keys | default('')) + lookup('file', item) + '\n' }}"
-  with_fileglob:
-    - '{{ authorized_keys_root }}/*.pub'
+  loop: "{{ lookup('ansible.builtin.fileglob', authorized_keys_root ~ '/*.pub', wantlist=True) }}"
