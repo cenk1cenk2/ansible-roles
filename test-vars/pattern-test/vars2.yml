@@ -1,0 +1,6 @@
+---
+# Pattern test variable file 2
+pattern_var_2: 'value from vars2'
+shared_var: 'vars2 version' # This should override the one from vars1
+database_host: 'localhost'
+database_port: 5432

@@ -1,0 +1,6 @@
+---
+# Pattern test variable file 1
+pattern_var_1: 'value from vars1'
+shared_var: 'vars1 version'
+app_name: 'test-app'
+app_version: '1.0.0'
