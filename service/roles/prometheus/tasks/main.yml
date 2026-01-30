@@ -14,7 +14,7 @@
     config: '{{ item.config }}'
   when:
     - item.state is not defined or item.state == "present"
-  with_items: '{{ prometheus_configs }}'
+  loop: '{{ prometheus_configs }}'
 
 - name: remove file-sd-config
   ansible.builtin.file:
@@ -23,4 +23,4 @@
   when:
     - item.state is defined
     - item.state == "absent"
-  with_items: '{{ prometheus_configs }}'
+  loop: '{{ prometheus_configs }}'
