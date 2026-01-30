@@ -168,6 +168,7 @@ class ActionModule(ActionBase):
             result["ansible_facts"] = ansible_facts
             result["matched_files"] = matched_files
             result["loaded_files"] = sorted(loaded_files)
+            result["variables_loaded"] = len(ansible_facts)
             result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) matching pattern '{pattern}'"
 
             display.v(f"Pattern mode complete: loaded {len(loaded_files)} file(s), {len(ansible_facts)} variable(s)")
@@ -319,6 +320,7 @@ class ActionModule(ActionBase):
             # Update result with all loaded variables
             result["ansible_facts"] = ansible_facts
             result["loaded_files"] = sorted(loaded_files)
+            result["variables_loaded"] = len(ansible_facts)
             result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) in environment mode"
 
             # Hierarchical loading summary
