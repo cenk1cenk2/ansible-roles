@@ -8,7 +8,7 @@
   ansible.builtin.file:
     path: '{{ copy_files_dest }}/{{ file.path }}'
     state: directory
-  with_items: '{{ copy_files_src_all_directories }}'
+  loop: '{{ copy_files_src_all_directories }}'
   loop_control:
     loop_var: file
   when:
@@ -19,7 +19,7 @@
   ansible.posix.synchronize:
     src: '{{ file.src }}'
     dest: '{{ copy_files_dest }}/{{ file.path }}'
-  with_items: '{{ copy_files_src_files }}'
+  loop: '{{ copy_files_src_files }}'
   loop_control:
     loop_var: file
   when:
@@ -30,7 +30,7 @@
     src: '{{ file.src }}'
     dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") }}'
     decrypt: true
-  with_items: '{{ copy_files_src_secrets }}'
+  loop: '{{ copy_files_src_secrets }}'
   loop_control:
     loop_var: file
   when:
@@ -40,7 +40,7 @@
   ansible.builtin.template:
     src: '{{ file.src }}'
     dest: '{{ copy_files_dest }}/{{ file.path | regex_replace(".secrets", "") | regex_replace(".j2$", "") }}'
-  with_items: '{{ copy_files_src_templates }}'
+  loop: '{{ copy_files_src_templates }}'
   loop_control:
     loop_var: file
   when:
