@@ -40,8 +40,7 @@
     group: '{{ service_group }}'
   when:
     - vhost_loop_location.static_directory is defined
-  with_items:
-    - '{{ vhost_proxy_locations }}'
+  loop: '{{ vhost_proxy_locations }}'
   loop_control:
     loop_var: vhost_loop_location
   notify:

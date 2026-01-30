@@ -32,8 +32,7 @@
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_domain is defined
     - cert not in certbot_env_file_domains
-  with_items:
-    - '{{ letsencrypt_register_domain }}'
+  loop: '{{ letsencrypt_register_domain }}'
   loop_control:
     loop_var: cert
 
@@ -61,8 +60,7 @@
     - certbot_env_file_exists.stat.exists
     - letsencrypt_register_subdomain is defined
     - cert not in certbot_env_file_subdomains
-  with_items:
-    - '{{ letsencrypt_register_subdomain }}'
+  loop: '{{ letsencrypt_register_subdomain }}'
   loop_control:
     loop_var: cert
 
