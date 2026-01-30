@@ -1,8 +1,8 @@
 ---
-- import_tasks: fetch.yml
+- ansible.builtin.import_tasks: fetch.yml
 
-- import_tasks: pre-check.yml
+- ansible.builtin.import_tasks: pre-check.yml
 
-- import_tasks: download.yml
+- ansible.builtin.import_tasks: download.yml
   when:
     - github_latest_release_up_to_date is not defined or not github_latest_release_up_to_date

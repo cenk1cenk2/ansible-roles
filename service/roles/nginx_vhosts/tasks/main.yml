@@ -1,25 +1,25 @@
 ---
-- include_tasks: register-variables.yml
+- ansible.builtin.include_tasks: register-variables.yml
 
-- include_tasks: register-le-variables.yml
+- ansible.builtin.include_tasks: register-le-variables.yml
   when:
     - vhost_state is not defined
     - letsencrypt_register_domain is defined or letsencrypt_register_subdomain is defined
     - vhost_provision_only is defined and vhost_provision_only
 
-- include_tasks: provision.yml
+- ansible.builtin.include_tasks: provision.yml
   when:
     - vhost_state is not defined
     - vhost_variables_only is not defined or (vhost_provision_only is defined and vhost_provision_only)
 
-- include_tasks: domains.yml
+- ansible.builtin.include_tasks: domains.yml
   when:
     - vhost_state is not defined
     - vhost_uri is defined
     - vhost_variables_only is not defined or not vhost_variables_only
     - vhost_provision_only is not defined or not vhost_provision_only
 
-- include_tasks: paths.yml
+- ansible.builtin.include_tasks: paths.yml
   when:
     - vhost_state is not defined
     - vhost_uri is defined
@@ -27,13 +27,13 @@
     - vhost_variables_only is not defined or not vhost_variables_only
     - vhost_provision_only is not defined or not vhost_provision_only
 
-- include_tasks: register-le-domains.yml
+- ansible.builtin.include_tasks: register-le-domains.yml
   when:
     - vhost_state is not defined
     - letsencrypt_register_domain is defined or letsencrypt_register_subdomain is defined
     - vhost_provision_only is defined and vhost_provision_only
 
-- include_tasks: clean-up.yml
+- ansible.builtin.include_tasks: clean-up.yml
   when:
     - vhost_state is defined
     - vhost_state
