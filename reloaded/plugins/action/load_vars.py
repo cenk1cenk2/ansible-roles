@@ -44,7 +44,7 @@ class ActionModule(ActionBase):
                 root=dict(type="str"),
                 pattern=dict(type="str"),
                 environment=dict(type="str"),
-                common=dict(type="bool"),
+                common=dict(type="str", default="base"),
                 strict=dict(type="bool"),
                 verbosity=dict(type="int", default=0),
             ),
@@ -171,5 +171,73 @@ class ActionModule(ActionBase):
             result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) matching pattern '{pattern}'"
 
             display.v(f"Pattern mode complete: loaded {len(loaded_files)} file(s), {len(ansible_facts)} variable(s)")
+
+        # Environment mode implementation
+        elif mode == "environment":
+            environment = args.get("environment")
+            common = args.get("common")  # Defaults to 'base' via argument spec
+            strict = args.get("strict", False)
+            verbosity = args.get("verbosity", 0)
+
+            display.vv(f"Environment mode: loading environment '{environment}' from root '{root}'")
+
+            loaded_files = []
+            ansible_facts = {}
+
+            # Load common directory files first
+            common_path = os.path.join(root, common)
+            display.vv(f"Loading common environment: {common} from {root}")
+
+            # Build patterns for common directory
+            common_patterns = [
+                os.path.join(common_path, '*.yml'),
+                os.path.join(common_path, '*.yaml'),
+                os.path.join(common_path, '*.json'),
+            ]
+
+            # Glob all matching files in common directory
+            common_files = []
+            for pattern_str in common_patterns:
+                found = glob.glob(pattern_str)
+                if found:
+                    display.vvv(f"Common pattern '{pattern_str}' matched {len(found)} file(s)")
+                common_files.extend(found)
+
+            # Sort for deterministic order
+            common_files = sorted(set(common_files))
+
+            if common_files:
+                display.vv(f"Found {len(common_files)} common file(s) in {common}/")
+
+            # Load variables from each common file
+            for vars_file in common_files:
+                if verbosity >= 1:
+                    display.v(f"Loading common variables from: {vars_file}")
+
+                # Execute include_vars action plugin for this file
+                include_vars_result = self._execute_module(
+                    module_name="ansible.builtin.include_vars",
+                    module_args=dict(file=vars_file),
+                    task_vars=task_vars,
+                    tmp=tmp,
+                )
+
+                # Check if include_vars succeeded
+                if include_vars_result.get("failed", False):
+                    result["failed"] = True
+                    result["msg"] = f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    return result
+
+                # Collect the loaded variables (they are in ansible_facts)
+                if "ansible_facts" in include_vars_result:
+                    ansible_facts.update(include_vars_result["ansible_facts"])
+                    loaded_files.append(vars_file)
+
+            # Update result with loaded variables
+            result["ansible_facts"] = ansible_facts
+            result["loaded_files"] = loaded_files
+            result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) in environment mode"
+
+            display.v(f"Environment mode in progress: loaded {len(loaded_files)} file(s) from common directory")
 
         return result
