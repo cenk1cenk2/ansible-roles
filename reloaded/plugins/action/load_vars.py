@@ -233,11 +233,67 @@ class ActionModule(ActionBase):
                     ansible_facts.update(include_vars_result["ansible_facts"])
                     loaded_files.append(vars_file)
 
-            # Update result with loaded variables
+            # Load environment-specific directory files (these override common)
+            env_path = os.path.join(root, environment)
+            display.vv(f"Loading environment: {environment} from {root}")
+
+            # Build patterns for environment directory
+            env_patterns = [
+                os.path.join(env_path, '*.yml'),
+                os.path.join(env_path, '*.yaml'),
+                os.path.join(env_path, '*.json'),
+            ]
+
+            # Glob all matching files in environment directory
+            env_files = []
+            for pattern_str in env_patterns:
+                found = glob.glob(pattern_str)
+                if found:
+                    display.vvv(f"Environment pattern '{pattern_str}' matched {len(found)} file(s)")
+                env_files.extend(found)
+
+            # Sort for deterministic order
+            env_files = sorted(set(env_files))
+
+            if env_files:
+                display.vv(f"Found {len(env_files)} environment file(s) in {environment}/")
+
+            # Handle strict mode - fail if no environment files found
+            if strict and len(env_files) == 0:
+                result["failed"] = True
+                result["msg"] = f"In strict mode, variables files should be matched in the given directory: {root}/{environment}"
+                return result
+
+            # Load variables from each environment file (these override common vars)
+            for vars_file in env_files:
+                if verbosity >= 1:
+                    display.v(f"Loading environment variables from: {vars_file}")
+
+                # Execute include_vars action plugin for this file
+                include_vars_result = self._execute_module(
+                    module_name="ansible.builtin.include_vars",
+                    module_args=dict(file=vars_file),
+                    task_vars=task_vars,
+                    tmp=tmp,
+                )
+
+                # Check if include_vars succeeded
+                if include_vars_result.get("failed", False):
+                    result["failed"] = True
+                    result["msg"] = f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    return result
+
+                # Collect the loaded variables (they are in ansible_facts)
+                # These will override any common variables with the same name
+                if "ansible_facts" in include_vars_result:
+                    ansible_facts.update(include_vars_result["ansible_facts"])
+                    loaded_files.append(vars_file)
+
+            # Update result with all loaded variables
             result["ansible_facts"] = ansible_facts
             result["loaded_files"] = loaded_files
             result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) in environment mode"
 
-            display.v(f"Environment mode in progress: loaded {len(loaded_files)} file(s) from common directory")
+            display.v(f"Environment mode complete: loaded {len(loaded_files)} file(s), {len(ansible_facts)} variable(s)")
 
         return result
