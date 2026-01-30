@@ -49,11 +49,11 @@ options:
   common:
     description:
       - Common directory name for shared variables in environment mode
-      - Defaults to C(common) if not specified
+      - Defaults to C(base) if not specified
       - Only used when mode is C(environment)
     required: false
     type: str
-    default: common
+    default: base
   strict:
     description:
       - Whether to fail when no files match the pattern or environment structure

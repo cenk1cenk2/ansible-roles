@@ -63,18 +63,28 @@ class ActionModule(ActionBase):
             )
         )
 
-        # Validate mode parameter
+        # Validate mode parameter (required)
         mode = args.get("mode")
-        valid_modes = ["pattern", "environment"]
+        if not mode:
+            result["failed"] = True
+            result["msg"] = "Required parameter 'mode' is missing"
+            return result
 
-        if mode and mode not in valid_modes:
+        valid_modes = ["pattern", "environment"]
+        if mode not in valid_modes:
             result["failed"] = True
             result["msg"] = f"Invalid mode '{mode}'. Mode must be one of: {', '.join(valid_modes)}"
             return result
 
-        # Validate root directory exists
+        # Validate root parameter (required)
         root = args.get("root")
-        if root and not os.path.exists(root):
+        if not root:
+            result["failed"] = True
+            result["msg"] = "Required parameter 'root' is missing"
+            return result
+
+        # Validate root directory exists
+        if not os.path.exists(root):
             result["failed"] = True
             result["msg"] = f"Root directory '{root}' does not exist"
             return result

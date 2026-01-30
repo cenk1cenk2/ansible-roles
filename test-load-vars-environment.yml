@@ -152,6 +152,37 @@
         fail_msg: 'Default common directory (base) did not work'
         success_msg: 'Default common directory worked correctly'
 
+    # Test 5: Missing required parameters
+    - name: Test 5a - Missing mode parameter (should fail)
+      cenk1cenk2.reloaded.load_vars:
+        root: ./test-vars/env-test
+        environment: prod
+      register: result_missing_mode
+      ignore_errors: true
+
+    - name: Verify missing mode parameter fails
+      ansible.builtin.assert:
+        that:
+          - result_missing_mode is failed
+          - "'mode' in result_missing_mode.msg"
+        fail_msg: 'Plugin should fail when mode parameter is missing'
+        success_msg: 'Missing mode parameter correctly rejected'
+
+    - name: Test 5b - Missing root parameter (should fail)
+      cenk1cenk2.reloaded.load_vars:
+        mode: environment
+        environment: prod
+      register: result_missing_root
+      ignore_errors: true
+
+    - name: Verify missing root parameter fails
+      ansible.builtin.assert:
+        that:
+          - result_missing_root is failed
+          - "'root' in result_missing_root.msg"
+        fail_msg: 'Plugin should fail when root parameter is missing'
+        success_msg: 'Missing root parameter correctly rejected'
+
     - name: Final test summary
       ansible.builtin.debug:
         msg:
@@ -159,5 +190,7 @@
           - '✓ Test 2: Non-strict mode with missing environment - PASSED'
           - '✓ Test 3: Strict mode with missing directories - PASSED'
           - '✓ Test 4: Default common directory - PASSED'
+          - '✓ Test 5a: Missing mode parameter - PASSED'
+          - '✓ Test 5b: Missing root parameter - PASSED'
           - ''
           - 'All environment mode tests completed successfully!'
