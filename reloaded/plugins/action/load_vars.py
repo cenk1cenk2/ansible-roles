@@ -51,4 +51,13 @@ class ActionModule(ActionBase):
 
         result.update(dict(changed=False, failed=False, msg="", skipped=False))
 
+        # Validate mode parameter
+        mode = args.get("mode")
+        valid_modes = ["pattern", "environment"]
+
+        if mode and mode not in valid_modes:
+            result["failed"] = True
+            result["msg"] = f"Invalid mode '{mode}'. Mode must be one of: {', '.join(valid_modes)}"
+            return result
+
         return result
