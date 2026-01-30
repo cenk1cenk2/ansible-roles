@@ -40,4 +40,4 @@
     mode: '{{ github_latest_release_mode }}'
     force: '{{ github_latest_release_force | bool }}'
     remote_src: true
-  with_items: '{{ github_latest_release_artifacts | default([{"src": github_latest_release_repo_filename, "dest": github_latest_release_repo_filename}]) }}'
+  loop: '{{ github_latest_release_artifacts | default([{"src": github_latest_release_repo_filename, "dest": github_latest_release_repo_filename}]) }}'
