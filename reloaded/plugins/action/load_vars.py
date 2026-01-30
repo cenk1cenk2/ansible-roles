@@ -52,7 +52,16 @@ class ActionModule(ActionBase):
 
         result = super(ActionModule, self).run(tmp, task_vars)
 
-        result.update(dict(changed=False, failed=False, msg="", skipped=False))
+        result.update(
+            dict(
+                changed=False,
+                failed=False,
+                msg="",
+                skipped=False,
+                loaded_files=[],
+                variables_loaded=0,
+            )
+        )
 
         # Validate mode parameter
         mode = args.get("mode")
