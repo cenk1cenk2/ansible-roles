@@ -180,6 +180,7 @@ class ActionModule(ActionBase):
             verbosity = args.get("verbosity", 0)
 
             display.vv(f"Environment mode: loading environment '{environment}' from root '{root}'")
+            display.vvv(f"Hierarchical loading: {common} (common) → {environment} (environment-specific)")
 
             loaded_files = []
             ansible_facts = {}
@@ -187,6 +188,7 @@ class ActionModule(ActionBase):
             # Load common directory files first
             common_path = os.path.join(root, common)
             display.vv(f"Loading common environment: {common} from {root}")
+            display.vvv(f"Searching for common files in: {common_path}")
 
             # Build patterns for common directory
             common_patterns = [
@@ -208,6 +210,9 @@ class ActionModule(ActionBase):
 
             if common_files:
                 display.vv(f"Found {len(common_files)} common file(s) in {common}/")
+                display.vvv(f"Common files: {', '.join(common_files)}")
+            else:
+                display.vvv(f"No common files found in {common}/")
 
             # Load variables from each common file
             for vars_file in common_files:
@@ -233,9 +238,16 @@ class ActionModule(ActionBase):
                     ansible_facts.update(include_vars_result["ansible_facts"])
                     loaded_files.append(vars_file)
 
+            # Log common loading summary
+            common_var_count = len(ansible_facts)
+            if common_files:
+                display.vv(f"Loaded {len(common_files)} common file(s) with {common_var_count} variable(s)")
+                display.vvv(f"Common variables loaded: {', '.join(sorted(ansible_facts.keys())[:10])}{'...' if common_var_count > 10 else ''}")
+
             # Load environment-specific directory files (these override common)
             env_path = os.path.join(root, environment)
-            display.vv(f"Loading environment: {environment} from {root}")
+            display.vv(f"Loading environment-specific files from: {environment}")
+            display.vvv(f"Searching for environment files in: {env_path}")
 
             # Build patterns for environment directory
             env_patterns = [
@@ -256,7 +268,10 @@ class ActionModule(ActionBase):
             env_files = sorted(set(env_files))
 
             if env_files:
-                display.vv(f"Found {len(env_files)} environment file(s) in {environment}/")
+                display.vv(f"Found {len(env_files)} environment-specific file(s) in {environment}/")
+                display.vvv(f"Environment files: {', '.join(env_files)}")
+            else:
+                display.vvv(f"No environment-specific files found in {environment}/")
 
             # Handle strict mode - fail if neither common nor environment files found
             if strict and len(common_files) == 0 and len(env_files) == 0:
@@ -272,7 +287,10 @@ class ActionModule(ActionBase):
             # Load variables from each environment file (these override common vars)
             for vars_file in env_files:
                 if verbosity >= 1:
-                    display.v(f"Loading environment variables from: {vars_file}")
+                    display.v(f"Loading environment-specific variables from: {vars_file}")
+
+                # Track which variables might be overridden
+                vars_before_load = set(ansible_facts.keys())
 
                 # Execute include_vars action plugin for this file
                 include_vars_result = self._execute_module(
@@ -291,7 +309,11 @@ class ActionModule(ActionBase):
                 # Collect the loaded variables (they are in ansible_facts)
                 # These will override any common variables with the same name
                 if "ansible_facts" in include_vars_result:
-                    ansible_facts.update(include_vars_result["ansible_facts"])
+                    new_vars = include_vars_result["ansible_facts"]
+                    overridden_vars = set(new_vars.keys()) & vars_before_load
+                    if overridden_vars and verbosity >= 3:
+                        display.vvv(f"Environment-specific variables overriding common: {', '.join(sorted(overridden_vars))}")
+                    ansible_facts.update(new_vars)
                     loaded_files.append(vars_file)
 
             # Update result with all loaded variables
@@ -299,6 +321,11 @@ class ActionModule(ActionBase):
             result["loaded_files"] = loaded_files
             result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) in environment mode"
 
-            display.v(f"Environment mode complete: loaded {len(loaded_files)} file(s), {len(ansible_facts)} variable(s)")
+            # Hierarchical loading summary
+            total_vars = len(ansible_facts)
+            common_file_count = len(common_files)
+            env_file_count = len(env_files)
+            display.v(f"Environment mode complete: loaded {len(loaded_files)} file(s) ({common_file_count} common + {env_file_count} environment), {total_vars} total variable(s)")
+            display.vvv(f"Hierarchical merge complete: {common} → {environment}")
 
         return result
