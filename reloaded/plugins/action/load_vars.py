@@ -258,11 +258,16 @@ class ActionModule(ActionBase):
             if env_files:
                 display.vv(f"Found {len(env_files)} environment file(s) in {environment}/")
 
-            # Handle strict mode - fail if no environment files found
-            if strict and len(env_files) == 0:
+            # Handle strict mode - fail if neither common nor environment files found
+            if strict and len(common_files) == 0 and len(env_files) == 0:
                 result["failed"] = True
                 result["msg"] = f"In strict mode, variables files should be matched in the given directory: {root}/{environment}"
                 return result
+
+            # Warn if no files found in non-strict mode
+            if not strict and len(common_files) == 0 and len(env_files) == 0:
+                display.warning(f"No files found in common directory '{common}' or environment directory '{environment}'")
+                display.vv("No files to load in environment mode")
 
             # Load variables from each environment file (these override common vars)
             for vars_file in env_files:
