@@ -88,6 +88,9 @@ class ActionModule(ActionBase):
         # Pattern mode implementation
         if mode == "pattern":
             pattern = args.get("pattern")
+            verbosity = args.get("verbosity", 0)
+
+            display.vv(f"Pattern mode: searching for pattern '{pattern}' in root '{root}'")
 
             # Build file patterns for all supported extensions
             # Support glob patterns like "*.yml" or "subdir/**/*.yml"
@@ -97,6 +100,7 @@ class ActionModule(ActionBase):
             # Otherwise, try all supported extensions
             if base_pattern.endswith(('.yml', '.yaml', '.json')):
                 patterns_to_search = [base_pattern]
+                display.vvv(f"Pattern has extension, using: {base_pattern}")
             else:
                 # Remove any extension from pattern and add all supported extensions
                 base_without_ext = base_pattern.rstrip('*')
@@ -105,14 +109,21 @@ class ActionModule(ActionBase):
                     base_without_ext + '.yaml',
                     base_without_ext + '.json',
                 ]
+                display.vvv(f"Pattern has no extension, searching: {', '.join(patterns_to_search)}")
 
             # Glob all matching files
             matched_files = []
             for pattern_str in patterns_to_search:
-                matched_files.extend(glob.glob(pattern_str, recursive=True))
+                found = glob.glob(pattern_str, recursive=True)
+                if found:
+                    display.vvv(f"Pattern '{pattern_str}' matched {len(found)} file(s)")
+                matched_files.extend(found)
 
             # Sort for deterministic order
             matched_files = sorted(set(matched_files))
+
+            if matched_files:
+                display.vv(f"Found {len(matched_files)} matching file(s): {', '.join(matched_files)}")
 
             # Handle strict mode
             strict = args.get("strict", False)
@@ -124,11 +135,11 @@ class ActionModule(ActionBase):
             # Warn if no files matched in non-strict mode
             if not strict and len(matched_files) == 0:
                 display.warning(f"No files matched pattern '{pattern}' in directory '{root}'")
+                display.vv("No files to load in pattern mode")
 
             # Load variables from each matched file using include_vars
             loaded_files = []
             ansible_facts = {}
-            verbosity = args.get("verbosity", 0)
 
             for vars_file in matched_files:
                 if verbosity >= 1:
@@ -158,5 +169,7 @@ class ActionModule(ActionBase):
             result["matched_files"] = matched_files
             result["loaded_files"] = loaded_files
             result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) matching pattern '{pattern}'"
+
+            display.v(f"Pattern mode complete: loaded {len(loaded_files)} file(s), {len(ansible_facts)} variable(s)")
 
         return result
