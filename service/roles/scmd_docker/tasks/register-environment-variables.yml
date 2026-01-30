@@ -2,8 +2,7 @@
 - name: 'register environment variable files: {{ scmd_service_name }}'
   ansible.builtin.set_fact:
     scmd_env_files: "{{ scmd_env_files | default([]) + [{'name': scmd_loop_env_files[:-3] | basename, 'path': scmd_loop_env_files}] }}"
-  with_fileglob:
-    - '{{ scmd_env_file_template_dir }}/*.j2'
+  loop: "{{ lookup('ansible.builtin.fileglob', scmd_env_file_template_dir ~ '/*.j2', wantlist=True) }}"
   loop_control:
     loop_var: scmd_loop_env_files
 

@@ -5,6 +5,6 @@
     password: '{{ scmd_loop_registry.registry_password is defined | ternary(scmd_loop_registry.registry_password, scmd_registry_password) }}'
     registry_url: '{{ scmd_loop_registry.registry_url is defined | ternary(scmd_loop_registry.registry_url, scmd_registry_url) }}'
     reauthorize: true
-  with_items: '{{ scmd_private_registry }}'
+  loop: '{{ scmd_private_registry }}'
   loop_control:
     loop_var: scmd_loop_registry

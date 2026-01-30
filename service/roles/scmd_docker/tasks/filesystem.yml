@@ -31,7 +31,7 @@
   ansible.builtin.template:
     src: '{{ scmd_loop_env_file.path }}'
     dest: "{{ scmd_full_env_dir }}/{% if scmd_loop_env_file.name != 'env' %}{{ scmd_loop_env_file.name }}{% endif %}.env"
-  with_items: '{{ scmd_env_files }}'
+  loop: '{{ scmd_env_files }}'
   loop_control:
     loop_var: scmd_loop_env_file
   when:

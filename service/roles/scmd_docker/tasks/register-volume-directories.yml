@@ -14,8 +14,7 @@
       {% set value = scmd_volume_dirs | default([ ]) %}
       {% endif %}
       {{ value }}
-  with_items:
-    - '{{ scmd_services }}'
+  loop: '{{ scmd_services }}'
   loop_control:
     loop_var: scmd_loop_services
   when:
