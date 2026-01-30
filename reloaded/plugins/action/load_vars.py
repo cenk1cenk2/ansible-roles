@@ -2,6 +2,7 @@ from __future__ import annotations
 
 __metaclass__ = type
 
+import glob
 import os
 
 from ansible.plugins.action import ActionBase
@@ -83,5 +84,44 @@ class ActionModule(ActionBase):
                 result["failed"] = True
                 result["msg"] = "Environment mode requires 'environment' parameter"
                 return result
+
+        # Pattern mode implementation
+        if mode == "pattern":
+            pattern = args.get("pattern")
+
+            # Build file patterns for all supported extensions
+            # Support glob patterns like "*.yml" or "subdir/**/*.yml"
+            base_pattern = os.path.join(root, pattern) if not os.path.isabs(pattern) else pattern
+
+            # If pattern already has extension, use it directly
+            # Otherwise, try all supported extensions
+            if base_pattern.endswith(('.yml', '.yaml', '.json')):
+                patterns_to_search = [base_pattern]
+            else:
+                # Remove any extension from pattern and add all supported extensions
+                base_without_ext = base_pattern.rstrip('*')
+                patterns_to_search = [
+                    base_without_ext + '.yml',
+                    base_without_ext + '.yaml',
+                    base_without_ext + '.json',
+                ]
+
+            # Glob all matching files
+            matched_files = []
+            for pattern_str in patterns_to_search:
+                matched_files.extend(glob.glob(pattern_str, recursive=True))
+
+            # Sort for deterministic order
+            matched_files = sorted(set(matched_files))
+
+            # Handle strict mode
+            strict = args.get("strict", False)
+            if strict and len(matched_files) == 0:
+                result["failed"] = True
+                result["msg"] = f"In strict mode, at least one file must match pattern '{pattern}' in directory '{root}'"
+                return result
+
+            result["matched_files"] = matched_files
+            result["msg"] = f"Found {len(matched_files)} file(s) matching pattern '{pattern}'"
 
         return result
