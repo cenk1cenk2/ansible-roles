@@ -1,6 +1,6 @@
 ---
 - name: include scmd role
-  include_role:
+  ansible.builtin.include_role:
     name: cenk1cenk2.service.scmd_docker
     public: true
   vars:
@@ -8,7 +8,7 @@
     scmd_service_name: any
 
 - name: include nginx role
-  include_role:
+  ansible.builtin.include_role:
     name: cenk1cenk2.service.nginx_vhosts
     public: true
   vars:

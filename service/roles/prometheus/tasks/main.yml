@@ -1,6 +1,6 @@
 ---
 - name: include scmd_docker
-  include_role:
+  ansible.builtin.include_role:
     name: cenk1cenk2.service.scmd_docker
   vars:
     scmd_variables_only: true
