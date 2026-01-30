@@ -2,6 +2,8 @@ from __future__ import annotations
 
 __metaclass__ = type
 
+import os
+
 from ansible.plugins.action import ActionBase
 from ansible.utils.display import Display
 
@@ -58,6 +60,13 @@ class ActionModule(ActionBase):
         if mode and mode not in valid_modes:
             result["failed"] = True
             result["msg"] = f"Invalid mode '{mode}'. Mode must be one of: {', '.join(valid_modes)}"
+            return result
+
+        # Validate root directory exists
+        root = args.get("root")
+        if root and not os.path.exists(root):
+            result["failed"] = True
+            result["msg"] = f"Root directory '{root}' does not exist"
             return result
 
         return result
