@@ -1,0 +1,59 @@
+---
+# Prepare test environment for load_vars plugin testing
+- name: Prepare test environment
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Create test directory structure for pattern mode
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - /tmp/test-vars/pattern-test
+        - /tmp/test-vars/env-test/base
+        - /tmp/test-vars/env-test/prod
+
+    - name: Create pattern test variables file 1
+      ansible.builtin.copy:
+        dest: /tmp/test-vars/pattern-test/vars1.yml
+        content: |
+          ---
+          pattern_var_1: value from vars1
+          app_name: test-app
+          shared_var: vars1 version
+        mode: '0644'
+
+    - name: Create pattern test variables file 2
+      ansible.builtin.copy:
+        dest: /tmp/test-vars/pattern-test/vars2.yml
+        content: |
+          ---
+          pattern_var_2: value from vars2
+          database_host: localhost
+          shared_var: vars2 version
+        mode: '0644'
+
+    - name: Create environment test base/common variables
+      ansible.builtin.copy:
+        dest: /tmp/test-vars/env-test/base/common.yml
+        content: |
+          ---
+          app_name: myapp
+          log_level: info
+          database_host: localhost
+          cache_enabled: true
+          common_var: from base
+        mode: '0644'
+
+    - name: Create environment test prod variables
+      ansible.builtin.copy:
+        dest: /tmp/test-vars/env-test/prod/prod.yml
+        content: |
+          ---
+          log_level: warning
+          database_host: prod-db.example.com
+          database_ssl: true
+          prod_only_var: production specific
+        mode: '0644'
