@@ -1,0 +1,82 @@
+---
+# Verification playbook for load_vars plugin testing
+# This playbook runs after converge to verify the state
+- name: Verify load_vars plugin functionality
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Verify test directories exist
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: stat_result
+      failed_when: not stat_result.stat.exists
+      loop:
+        - /tmp/test-vars/pattern-test
+        - /tmp/test-vars/env-test/base
+        - /tmp/test-vars/env-test/prod
+
+    - name: Verify test files exist
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: stat_files
+      failed_when: not stat_files.stat.exists
+      loop:
+        - /tmp/test-vars/pattern-test/vars1.yml
+        - /tmp/test-vars/pattern-test/vars2.yml
+        - /tmp/test-vars/env-test/base/common.yml
+        - /tmp/test-vars/env-test/prod/prod.yml
+
+    - name: Run a quick smoke test of pattern mode
+      cenk1cenk2.reloaded.load_vars:
+        mode: pattern
+        root: /tmp/test-vars/pattern-test
+        pattern: '*.yml'
+      register: smoke_test_pattern
+
+    - name: Verify smoke test succeeded
+      ansible.builtin.assert:
+        that:
+          - smoke_test_pattern is succeeded
+          - smoke_test_pattern.loaded_files | length == 2
+        fail_msg: 'Smoke test failed - pattern mode not working'
+        success_msg: 'Smoke test passed - pattern mode working correctly'
+
+    - name: Clear variables for environment mode smoke test
+      ansible.builtin.set_fact:
+        pattern_var_1: null
+        pattern_var_2: null
+        app_name: null
+        database_host: null
+        shared_var: null
+
+    - name: Run a quick smoke test of environment mode
+      cenk1cenk2.reloaded.load_vars:
+        mode: environment
+        root: /tmp/test-vars/env-test
+        environment: prod
+        common: base
+      register: smoke_test_env
+
+    - name: Verify environment mode smoke test succeeded
+      ansible.builtin.assert:
+        that:
+          - smoke_test_env is succeeded
+          - smoke_test_env.loaded_files | length == 2
+        fail_msg: 'Smoke test failed - environment mode not working'
+        success_msg: 'Smoke test passed - environment mode working correctly'
+
+    - name: Display verification summary
+      ansible.builtin.debug:
+        msg:
+          - '========================================='
+          - 'VERIFICATION COMPLETE'
+          - '========================================='
+          - ''
+          - 'All verification checks passed:'
+          - '  ✓ Test directories created'
+          - '  ✓ Test files present'
+          - '  ✓ Pattern mode smoke test passed'
+          - '  ✓ Environment mode smoke test passed'
+          - ''
+          - 'load_vars plugin is functioning correctly!'

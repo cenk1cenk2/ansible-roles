@@ -1,0 +1,295 @@
+---
+# Main test playbook for cenk1cenk2.reloaded.load_vars plugin
+# This playbook runs the load_vars plugin in various scenarios
+- name: Test load_vars plugin - Pattern Mode
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    # ========================================
+    # PATTERN MODE TESTS
+    # ========================================
+
+    # Test 1: Basic pattern mode - load all *.yml files
+    - name: Test 1 - Load variables using pattern mode
+      cenk1cenk2.reloaded.load_vars:
+        mode: pattern
+        root: /tmp/test-vars/pattern-test
+        pattern: '*.yml'
+      register: result_pattern
+
+    - name: Verify pattern mode loaded files
+      ansible.builtin.assert:
+        that:
+          - result_pattern is succeeded
+          - result_pattern.loaded_files is defined
+          - result_pattern.loaded_files | length == 2
+          - result_pattern.variables_loaded is defined
+          - result_pattern.variables_loaded > 0
+        fail_msg: 'Pattern mode failed to load files correctly'
+        success_msg: 'Pattern mode loaded {{ result_pattern.loaded_files | length }} files with {{ result_pattern.variables_loaded }} variables'
+
+    - name: Verify loaded variables are available
+      ansible.builtin.assert:
+        that:
+          - pattern_var_1 is defined
+          - pattern_var_1 == 'value from vars1'
+          - pattern_var_2 is defined
+          - pattern_var_2 == 'value from vars2'
+          - app_name is defined
+          - app_name == 'test-app'
+          - database_host is defined
+          - database_host == 'localhost'
+          # shared_var should have the value from vars2 (loaded last)
+          - shared_var == 'vars2 version'
+        fail_msg: 'Variables were not loaded correctly or override behavior failed'
+        success_msg: 'All variables loaded correctly with proper override behavior'
+
+    # Test 2: Non-strict mode with no matches (should succeed with warning)
+    - name: Test 2 - Non-strict mode with no matching files
+      cenk1cenk2.reloaded.load_vars:
+        mode: pattern
+        root: /tmp/test-vars/pattern-test
+        pattern: '*.json'
+        strict: false
+      register: result_no_match_non_strict
+
+    - name: Verify non-strict mode succeeds with no matches
+      ansible.builtin.assert:
+        that:
+          - result_no_match_non_strict is succeeded
+          - result_no_match_non_strict.loaded_files | length == 0
+          - result_no_match_non_strict.variables_loaded == 0
+        fail_msg: 'Non-strict mode should succeed when no files match'
+        success_msg: 'Non-strict mode correctly succeeded with 0 files'
+
+    # Test 3: Strict mode with no matches (should fail)
+    - name: Test 3 - Strict mode with no matching files (should fail)
+      cenk1cenk2.reloaded.load_vars:
+        mode: pattern
+        root: /tmp/test-vars/pattern-test
+        pattern: '*.json'
+        strict: true
+      register: result_no_match_strict
+      ignore_errors: true
+
+    - name: Verify strict mode fails with no matches
+      ansible.builtin.assert:
+        that:
+          - result_no_match_strict is failed
+          - result_no_match_strict.msg is defined
+        fail_msg: 'Strict mode should fail when no files match'
+        success_msg: 'Strict mode correctly failed: {{ result_no_match_strict.msg }}'
+
+    # Test 4: Pattern with specific file extension
+    - name: Test 4 - Pattern mode with .yml extension explicitly
+      cenk1cenk2.reloaded.load_vars:
+        mode: pattern
+        root: /tmp/test-vars/pattern-test
+        pattern: 'vars*.yml'
+      register: result_specific_pattern
+
+    - name: Verify specific pattern loaded correct files
+      ansible.builtin.assert:
+        that:
+          - result_specific_pattern is succeeded
+          - result_specific_pattern.loaded_files | length == 2
+        fail_msg: 'Specific pattern did not match expected files'
+        success_msg: 'Specific pattern matched {{ result_specific_pattern.loaded_files | length }} files'
+
+    # Test 5: Missing required parameters
+    - name: Test 5a - Missing mode parameter (should fail)
+      cenk1cenk2.reloaded.load_vars:
+        root: /tmp/test-vars/pattern-test
+        pattern: '*.yml'
+      register: result_missing_mode
+      ignore_errors: true
+
+    - name: Verify missing mode parameter fails
+      ansible.builtin.assert:
+        that:
+          - result_missing_mode is failed
+          - "'mode' in result_missing_mode.msg"
+        fail_msg: 'Plugin should fail when mode parameter is missing'
+        success_msg: 'Missing mode parameter correctly rejected'
+
+    - name: Test 5b - Missing root parameter (should fail)
+      cenk1cenk2.reloaded.load_vars:
+        mode: pattern
+        pattern: '*.yml'
+      register: result_missing_root
+      ignore_errors: true
+
+    - name: Verify missing root parameter fails
+      ansible.builtin.assert:
+        that:
+          - result_missing_root is failed
+          - "'root' in result_missing_root.msg"
+        fail_msg: 'Plugin should fail when root parameter is missing'
+        success_msg: 'Missing root parameter correctly rejected'
+
+    # ========================================
+    # ENVIRONMENT MODE TESTS
+    # ========================================
+
+    # Clear variables before environment mode tests
+    - name: Clear variables for environment mode tests
+      ansible.builtin.set_fact:
+        pattern_var_1: null
+        pattern_var_2: null
+        app_name: null
+        database_host: null
+        shared_var: null
+        log_level: null
+        cache_enabled: null
+        common_var: null
+        database_ssl: null
+        prod_only_var: null
+
+    # Test 6: Basic environment mode - load base + prod
+    - name: Test 6 - Load variables using environment mode (base + prod)
+      cenk1cenk2.reloaded.load_vars:
+        mode: environment
+        root: /tmp/test-vars/env-test
+        environment: prod
+        common: base
+      register: result_env
+
+    - name: Verify environment mode loaded files
+      ansible.builtin.assert:
+        that:
+          - result_env is succeeded
+          - result_env.loaded_files is defined
+          - result_env.loaded_files | length == 2
+          - result_env.variables_loaded is defined
+          - result_env.variables_loaded > 0
+        fail_msg: 'Environment mode failed to load files correctly'
+        success_msg: 'Environment mode loaded {{ result_env.loaded_files | length }} files with {{ result_env.variables_loaded }} variables'
+
+    - name: Verify base variables are loaded
+      ansible.builtin.assert:
+        that:
+          - app_name is defined
+          - app_name == 'myapp'
+          - cache_enabled is defined
+          - cache_enabled == true
+          - common_var is defined
+          - common_var == 'from base'
+        fail_msg: 'Base variables were not loaded correctly'
+        success_msg: 'Base variables loaded correctly'
+
+    - name: Verify prod variables override base variables
+      ansible.builtin.assert:
+        that:
+          # These should be overridden by prod values
+          - log_level is defined
+          - log_level == 'warning' # prod overrides base 'info'
+          - database_host is defined
+          - database_host == 'prod-db.example.com' # prod overrides base 'localhost'
+          # These are prod-only variables
+          - database_ssl is defined
+          - database_ssl == true
+          - prod_only_var is defined
+          - prod_only_var == 'production specific'
+        fail_msg: 'Prod variables did not override base or prod-specific variables missing'
+        success_msg: 'Variable precedence working correctly - prod overrides base'
+
+    # Test 7: Non-strict mode with missing environment
+    - name: Clear variables for next test
+      ansible.builtin.set_fact:
+        app_name: null
+        log_level: null
+        database_host: null
+        cache_enabled: null
+        common_var: null
+        database_ssl: null
+        prod_only_var: null
+
+    - name: Test 7 - Non-strict mode with missing environment directory
+      cenk1cenk2.reloaded.load_vars:
+        mode: environment
+        root: /tmp/test-vars/env-test
+        environment: staging # This directory does not exist
+        common: base
+        strict: false
+      register: result_missing_env_non_strict
+
+    - name: Verify non-strict mode succeeds with missing environment
+      ansible.builtin.assert:
+        that:
+          - result_missing_env_non_strict is succeeded
+          - result_missing_env_non_strict.loaded_files | length >= 0
+          # Should at least load base files
+          - app_name is defined
+          - app_name == 'myapp'
+        fail_msg: 'Non-strict mode should succeed when environment directory is missing'
+        success_msg: 'Non-strict mode correctly succeeded with missing environment'
+
+    # Test 8: Strict mode with missing environment
+    - name: Test 8 - Strict mode with completely missing directories (should fail)
+      cenk1cenk2.reloaded.load_vars:
+        mode: environment
+        root: /tmp/test-vars/env-test
+        environment: nonexistent
+        common: nonexistent-base
+        strict: true
+      register: result_missing_strict
+      ignore_errors: true
+
+    - name: Verify strict mode fails with no files
+      ansible.builtin.assert:
+        that:
+          - result_missing_strict is failed
+          - result_missing_strict.msg is defined
+        fail_msg: 'Strict mode should fail when no files found'
+        success_msg: 'Strict mode correctly failed: {{ result_missing_strict.msg }}'
+
+    # Test 9: Environment mode with default common directory
+    - name: Clear variables for next test
+      ansible.builtin.set_fact:
+        app_name: null
+        log_level: null
+        database_host: null
+        cache_enabled: null
+        common_var: null
+        database_ssl: null
+        prod_only_var: null
+
+    - name: Test 9 - Environment mode with default common directory
+      cenk1cenk2.reloaded.load_vars:
+        mode: environment
+        root: /tmp/test-vars/env-test
+        environment: prod
+        # common defaults to 'base'
+      register: result_default_common
+
+    - name: Verify default common directory works
+      ansible.builtin.assert:
+        that:
+          - result_default_common is succeeded
+          - result_default_common.loaded_files | length == 2
+          - app_name == 'myapp'
+          - log_level == 'warning'
+        fail_msg: 'Default common directory (base) did not work'
+        success_msg: 'Default common directory worked correctly'
+
+    - name: Final test summary
+      ansible.builtin.debug:
+        msg:
+          - '========================================='
+          - 'ALL TESTS COMPLETED SUCCESSFULLY'
+          - '========================================='
+          - ''
+          - 'Pattern Mode Tests:'
+          - '  ✓ Test 1: Basic pattern mode - PASSED'
+          - '  ✓ Test 2: Non-strict mode with no matches - PASSED'
+          - '  ✓ Test 3: Strict mode with no matches - PASSED'
+          - '  ✓ Test 4: Specific pattern - PASSED'
+          - '  ✓ Test 5a: Missing mode parameter - PASSED'
+          - '  ✓ Test 5b: Missing root parameter - PASSED'
+          - ''
+          - 'Environment Mode Tests:'
+          - '  ✓ Test 6: Basic environment mode (base + prod) - PASSED'
+          - '  ✓ Test 7: Non-strict mode with missing environment - PASSED'
+          - '  ✓ Test 8: Strict mode with missing directories - PASSED'
+          - '  ✓ Test 9: Default common directory - PASSED'
