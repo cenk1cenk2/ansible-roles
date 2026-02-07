@@ -15,7 +15,7 @@ importers:
         specifier: ^16.1.6
         version: 16.2.7
       prettier:
-        specifier: ^3.6.2
+        specifier: ^3.8.1
         version: 3.8.1
       simple-git-hooks:
         specifier: ^2.13.1
