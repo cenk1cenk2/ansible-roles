@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@cenk1cenk2/cz-cc':
-        specifier: ^2.2.5
-        version: 2.2.5(@types/node@25.3.0)(typescript@5.9.3)
+        specifier: ^2.2.6
+        version: 2.2.6(@types/node@25.3.0)(typescript@5.9.3)
       lint-staged:
         specifier: ^16.2.7
         version: 16.2.7
@@ -31,8 +31,8 @@ packages:
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
 
-  '@cenk1cenk2/cz-cc@2.2.5':
-    resolution: {integrity: sha512-vJ9VrByHZ1GLz8B+W+3PFm1ye69m/hHF6GotVtZ6RY2t6U7A9QEnewE4GC5It7mJ/44snznA8XbOkh81FWi2ug==}
+  '@cenk1cenk2/cz-cc@2.2.6':
+    resolution: {integrity: sha512-tRB90i3vc9o+r2XQxTq/Y+xdTKAAA8Wxu1CK8Zo2i2RVBK/lB0HSB3XpFsKTVIyiD/Y3D18137zUlUMt/PCGfw==}
     engines: {node: '>= 22'}
 
   '@commitlint/config-validator@20.4.0':
@@ -189,12 +189,12 @@ packages:
       '@types/node':
         optional: true
 
-  '@listr2/prompt-adapter-inquirer@4.1.0':
-    resolution: {integrity: sha512-gLZw/IQb0dM3U4R3XprZrC8HQT5jiIONiDLXIqy5YSOq17EIV2ZJcaGh+LDKT/FUZsId07Jx4h/1HoV+aG4TOw==}
+  '@listr2/prompt-adapter-inquirer@4.1.1':
+    resolution: {integrity: sha512-hlUMCYxuBrtjsBqzsy9ohzs3SiosQhXQlHltAZepMdLMBsWSPubjzBbBgTWK/glNO2ZJdZp8flhx2uRYf/RFUg==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       '@inquirer/prompts': '>= 3 < 9'
-      listr2: 10.1.0
+      listr2: 10.1.1
 
   '@types/node@25.3.0':
     resolution: {integrity: sha512-4K3bqJpXpqfg2XKGK9bpDTc6xO/xoUP/RBWS7AtRMug6zZFaRekiLzjVtAoZMquxoAbzBvy5nxQ7veS5eYzf8A==}
@@ -596,8 +596,8 @@ packages:
     engines: {node: '>=20.17'}
     hasBin: true
 
-  listr2@10.1.0:
-    resolution: {integrity: sha512-/6t2KgDYIcCjhELwvrRxi1gaJ4xCGLTjNvh6mSjYenBkrZxggek8EwCbwBU33GMUCpyyrOzz2TzylrO5mTiI1w==}
+  listr2@10.1.1:
+    resolution: {integrity: sha512-4oogpJzRRGtq41B0GKZIldzYCnQTgX2DPM/XvcfNu7g2E7sxaast009150RKFZBnrHAnfMOUaedIqdIOLCCRxQ==}
     engines: {node: '>=22.0.0'}
 
   listr2@9.0.5:
@@ -863,6 +863,10 @@ packages:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
 
+  wrap-ansi@10.0.0:
+    resolution: {integrity: sha512-SGcvg80f0wUy2/fXES19feHMz8E0JoXv2uNgHOu4Dgi2OrCy1lqwFYEJz1BLbDI0exjPMe/ZdzZ/YpGECBG/aQ==}
+    engines: {node: '>=20'}
+
   wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
     engines: {node: '>=10'}
@@ -891,14 +895,14 @@ snapshots:
   '@babel/helper-validator-identifier@7.28.5':
     optional: true
 
-  '@cenk1cenk2/cz-cc@2.2.5(@types/node@25.3.0)(typescript@5.9.3)':
+  '@cenk1cenk2/cz-cc@2.2.6(@types/node@25.3.0)(typescript@5.9.3)':
     dependencies:
       '@inquirer/prompts': 8.3.0(@types/node@25.3.0)
-      '@listr2/prompt-adapter-inquirer': 4.1.0(@inquirer/prompts@8.3.0(@types/node@25.3.0))(@types/node@25.3.0)(listr2@10.1.0)
+      '@listr2/prompt-adapter-inquirer': 4.1.1(@inquirer/prompts@8.3.0(@types/node@25.3.0))(@types/node@25.3.0)(listr2@10.1.1)
       commitizen: 4.3.1(@types/node@25.3.0)(typescript@5.9.3)
       conventional-commit-types: 3.0.0
       find-git-root: 1.1.0
-      listr2: 10.1.0
+      listr2: 10.1.1
     transitivePeerDependencies:
       - '@types/node'
       - typescript
@@ -1063,11 +1067,11 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.3.0
 
-  '@listr2/prompt-adapter-inquirer@4.1.0(@inquirer/prompts@8.3.0(@types/node@25.3.0))(@types/node@25.3.0)(listr2@10.1.0)':
+  '@listr2/prompt-adapter-inquirer@4.1.1(@inquirer/prompts@8.3.0(@types/node@25.3.0))(@types/node@25.3.0)(listr2@10.1.1)':
     dependencies:
       '@inquirer/prompts': 8.3.0(@types/node@25.3.0)
       '@inquirer/type': 4.0.3(@types/node@25.3.0)
-      listr2: 10.1.0
+      listr2: 10.1.1
     transitivePeerDependencies:
       - '@types/node'
 
@@ -1495,14 +1499,14 @@ snapshots:
       string-argv: 0.3.2
       yaml: 2.8.2
 
-  listr2@10.1.0:
+  listr2@10.1.1:
     dependencies:
       cli-truncate: 5.1.1
       colorette: 2.0.20
       eventemitter3: 5.0.4
       log-update: 7.1.0
       rfdc: 1.4.1
-      wrap-ansi: 9.0.2
+      wrap-ansi: 10.0.0
 
   listr2@9.0.5:
     dependencies:
@@ -1750,6 +1754,12 @@ snapshots:
       isexe: 2.0.0
 
   word-wrap@1.2.5: {}
+
+  wrap-ansi@10.0.0:
+    dependencies:
+      ansi-styles: 6.2.3
+      string-width: 8.2.0
+      strip-ansi: 7.1.2
 
   wrap-ansi@7.0.0:
     dependencies:
