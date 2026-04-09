@@ -58,6 +58,8 @@ class ActionModule(ActionBase):
         if not os.path.isdir(root):
             return self._fail(result, f"Root directory '{root}' does not exist")
 
+        display.v(f"Loading variables: mode={args['mode']}, root={root}")
+
         if args["mode"] == "pattern":
             return self._run_pattern(result, args, task_vars)
 

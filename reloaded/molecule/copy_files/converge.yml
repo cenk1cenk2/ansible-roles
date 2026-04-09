@@ -1,0 +1,127 @@
+---
+- name: Test copy_files plugin
+  hosts: all
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    test_var: injected_value
+
+  tasks:
+    - name: Create temporary test directories
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: copy_files_test_
+      register: test_dir
+
+    - name: Run tests
+      block:
+        - name: Create source directory structure
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}/{{ item }}'
+            state: directory
+            mode: '0755'
+          loop:
+            - src/subdir
+            - dest
+
+        - name: Create regular file
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/src/config.yml'
+            content: |
+              setting: value
+            mode: '0644'
+
+        - name: Create regular file in subdirectory
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/src/subdir/nested.conf'
+            content: |
+              nested=true
+            mode: '0644'
+
+        - name: Create template file
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/src/app.conf.j2'
+            content: |
+              app_setting={{ '{{ test_var }}' }}
+            mode: '0644'
+
+        # Test 1: Basic copy with all file types
+        - name: Test 1 - Copy files
+          cenk1cenk2.reloaded.copy_files:
+            src: '{{ test_dir.path }}/src'
+            dest: '{{ test_dir.path }}/dest'
+          register: result_copy
+
+        - name: Verify copy results
+          ansible.builtin.assert:
+            that:
+              - result_copy is succeeded
+              - result_copy.changed == true
+              - result_copy.copied_files | length == 2
+              - "'config.yml' in result_copy.copied_files"
+              - "'subdir/nested.conf' in result_copy.copied_files"
+              - result_copy.copied_templates | length == 1
+              - "'app.conf.j2' in result_copy.copied_templates"
+
+        - name: Verify regular file was copied
+          ansible.builtin.slurp:
+            src: '{{ test_dir.path }}/dest/config.yml'
+          register: copied_file
+
+        - name: Verify file content
+          ansible.builtin.assert:
+            that:
+              - "(copied_file.content | b64decode) is search('setting: value')"
+
+        - name: Verify nested file was copied
+          ansible.builtin.stat:
+            path: '{{ test_dir.path }}/dest/subdir/nested.conf'
+          register: nested_stat
+
+        - name: Verify nested file exists
+          ansible.builtin.assert:
+            that:
+              - nested_stat.stat.exists
+
+        - name: Verify template was rendered (not raw)
+          ansible.builtin.slurp:
+            src: '{{ test_dir.path }}/dest/app.conf'
+          register: rendered_template
+
+        - name: Verify template content has resolved variable
+          ansible.builtin.assert:
+            that:
+              - "(rendered_template.content | b64decode) is search('app_setting=injected_value')"
+
+        # Test 2: Idempotence
+        - name: Test 2 - Idempotence check
+          cenk1cenk2.reloaded.copy_files:
+            src: '{{ test_dir.path }}/src'
+            dest: '{{ test_dir.path }}/dest'
+          register: result_idempotent
+
+        - name: Verify idempotence
+          ansible.builtin.assert:
+            that:
+              - result_idempotent is succeeded
+
+        # Test 3: Missing source should fail
+        - name: Test 3 - Missing source
+          cenk1cenk2.reloaded.copy_files:
+            src: '{{ test_dir.path }}/nonexistent'
+            dest: '{{ test_dir.path }}/dest'
+          register: result_missing
+          ignore_errors: true
+
+        - name: Verify missing source fails
+          ansible.builtin.assert:
+            that:
+              - result_missing is failed
+              - "'does not exist' in result_missing.msg"
+
+      always:
+        - name: Clean up temporary test directory
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}'
+            state: absent
+          when: test_dir.path is defined

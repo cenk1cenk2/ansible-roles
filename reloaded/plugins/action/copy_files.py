@@ -58,10 +58,10 @@ class ActionModule(ActionBase):
         # Ensure dest and subdirectories exist
         dirs_to_create = [dest] + [os.path.join(dest, d) for d in directories]
         for d in dirs_to_create:
-            dir_result = self._run_action(
-                "ansible.builtin.file",
-                {"path": d, "state": "directory"},
-                task_vars,
+            dir_result = self._execute_module(
+                module_name="ansible.builtin.file",
+                module_args={"path": d, "state": "directory"},
+                task_vars=task_vars,
             )
             if dir_result.get("failed"):
                 return self._fail(result, f"Failed to create directory '{d}': {dir_result.get('msg')}")
@@ -71,6 +71,7 @@ class ActionModule(ActionBase):
         # Copy regular files via synchronize
         for rel_path, abs_path in files:
             dest_path = os.path.join(dest, rel_path)
+            display.vv(f"Syncing file: {rel_path} -> {dest_path}")
             r = self._run_action(
                 "ansible.posix.synchronize",
                 {"src": abs_path, "dest": dest_path},
@@ -86,6 +87,7 @@ class ActionModule(ActionBase):
         for rel_path, abs_path in secrets:
             dest_name = rel_path.replace(".secrets", "")
             dest_path = os.path.join(dest, dest_name)
+            display.vv(f"Decrypting secret: {rel_path} -> {dest_path}")
             r = self._run_action(
                 "ansible.builtin.copy",
                 {"src": abs_path, "dest": dest_path, "decrypt": True},
@@ -101,6 +103,7 @@ class ActionModule(ActionBase):
         for rel_path, abs_path in templates:
             dest_name = rel_path.replace(".secrets", "").removesuffix(".j2")
             dest_path = os.path.join(dest, dest_name)
+            display.vv(f"Rendering template: {rel_path} -> {dest_path}")
             r = self._run_action(
                 "ansible.builtin.template",
                 {"src": abs_path, "dest": dest_path},
