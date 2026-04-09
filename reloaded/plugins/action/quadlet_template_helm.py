@@ -116,17 +116,19 @@ class ActionModule(ActionBase):
 
         manifest = helm_result.get("stdout", "")
         command = helm_result.get("command", "")
-        dest_path = os.path.join(args["dest"], f"{name}.yml")
+        dest_path = os.path.join(args["dest"], f"{name}.yaml")
 
         display.v(f"Helm command: {command}")
         display.v(f"Rendered {len(manifest)} bytes, deploying to {dest_path}")
 
         deploy_result = self._deploy(manifest, dest_path, task_vars)
 
+        filename = f"{name}.yaml"
         changed = deploy_result.get("changed", False)
         result.update(
             changed=changed,
             dest=dest_path,
+            filename=filename,
             manifest=manifest,
             command=command,
             msg=f"Rendered chart '{name}' to {dest_path}",

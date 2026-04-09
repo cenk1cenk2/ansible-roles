@@ -86,7 +86,7 @@
             that:
               - result_basic is succeeded
               - result_basic.changed == true
-              - result_basic.dest == test_dir.path + '/output/myapp.yml'
+              - result_basic.dest == test_dir.path + '/output/myapp.yaml'
               - "'myapp' in result_basic.manifest"
               - "'nginx:latest' in result_basic.manifest"
               - result_basic.command is defined
@@ -156,7 +156,7 @@
             that:
               - result_namespace is succeeded
               - "'kube-system' in result_namespace.manifest"
-              - result_namespace.dest == test_dir.path + '/output/myapp-ns.yml'
+              - result_namespace.dest == test_dir.path + '/output/myapp-ns.yaml'
 
         # Test 6: Missing chart should fail
         - name: Test 6 - Missing chart
