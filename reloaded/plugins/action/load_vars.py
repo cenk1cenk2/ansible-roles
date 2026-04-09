@@ -54,6 +54,8 @@ class ActionModule(ActionBase):
         result = super().run(tmp, task_vars)
         result.update(changed=False, loaded_files=[], variables_loaded=0)
 
+        playbook_dir = task_vars.get("ansible_playbook_dir", os.getcwd())
+        args["root"] = self._resolve_path(args["root"], playbook_dir)
         root = args["root"]
         if not os.path.isdir(root):
             return self._fail(result, f"Root directory '{root}' does not exist")
@@ -70,6 +72,12 @@ class ActionModule(ActionBase):
         result["msg"] = msg
 
         return result
+
+    def _resolve_path(self, path, playbook_dir):
+        if os.path.isabs(path):
+            return path
+
+        return os.path.join(playbook_dir, path)
 
     def _glob_vars_files(self, directory, pattern=None):
         if pattern:
