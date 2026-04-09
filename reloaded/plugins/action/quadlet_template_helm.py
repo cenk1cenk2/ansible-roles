@@ -134,6 +134,9 @@ class ActionModule(ActionBase):
             msg=f"Rendered chart '{name}' to {dest_path}",
         )
 
+        if "diff" in deploy_result:
+            result["diff"] = deploy_result["diff"]
+
         if deploy_result.get("failed"):
             display.warning(f"Failed to deploy manifest to {dest_path}")
             result["failed"] = True

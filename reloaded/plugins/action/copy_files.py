@@ -66,6 +66,7 @@ class ActionModule(ActionBase):
                 return self._fail(result, f"Failed to create directory '{d}': {dir_result.get('msg')}")
 
         changed = False
+        diffs = []
 
         # Copy regular files via synchronize
         for rel_path, abs_path in files:
@@ -80,6 +81,8 @@ class ActionModule(ActionBase):
                 return self._fail(result, f"Failed to copy '{rel_path}': {r.get('msg')}")
             if r.get("changed"):
                 changed = True
+            if "diff" in r:
+                diffs.append(r["diff"])
             result["copied_files"].append(rel_path)
 
         # Copy secrets with vault decryption
@@ -96,6 +99,8 @@ class ActionModule(ActionBase):
                 return self._fail(result, f"Failed to copy secret '{rel_path}': {r.get('msg')}")
             if r.get("changed"):
                 changed = True
+            if "diff" in r:
+                diffs.append(r["diff"])
             result["copied_secrets"].append(rel_path)
 
         # Render templates
@@ -112,7 +117,12 @@ class ActionModule(ActionBase):
                 return self._fail(result, f"Failed to render template '{rel_path}': {r.get('msg')}")
             if r.get("changed"):
                 changed = True
+            if "diff" in r:
+                diffs.append(r["diff"])
             result["copied_templates"].append(rel_path)
+
+        if diffs:
+            result["diff"] = diffs
 
         total = len(files) + len(secrets) + len(templates)
         result["changed"] = changed
