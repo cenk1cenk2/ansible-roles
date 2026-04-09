@@ -7,6 +7,7 @@ __metaclass__ = type
 import os
 
 from ansible.plugins.action import ActionBase
+from ansible.plugins.connection.local import Connection as LocalConnection
 from ansible.utils.display import Display
 
 display = Display()
@@ -33,6 +34,7 @@ class ActionModule(ActionBase):
             "set_values",
             "namespace",
             "include_crds",
+            "binary_path",
         )
     )
 
@@ -50,6 +52,7 @@ class ActionModule(ActionBase):
                 set_values=dict(type="list", elements="dict", default=[]),
                 namespace=dict(type="str"),
                 include_crds=dict(type="bool", default=False),
+                binary_path=dict(type="path"),
             ),
         )
 
@@ -85,11 +88,21 @@ class ActionModule(ActionBase):
         if args.get("namespace"):
             helm_args["release_namespace"] = args["namespace"]
 
-        helm_result = self._execute_module(
-            module_name="kubernetes.core.helm_template",
-            module_args=helm_args,
-            task_vars=task_vars,
-        )
+        if args.get("binary_path"):
+            helm_args["binary_path"] = args["binary_path"]
+
+        # Run helm on the controller, not the target
+        # helm binary and chart files are local, only the rendered output goes remote
+        original_connection = self._connection
+        try:
+            self._connection = LocalConnection(self._play_context)
+            helm_result = self._execute_module(
+                module_name="kubernetes.core.helm_template",
+                module_args=helm_args,
+                task_vars=task_vars,
+            )
+        finally:
+            self._connection = original_connection
 
         if helm_result.get("failed"):
             stderr = helm_result.get("stderr", "")
