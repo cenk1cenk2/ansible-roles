@@ -6,4 +6,4 @@ venv = ".venv"
 requires-python = ">= 3.13"
 name = "ansible-roles"
 version = "1.0.0"
-dependencies = ["ansible"]
+dependencies = ["ansible", "molecule", "molecule-plugins[podman]"]

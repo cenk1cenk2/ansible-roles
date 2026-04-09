@@ -1,7 +1,7 @@
 node_modules/
 /.venv
 
-node_modules/
+/node_modules/
 /.venv
 #--------------------------------------------------#
 # The following was generated with gitignore.nvim: #

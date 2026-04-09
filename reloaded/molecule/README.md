@@ -1,6 +1,6 @@
-# Molecule Testing for cenk1cenk2.reloaded.load_vars Plugin
+# Molecule Testing for cenk1cenk2.reloaded Collection
 
-This directory contains Molecule-based testing infrastructure for the `cenk1cenk2.reloaded.load_vars` action plugin.
+This directory contains Molecule-based testing infrastructure for the `cenk1cenk2.reloaded` collection.
 
 ## Overview
 
@@ -30,23 +30,55 @@ uv pip install molecule molecule-podman ansible-core ansible-lint
 
 ```
 molecule/
-└── default/                    # Default test scenario
-    ├── molecule.yml           # Molecule configuration (uses Podman)
-    ├── requirements.yml       # Ansible Galaxy requirements
-    ├── prepare.yml            # Environment preparation (creates test files)
-    ├── converge.yml           # Main test playbook (9 comprehensive tests)
-    └── verify.yml             # Verification playbook (smoke tests)
+├── README.md                   # This file
+└── load_vars/                  # Test scenario for load_vars plugin
+    ├── molecule.yml            # Molecule configuration (uses Podman)
+    ├── requirements.yml        # Ansible Galaxy requirements (deprecated)
+    ├── prepare.yml             # Environment preparation (creates test files)
+    ├── converge.yml            # Main test playbook (9 comprehensive tests)
+    └── verify.yml              # Verification playbook (smoke tests)
 ```
+
+### Adding New Test Scenarios
+
+To add a new test scenario (e.g., for testing `copy_files` plugin):
+
+```bash
+# Create a new scenario
+cd reloaded
+molecule init scenario copy_files --driver-name podman
+
+# This creates molecule/copy_files/ with template files
+# Then customize the files for your specific tests
+```
+
+Each scenario runs independently and can test different aspects of the collection.
 
 ## Running Tests
 
-### Full Test Suite
+### Using Task (Recommended)
 
-Run all Molecule phases (prepare, converge, verify):
+The recommended way to run tests is using [Task](https://taskfile.dev/):
+
+```bash
+# From the repository root
+task test          # Run all tests
+task test:reloaded # Run all reloaded collection tests
+task dev:reloaded  # Fast iteration (converge without destroy)
+task clean         # Clean up all test artifacts
+
+# List all available tasks
+task --list
+```
+
+### Using Molecule Directly
+
+You can also run Molecule commands directly:
 
 ```bash
 # From the reloaded/ directory
-molecule test
+molecule test -s load_vars # Run specific scenario
+molecule test --all        # Run all scenarios
 ```
 
 This will:
@@ -56,43 +88,18 @@ This will:
 4. Run the verify playbook (smoke tests)
 5. Destroy the container
 
-### Individual Phases
+### Individual Phases (Molecule Direct)
 
-Run specific Molecule phases:
-
-```bash
-# Create the container and prepare environment
-molecule create
-molecule prepare
-
-# Run the main tests
-molecule converge
-
-# Run verification
-molecule verify
-
-# Check the current state
-molecule list
-
-# Destroy the container
-molecule destroy
-```
-
-### Development Workflow
-
-For iterative development, use converge instead of test:
+If using Molecule directly, run specific phases:
 
 ```bash
-# Run tests without destroying the container
-molecule converge
-
-# Make changes to the plugin...
-
-# Re-run tests quickly (container persists)
-molecule converge
-
-# When done, destroy
-molecule destroy
+# From the reloaded/ directory
+molecule create -s load_vars   # Create container
+molecule prepare -s load_vars  # Prepare test environment
+molecule converge -s load_vars # Run tests
+molecule verify -s load_vars   # Run verification
+molecule list                  # Check current state
+molecule destroy -s load_vars  # Destroy container
 ```
 
 ### Verbose Output
@@ -100,13 +107,18 @@ molecule destroy
 Add `-v`, `-vv`, `-vvv`, or `-vvvv` for increased verbosity:
 
 ```bash
-molecule test -vvv
-molecule converge -vvvv
+# With Task
+MOLECULE_VERBOSITY=3 task test:reloaded:load_vars
+
+# With Molecule directly
+molecule test -s load_vars -vvv
 ```
 
-## Test Coverage
+## Test Scenarios
 
-The Molecule tests cover 9 comprehensive scenarios:
+### `load_vars` Scenario
+
+Tests the `cenk1cenk2.reloaded.load_vars` action plugin with 9 comprehensive test cases:
 
 ### Pattern Mode Tests (Tests 1-5)
 1. **Basic pattern mode** - Load all *.yml files from a directory
@@ -148,10 +160,10 @@ test:molecule:
   services:
     - podman:dind
   before_script:
-    - pip install molecule molecule-podman ansible-core ansible-lint
+    - pip install molecule molecule-plugins[podman] ansible-core ansible-lint
+    - curl -sL https://taskfile.dev/install.sh | sh
   script:
-    - cd reloaded
-    - molecule test
+    - task test
   tags:
     - podman
 ```
@@ -169,13 +181,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install Task
+        uses: arduino/setup-task@v1
       - name: Install dependencies
         run: |
-          pip install molecule molecule-podman ansible-core ansible-lint
+          pip install molecule molecule-plugins[podman] ansible-core ansible-lint
       - name: Run Molecule tests
-        run: |
-          cd reloaded
-          molecule test
+        run: task test
 ```
 
 ## Troubleshooting
@@ -213,9 +225,17 @@ podman system info | grep -i rootless
 podman system migrate
 ```
 
+## Future Test Scenarios
+
+Additional scenarios can be added for:
+- `copy_files` action plugin testing
+- Integration tests across multiple plugins
+- Performance/stress testing
+- Edge case and error handling tests
+
 ## Comparison with Old Tests
 
-The Molecule tests replace the previous standalone playbooks:
+The `load_vars` scenario replaces the previous standalone playbooks:
 - ❌ `test-load-vars-pattern.yml` (deprecated)
 - ❌ `test-load-vars-environment.yml` (deprecated)
 
@@ -225,7 +245,7 @@ The Molecule tests replace the previous standalone playbooks:
 - ✅ Automatic setup and teardown
 - ✅ Industry-standard Ansible testing approach
 - ✅ Better CI/CD integration
-- ✅ Supports multiple scenarios and drivers
+- ✅ **Multiple test scenarios** in one framework
 
 ## Additional Resources
 

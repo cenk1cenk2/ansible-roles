@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from __future__ import annotations
 
 __metaclass__ = type
@@ -19,7 +21,6 @@ EXAMPLES = """
 
 RETURN = """
 """
-
 
 class ActionModule(ActionBase):
     _VALID_ARGS = frozenset(
@@ -45,7 +46,7 @@ class ActionModule(ActionBase):
                 pattern=dict(type="str"),
                 environment=dict(type="str"),
                 common=dict(type="str", default="base"),
-                strict=dict(type="bool"),
+                strict=dict(type="bool", default=False),
                 verbosity=dict(type="int", default=0),
             ),
         )
@@ -73,7 +74,9 @@ class ActionModule(ActionBase):
         valid_modes = ["pattern", "environment"]
         if mode not in valid_modes:
             result["failed"] = True
-            result["msg"] = f"Invalid mode '{mode}'. Mode must be one of: {', '.join(valid_modes)}"
+            result["msg"] = (
+                f"Invalid mode '{mode}'. Mode must be one of: {', '.join(valid_modes)}"
+            )
             return result
 
         # Validate root parameter (required)
@@ -109,26 +112,31 @@ class ActionModule(ActionBase):
             pattern = args.get("pattern")
             verbosity = args.get("verbosity", 0)
 
-            display.vv(f"Pattern mode: searching for pattern '{pattern}' in root '{root}'")
+            display.vv(
+                f"Pattern mode: searching for pattern '{pattern}' in root '{root}'"
+            )
 
             # Build file patterns for all supported extensions
             # Support glob patterns like "*.yml" or "subdir/**/*.yml"
-            base_pattern = os.path.join(root, pattern) if not os.path.isabs(pattern) else pattern
+            base_pattern = (
+                os.path.join(root, pattern) if not os.path.isabs(pattern) else pattern
+            )
 
             # If pattern already has extension, use it directly
             # Otherwise, try all supported extensions
-            if base_pattern.endswith(('.yml', '.yaml', '.json')):
+            if base_pattern.endswith((".yml", ".yaml", ".json")):
                 patterns_to_search = [base_pattern]
                 display.vvv(f"Pattern has extension, using: {base_pattern}")
             else:
-                # Remove any extension from pattern and add all supported extensions
-                base_without_ext = base_pattern.rstrip('*')
+                # Append all supported extensions to the full pattern
                 patterns_to_search = [
-                    base_without_ext + '.yml',
-                    base_without_ext + '.yaml',
-                    base_without_ext + '.json',
+                    base_pattern + ".yml",
+                    base_pattern + ".yaml",
+                    base_pattern + ".json",
                 ]
-                display.vvv(f"Pattern has no extension, searching: {', '.join(patterns_to_search)}")
+                display.vvv(
+                    f"Pattern has no extension, searching: {', '.join(patterns_to_search)}"
+                )
 
             # Glob all matching files
             matched_files = []
@@ -142,18 +150,24 @@ class ActionModule(ActionBase):
             matched_files = sorted(set(matched_files))
 
             if matched_files:
-                display.vv(f"Found {len(matched_files)} matching file(s): {', '.join(matched_files)}")
+                display.vv(
+                    f"Found {len(matched_files)} matching file(s): {', '.join(matched_files)}"
+                )
 
             # Handle strict mode
             strict = args.get("strict", False)
             if strict and len(matched_files) == 0:
                 result["failed"] = True
-                result["msg"] = f"In strict mode, variables files should be matched in the given directory: {root}"
+                result["msg"] = (
+                    f"In strict mode, variables files should be matched in the given directory: {root}"
+                )
                 return result
 
             # Warn if no files matched in non-strict mode
             if not strict and len(matched_files) == 0:
-                display.warning(f"No files matched pattern '{pattern}' in directory '{root}'")
+                display.warning(
+                    f"No files matched pattern '{pattern}' in directory '{root}'"
+                )
                 display.vv("No files to load in pattern mode")
 
             # Load variables from each matched file using include_vars
@@ -165,22 +179,32 @@ class ActionModule(ActionBase):
                     display.v(f"Loading variables from: {vars_file}")
 
                 # Execute include_vars action plugin for this file
-                include_vars_result = self._execute_module(
-                    module_name="ansible.builtin.include_vars",
-                    module_args=dict(file=vars_file),
-                    task_vars=task_vars,
-                    tmp=tmp,
+                new_task = self._task.copy()
+                new_task.args = {"file": vars_file}
+
+                include_vars_action = self._shared_loader_obj.action_loader.get(
+                    "ansible.builtin.include_vars",
+                    task=new_task,
+                    connection=self._connection,
+                    play_context=self._play_context,
+                    loader=self._loader,
+                    templar=self._templar,
+                    shared_loader_obj=self._shared_loader_obj,
                 )
+                include_vars_result = include_vars_action.run(task_vars=task_vars)
 
                 # Check if include_vars succeeded
                 if include_vars_result.get("failed", False):
                     result["failed"] = True
-                    result["msg"] = f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    result["msg"] = (
+                        f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    )
                     return result
 
                 # Collect the loaded variables (they are in ansible_facts)
                 if "ansible_facts" in include_vars_result:
                     ansible_facts.update(include_vars_result["ansible_facts"])
+                    task_vars.update(include_vars_result["ansible_facts"])
                     loaded_files.append(vars_file)
 
             # Update result with loaded variables
@@ -188,9 +212,13 @@ class ActionModule(ActionBase):
             result["matched_files"] = matched_files
             result["loaded_files"] = sorted(loaded_files)
             result["variables_loaded"] = len(ansible_facts)
-            result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) matching pattern '{pattern}'"
+            result["msg"] = (
+                f"Loaded variables from {len(loaded_files)} file(s) matching pattern '{pattern}': {', '.join(loaded_files)}"
+            )
 
-            display.v(f"Pattern mode complete: loaded {len(loaded_files)} file(s), {len(ansible_facts)} variable(s)")
+            display.v(
+                f"Pattern mode complete: loaded {len(loaded_files)} file(s), {len(ansible_facts)} variable(s)"
+            )
 
         # Environment mode implementation
         elif mode == "environment":
@@ -199,8 +227,12 @@ class ActionModule(ActionBase):
             strict = args.get("strict", False)
             verbosity = args.get("verbosity", 0)
 
-            display.vv(f"Environment mode: loading environment '{environment}' from root '{root}'")
-            display.vvv(f"Hierarchical loading: {common} (common) → {environment} (environment-specific)")
+            display.vv(
+                f"Environment mode: loading environment '{environment}' from root '{root}'"
+            )
+            display.vvv(
+                f"Hierarchical loading: {common} (common) → {environment} (environment-specific)"
+            )
 
             loaded_files = []
             ansible_facts = {}
@@ -212,9 +244,9 @@ class ActionModule(ActionBase):
 
             # Build patterns for common directory
             common_patterns = [
-                os.path.join(common_path, '*.yml'),
-                os.path.join(common_path, '*.yaml'),
-                os.path.join(common_path, '*.json'),
+                os.path.join(common_path, "*.yml"),
+                os.path.join(common_path, "*.yaml"),
+                os.path.join(common_path, "*.json"),
             ]
 
             # Glob all matching files in common directory
@@ -222,7 +254,9 @@ class ActionModule(ActionBase):
             for pattern_str in common_patterns:
                 found = glob.glob(pattern_str)
                 if found:
-                    display.vvv(f"Common pattern '{pattern_str}' matched {len(found)} file(s)")
+                    display.vvv(
+                        f"Common pattern '{pattern_str}' matched {len(found)} file(s)"
+                    )
                 common_files.extend(found)
 
             # Sort for deterministic order
@@ -240,29 +274,43 @@ class ActionModule(ActionBase):
                     display.v(f"Loading common variables from: {vars_file}")
 
                 # Execute include_vars action plugin for this file
-                include_vars_result = self._execute_module(
-                    module_name="ansible.builtin.include_vars",
-                    module_args=dict(file=vars_file),
-                    task_vars=task_vars,
-                    tmp=tmp,
+                new_task = self._task.copy()
+                new_task.args = {"file": vars_file}
+
+                include_vars_action = self._shared_loader_obj.action_loader.get(
+                    "ansible.builtin.include_vars",
+                    task=new_task,
+                    connection=self._connection,
+                    play_context=self._play_context,
+                    loader=self._loader,
+                    templar=self._templar,
+                    shared_loader_obj=self._shared_loader_obj,
                 )
+                include_vars_result = include_vars_action.run(task_vars=task_vars)
 
                 # Check if include_vars succeeded
                 if include_vars_result.get("failed", False):
                     result["failed"] = True
-                    result["msg"] = f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    result["msg"] = (
+                        f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    )
                     return result
 
                 # Collect the loaded variables (they are in ansible_facts)
                 if "ansible_facts" in include_vars_result:
                     ansible_facts.update(include_vars_result["ansible_facts"])
+                    task_vars.update(include_vars_result["ansible_facts"])
                     loaded_files.append(vars_file)
 
             # Log common loading summary
             common_var_count = len(ansible_facts)
             if common_files:
-                display.vv(f"Loaded {len(common_files)} common file(s) with {common_var_count} variable(s)")
-                display.vvv(f"Common variables loaded: {', '.join(sorted(ansible_facts.keys())[:10])}{'...' if common_var_count > 10 else ''}")
+                display.vv(
+                    f"Loaded {len(common_files)} common file(s) with {common_var_count} variable(s)"
+                )
+                display.vvv(
+                    f"Common variables loaded: {', '.join(sorted(ansible_facts.keys())[:10])}{'...' if common_var_count > 10 else ''}"
+                )
 
             # Load environment-specific directory files (these override common)
             env_path = os.path.join(root, environment)
@@ -271,9 +319,9 @@ class ActionModule(ActionBase):
 
             # Build patterns for environment directory
             env_patterns = [
-                os.path.join(env_path, '*.yml'),
-                os.path.join(env_path, '*.yaml'),
-                os.path.join(env_path, '*.json'),
+                os.path.join(env_path, "*.yml"),
+                os.path.join(env_path, "*.yaml"),
+                os.path.join(env_path, "*.json"),
             ]
 
             # Glob all matching files in environment directory
@@ -281,49 +329,68 @@ class ActionModule(ActionBase):
             for pattern_str in env_patterns:
                 found = glob.glob(pattern_str)
                 if found:
-                    display.vvv(f"Environment pattern '{pattern_str}' matched {len(found)} file(s)")
+                    display.vvv(
+                        f"Environment pattern '{pattern_str}' matched {len(found)} file(s)"
+                    )
                 env_files.extend(found)
 
             # Sort for deterministic order
             env_files = sorted(set(env_files))
 
             if env_files:
-                display.vv(f"Found {len(env_files)} environment-specific file(s) in {environment}/")
+                display.vv(
+                    f"Found {len(env_files)} environment-specific file(s) in {environment}/"
+                )
                 display.vvv(f"Environment files: {', '.join(env_files)}")
             else:
                 display.vvv(f"No environment-specific files found in {environment}/")
 
-            # Handle strict mode - fail if neither common nor environment files found
-            if strict and len(common_files) == 0 and len(env_files) == 0:
+            # Handle strict mode - fail if environment directory has no files
+            if strict and len(env_files) == 0:
                 result["failed"] = True
-                result["msg"] = f"In strict mode, variables files should be matched in the given directory: {root}/{environment}"
+                result["msg"] = (
+                    f"In strict mode, environment directory must contain variable files: {root}/{environment}"
+                )
                 return result
 
             # Warn if no files found in non-strict mode
             if not strict and len(common_files) == 0 and len(env_files) == 0:
-                display.warning(f"No files found in common directory '{common}' or environment directory '{environment}'")
+                display.warning(
+                    f"No files found in common directory '{common}' or environment directory '{environment}'"
+                )
                 display.vv("No files to load in environment mode")
 
             # Load variables from each environment file (these override common vars)
             for vars_file in env_files:
                 if verbosity >= 1:
-                    display.v(f"Loading environment-specific variables from: {vars_file}")
+                    display.v(
+                        f"Loading environment-specific variables from: {vars_file}"
+                    )
 
                 # Track which variables might be overridden
                 vars_before_load = set(ansible_facts.keys())
 
                 # Execute include_vars action plugin for this file
-                include_vars_result = self._execute_module(
-                    module_name="ansible.builtin.include_vars",
-                    module_args=dict(file=vars_file),
-                    task_vars=task_vars,
-                    tmp=tmp,
+                new_task = self._task.copy()
+                new_task.args = {"file": vars_file}
+
+                include_vars_action = self._shared_loader_obj.action_loader.get(
+                    "ansible.builtin.include_vars",
+                    task=new_task,
+                    connection=self._connection,
+                    play_context=self._play_context,
+                    loader=self._loader,
+                    templar=self._templar,
+                    shared_loader_obj=self._shared_loader_obj,
                 )
+                include_vars_result = include_vars_action.run(task_vars=task_vars)
 
                 # Check if include_vars succeeded
                 if include_vars_result.get("failed", False):
                     result["failed"] = True
-                    result["msg"] = f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    result["msg"] = (
+                        f"Failed to load variables from '{vars_file}': {include_vars_result.get('msg', 'Unknown error')}"
+                    )
                     return result
 
                 # Collect the loaded variables (they are in ansible_facts)
@@ -332,21 +399,28 @@ class ActionModule(ActionBase):
                     new_vars = include_vars_result["ansible_facts"]
                     overridden_vars = set(new_vars.keys()) & vars_before_load
                     if overridden_vars and verbosity >= 3:
-                        display.vvv(f"Environment-specific variables overriding common: {', '.join(sorted(overridden_vars))}")
+                        display.vvv(
+                            f"Environment-specific variables overriding common: {', '.join(sorted(overridden_vars))}"
+                        )
                     ansible_facts.update(new_vars)
+                    task_vars.update(new_vars)
                     loaded_files.append(vars_file)
 
             # Update result with all loaded variables
             result["ansible_facts"] = ansible_facts
             result["loaded_files"] = sorted(loaded_files)
             result["variables_loaded"] = len(ansible_facts)
-            result["msg"] = f"Loaded variables from {len(loaded_files)} file(s) in environment mode"
+            result["msg"] = (
+                f"Loaded variables from {len(loaded_files)} file(s) in environment mode"
+            )
 
             # Hierarchical loading summary
             total_vars = len(ansible_facts)
             common_file_count = len(common_files)
             env_file_count = len(env_files)
-            display.v(f"Environment mode complete: loaded {len(loaded_files)} file(s) ({common_file_count} common + {env_file_count} environment), {total_vars} total variable(s)")
+            display.v(
+                f"Environment mode complete: loaded {len(loaded_files)} file(s) ({common_file_count} common + {env_file_count} environment), {total_vars} total variable(s) {', '.join(loaded_files)}"
+            )
             display.vvv(f"Hierarchical merge complete: {common} → {environment}")
 
         return result

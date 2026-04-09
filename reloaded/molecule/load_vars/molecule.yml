@@ -1,0 +1,35 @@
+---
+# Molecule configuration for testing cenk1cenk2.reloaded.load_vars plugin
+# Note: Action plugins run on the controller, so we test on localhost
+dependency:
+  name: galaxy
+  enabled: false
+
+driver:
+  name: default
+  options:
+    managed: false
+
+platforms:
+  - name: localhost
+    groups:
+      - local
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      stdout_callback: ansible.builtin.debug
+      verbosity: 1
+  inventory:
+    host_vars:
+      localhost:
+        ansible_connection: local
+        ansible_python_interpreter: /usr/bin/python3
+  playbooks:
+    converge: converge.yml
+    prepare: prepare.yml
+    verify: verify.yml
+
+verifier:
+  name: ansible
