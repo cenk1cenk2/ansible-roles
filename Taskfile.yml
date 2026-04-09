@@ -16,5 +16,5 @@ tasks:
     desc: Run reloaded collection Molecule tests in a container
     cmds:
       - >-
-        podman run --rm -v "{{.ROOT_DIR}}/reloaded:/workspace/reloaded:Z" -w /workspace/reloaded {{.TEST_IMAGE}} sh -c "ansible-galaxy collection install --force . && molecule test --all"
+        podman run --rm -v "{{.ROOT_DIR}}/reloaded:/workspace/reloaded:Z" -w /workspace/reloaded {{.TEST_IMAGE}} sh -c "curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | VERIFY_CHECKSUM=false bash && ansible-galaxy collection install --force . && molecule test --all"
 

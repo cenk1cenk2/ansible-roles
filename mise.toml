@@ -3,3 +3,6 @@ python.uv_venv_auto = true
 
 [env]
 _.python.venv = ".venv"
+
+[tools]
+helm = "3"
