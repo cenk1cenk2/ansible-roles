@@ -56,14 +56,13 @@ class ActionModule(ActionBase):
         result = super().run(tmp, task_vars)
         result.update(changed=False)
 
-        playbook_dir = task_vars.get("ansible_playbook_dir", os.getcwd())
-        chart = self._resolve_path(args["chart"], playbook_dir)
+        chart = self._resolve_path(args["chart"])
         name = args["name"]
 
         display.v(f"Rendering chart '{chart}' as release '{name}'")
 
         values_files = [
-            self._resolve_path(f, playbook_dir) for f in args["values_files"]
+            self._resolve_path(f) for f in args["values_files"]
         ]
         if values_files:
             display.v(f"Values files: {', '.join(values_files)}")
@@ -131,11 +130,11 @@ class ActionModule(ActionBase):
 
         return result
 
-    def _resolve_path(self, path, playbook_dir):
+    def _resolve_path(self, path):
         if os.path.isabs(path):
             return path
 
-        return os.path.join(playbook_dir, path)
+        return os.path.normpath(os.path.join(self._loader.get_basedir(), path))
 
     def _deploy(self, content, dest_path, task_vars):
         new_task = self._task.copy()

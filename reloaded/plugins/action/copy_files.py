@@ -39,8 +39,7 @@ class ActionModule(ActionBase):
         result = super().run(tmp, task_vars)
         result.update(changed=False, copied_files=[], copied_secrets=[], copied_templates=[])
 
-        playbook_dir = task_vars.get("ansible_playbook_dir", os.getcwd())
-        src = self._resolve_path(args["src"], playbook_dir)
+        src = self._resolve_path(args["src"])
         dest = args["dest"]
 
         if not os.path.isdir(src):
@@ -129,11 +128,11 @@ class ActionModule(ActionBase):
 
         return result
 
-    def _resolve_path(self, path, playbook_dir):
+    def _resolve_path(self, path):
         if os.path.isabs(path):
             return path
 
-        return os.path.join(playbook_dir, path)
+        return os.path.normpath(os.path.join(self._loader.get_basedir(), path))
 
     def _scan(self, src):
         directories = []
