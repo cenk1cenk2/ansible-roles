@@ -116,6 +116,8 @@ class ActionModule(ActionBase):
 
         total = len(files) + len(secrets) + len(templates)
         result["changed"] = changed
+        result["src"] = src
+        result["dest"] = dest
         result["msg"] = f"Processed {total} file(s) from '{src}' to '{dest}'"
 
         display.v(f"Copy complete, changed={changed}")

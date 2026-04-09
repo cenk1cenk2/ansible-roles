@@ -148,6 +148,7 @@ class ActionModule(ActionBase):
 
         facts, loaded = data
         result["ansible_facts"] = facts
+        result["root"] = root
         result["matched_files"] = matched
         result["loaded_files"] = sorted(loaded)
         result["variables_loaded"] = len(facts)
@@ -192,6 +193,7 @@ class ActionModule(ActionBase):
         loaded.extend(env_loaded)
 
         result["ansible_facts"] = facts
+        result["root"] = root
         result["loaded_files"] = sorted(loaded)
         result["variables_loaded"] = len(facts)
         result["msg"] = f"Loaded {len(loaded)} file(s) in environment mode"

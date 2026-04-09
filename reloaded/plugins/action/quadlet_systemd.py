@@ -88,6 +88,7 @@ class ActionModule(ActionBase):
             result["services"].append({"name": name, "state": state, "changed": svc_result.get("changed", False)})
 
         svc_names = [s["name"] for s in result["services"]]
+        result["triggered"] = triggered
         result["msg"] = f"Processed {', '.join(svc_names)} (triggered={triggered})"
         display.v(result["msg"])
 
