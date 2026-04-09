@@ -29,6 +29,7 @@ class ActionModule(ActionBase):
             "chart",
             "dest",
             "name",
+            "state",
             "values_files",
             "values",
             "set_values",
@@ -44,9 +45,10 @@ class ActionModule(ActionBase):
 
         _, args = self.validate_argument_spec(
             argument_spec=dict(
-                chart=dict(type="str", required=True),
+                chart=dict(type="str"),
                 dest=dict(type="str", required=True),
                 name=dict(type="str", required=True),
+                state=dict(type="str", default="present", choices=["present", "absent"]),
                 values_files=dict(type="list", elements="str", default=[]),
                 values=dict(type="dict", default={}),
                 set_values=dict(type="list", elements="dict", default=[]),
@@ -59,8 +61,19 @@ class ActionModule(ActionBase):
         result = super().run(tmp, task_vars)
         result.update(changed=False)
 
-        chart = self._resolve_path(args["chart"])
         name = args["name"]
+        dest_path = os.path.join(args["dest"], f"{name}.yaml")
+
+        if args["state"] == "absent":
+            return self._remove(result, name, dest_path, task_vars)
+
+        if not args.get("chart"):
+            result["failed"] = True
+            result["msg"] = "'chart' is required when state is 'present'"
+
+            return result
+
+        chart = self._resolve_path(args["chart"])
 
         display.v(f"Rendering chart '{chart}' as release '{name}'")
 
@@ -116,7 +129,6 @@ class ActionModule(ActionBase):
 
         manifest = helm_result.get("stdout", "")
         command = helm_result.get("command", "")
-        dest_path = os.path.join(args["dest"], f"{name}.yaml")
 
         display.v(f"Helm command: {command}")
         display.v(f"Rendered {len(manifest)} bytes, deploying to {dest_path}")
@@ -145,6 +157,31 @@ class ActionModule(ActionBase):
             )
         else:
             display.v(f"Deploy complete, changed={changed}")
+
+        return result
+
+    def _remove(self, result, name, dest_path, task_vars):
+        display.v(f"Removing manifest '{dest_path}'")
+
+        file_result = self._execute_module(
+            module_name="ansible.builtin.file",
+            module_args={"path": dest_path, "state": "absent"},
+            task_vars=task_vars,
+        )
+
+        result.update(
+            changed=file_result.get("changed", False),
+            dest=dest_path,
+            filename=f"{name}.yaml",
+            msg=f"Removed '{dest_path}'" if file_result.get("changed") else f"'{dest_path}' already absent",
+        )
+
+        if file_result.get("failed"):
+            result["failed"] = True
+            result["msg"] = f"Failed to remove '{dest_path}': {file_result.get('msg', '')}"
+
+        if "diff" in file_result:
+            result["diff"] = file_result["diff"]
 
         return result
 

@@ -23,7 +23,7 @@ RETURN = """
 
 
 class ActionModule(ActionBase):
-    _VALID_ARGS = frozenset(("src", "dest"))
+    _VALID_ARGS = frozenset(("src", "dest", "state"))
 
     def run(self, tmp=None, task_vars=None):
         self._supports_check_mode = True
@@ -33,6 +33,7 @@ class ActionModule(ActionBase):
             argument_spec=dict(
                 src=dict(type="str", required=True),
                 dest=dict(type="str", required=True),
+                state=dict(type="str", default="present", choices=["present", "absent"]),
             ),
         )
 
@@ -41,6 +42,9 @@ class ActionModule(ActionBase):
 
         src = self._resolve_path(args["src"])
         dest = args["dest"]
+
+        if args["state"] == "absent":
+            return self._remove(result, src, dest, task_vars)
 
         if not os.path.isdir(src):
             return self._fail(result, f"Source directory '{src}' does not exist")
@@ -131,6 +135,47 @@ class ActionModule(ActionBase):
         result["msg"] = f"Processed {total} file(s) from '{src}' to '{dest}'"
 
         display.v(f"Copy complete, changed={changed}")
+
+        return result
+
+    def _remove(self, result, src, dest, task_vars):
+        if not os.path.isdir(src):
+            return self._fail(result, f"Source directory '{src}' does not exist")
+
+        display.v(f"Removing files from '{dest}' matching '{src}'")
+
+        _, files, secrets, templates = self._scan(src)
+
+        removed = []
+        changed = False
+
+        all_targets = []
+        for rel_path, _ in files:
+            all_targets.append(os.path.join(dest, rel_path))
+        for rel_path, _ in secrets:
+            all_targets.append(os.path.join(dest, rel_path.replace(".secrets", "")))
+        for rel_path, _ in templates:
+            all_targets.append(os.path.join(dest, rel_path.replace(".secrets", "").removesuffix(".j2")))
+
+        for target in all_targets:
+            r = self._execute_module(
+                module_name="ansible.builtin.file",
+                module_args={"path": target, "state": "absent"},
+                task_vars=task_vars,
+            )
+            if r.get("failed"):
+                return self._fail(result, f"Failed to remove '{target}': {r.get('msg')}")
+            if r.get("changed"):
+                changed = True
+                removed.append(target)
+
+        result["changed"] = changed
+        result["src"] = src
+        result["dest"] = dest
+        result["removed_files"] = removed
+        result["msg"] = f"Removed {len(removed)} file(s) from '{dest}'"
+
+        display.v(f"Remove complete, {len(removed)} file(s) removed")
 
         return result
 
