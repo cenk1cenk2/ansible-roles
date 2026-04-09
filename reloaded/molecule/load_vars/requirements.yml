@@ -1,6 +1,0 @@
----
-# Ansible Galaxy requirements for Molecule testing
-collections:
-  - name: cenk1cenk2.reloaded
-    type: dir
-    source: /collection

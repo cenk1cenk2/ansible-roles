@@ -5,9 +5,10 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: load_vars
 short_description: Load variables from files with pattern or environment modes
@@ -15,7 +16,6 @@ description:
   - Loads variables from YAML/JSON files using glob patterns or hierarchical environment structure
   - Supports two modes - 'pattern' for glob-based loading and 'environment' for hierarchical loading
   - Returns structured output with loaded files list and variable counts
-  - Provides enhanced logging at multiple verbosity levels
 version_added: "1.0.0"
 options:
   mode:
@@ -63,15 +63,15 @@ options:
     type: bool
     default: false
 author:
-  - Ansible Project
+  - cenk1cenk2
 notes:
   - This module is actually an action plugin and will always execute on the controller
   - Files are loaded in sorted order for deterministic behavior
   - In environment mode, environment-specific variables override common variables
   - Supports YAML and JSON variable files
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 - name: Load variables by pattern
   cenk1cenk2.reloaded.load_vars:
     mode: pattern
@@ -104,9 +104,9 @@ EXAMPLES = r'''
     root: /path/to/vars
     environment: dev
     strict: true
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 loaded_files:
   description: List of files that were loaded
   returned: always
@@ -128,4 +128,4 @@ failed:
   returned: always
   type: bool
   sample: false
-'''
+"""

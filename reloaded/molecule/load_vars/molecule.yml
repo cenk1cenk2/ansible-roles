@@ -28,8 +28,11 @@ provisioner:
         ansible_python_interpreter: /usr/bin/python3
   playbooks:
     converge: converge.yml
-    prepare: prepare.yml
-    verify: verify.yml
 
-verifier:
-  name: ansible
+# Action plugin tests use tempfile for isolation, so idempotence is not applicable
+scenario:
+  test_sequence:
+    - dependency
+    - syntax
+    - converge
+    - destroy
