@@ -3,37 +3,18 @@
 # https://taskfile.dev/
 version: '3'
 
+vars:
+  TEST_IMAGE: quay.io/ansible/creator-ee:latest
+
 tasks:
-  # Main test task - runs all tests
   test:
     desc: Run all tests
     cmds:
       - task: test:reloaded
 
-  # Collection tests
   test:reloaded:
-    desc: Run all reloaded collection Molecule tests
-    dir: reloaded
+    desc: Run reloaded collection Molecule tests in a container
     cmds:
-      - ansible-galaxy collection install --force .
-      - molecule test --all
+      - >-
+        podman run --rm -v "{{.ROOT_DIR}}/reloaded:/workspace/reloaded:Z" -w /workspace/reloaded {{.TEST_IMAGE}} sh -c "ansible-galaxy collection install --force . && molecule test --all"
 
-  # Development workflow - faster iteration without full teardown
-  dev:reloaded:
-    desc: Run reloaded tests without destroying container (fast iteration)
-    dir: reloaded
-    cmds:
-      - ansible-galaxy collection install --force .
-      - molecule converge --all
-
-  # Cleanup tasks
-  clean:
-    desc: Clean up all test artifacts
-    cmds:
-      - task: clean:reloaded
-
-  clean:reloaded:
-    desc: Destroy all reloaded Molecule instances
-    dir: reloaded
-    cmds:
-      - molecule destroy --all || true
