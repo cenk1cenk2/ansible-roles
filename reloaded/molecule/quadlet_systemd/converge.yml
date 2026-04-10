@@ -16,7 +16,7 @@
       block:
         - name: Create a test systemd user service
           ansible.builtin.copy:
-            dest: '{{ ansible_env.HOME }}/.config/systemd/user/quadlet-test.service'
+            dest: '{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/quadlet-test.service'
             content: |
               [Unit]
               Description=Quadlet systemd test service
@@ -118,7 +118,7 @@
 
         - name: Remove test service file
           ansible.builtin.file:
-            path: '{{ ansible_env.HOME }}/.config/systemd/user/quadlet-test.service'
+            path: '{{ ansible_facts['env']['HOME'] }}/.config/systemd/user/quadlet-test.service'
             state: absent
 
         - name: Reload daemon after cleanup

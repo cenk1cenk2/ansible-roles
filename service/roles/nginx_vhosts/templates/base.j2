@@ -1,7 +1,7 @@
 #jinja2:trim_blocks: True,lstrip_blocks: True
 # ansible generated config file
 
-worker_processes {{ ansible_processor_vcpus | default(ansible_processor_count) }};
+worker_processes {{ ansible_facts['processor_vcpus'] | default(ansible_facts['processor_count']) }};
 worker_rlimit_nofile 1048576;
 {% if vhost_modules is defined %}
 

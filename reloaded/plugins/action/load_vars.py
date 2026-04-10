@@ -10,6 +10,13 @@ import os
 from ansible.plugins.action import ActionBase
 from ansible.utils.display import Display
 
+try:
+    from ansible.plugins.action import VariableLayer
+
+    _HAS_VARIABLE_LAYER = True
+except ImportError:
+    _HAS_VARIABLE_LAYER = False
+
 display = Display()
 
 DOCUMENTATION = """
@@ -71,6 +78,13 @@ class ActionModule(ActionBase):
         result["msg"] = msg
 
         return result
+
+    def _register_variables(self, result, facts):
+        if _HAS_VARIABLE_LAYER:
+            self.register_host_variables(facts, VariableLayer.INCLUDE_VARS)
+            self.register_host_variables({}, VariableLayer.CACHEABLE_FACT)
+        else:
+            result["ansible_facts"] = facts
 
     def _resolve_path(self, path):
         if os.path.isabs(path):
@@ -147,7 +161,7 @@ class ActionModule(ActionBase):
             return self._fail(result, err)
 
         facts, loaded = data
-        result["ansible_facts"] = facts
+        self._register_variables(result, facts)
         result["root"] = root
         result["matched_files"] = matched
         result["loaded_files"] = sorted(loaded)
@@ -192,7 +206,7 @@ class ActionModule(ActionBase):
         facts.update(env_facts)
         loaded.extend(env_loaded)
 
-        result["ansible_facts"] = facts
+        self._register_variables(result, facts)
         result["root"] = root
         result["loaded_files"] = sorted(loaded)
         result["variables_loaded"] = len(facts)
