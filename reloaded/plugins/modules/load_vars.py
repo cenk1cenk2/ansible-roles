@@ -62,6 +62,15 @@ options:
     required: false
     type: bool
     default: false
+  hash_behaviour:
+    description:
+      - How to merge loaded variables with existing variables
+      - C(replace) - Later files overwrite entire values from earlier files
+      - C(merge) - Deep merge dictionaries so nested keys from earlier files are preserved
+      - Defaults to the global C(DEFAULT_HASH_BEHAVIOUR) setting
+    required: false
+    type: str
+    choices: ['replace', 'merge']
 author:
   - cenk1cenk2
 notes:

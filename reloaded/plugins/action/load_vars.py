@@ -7,8 +7,10 @@ __metaclass__ = type
 import glob
 import os
 
+from ansible import constants as C
 from ansible.plugins.action import ActionBase
 from ansible.utils.display import Display
+from ansible.utils.vars import combine_vars
 
 try:
     from ansible.plugins.action import VariableLayer
@@ -32,7 +34,7 @@ RETURN = """
 
 class ActionModule(ActionBase):
     _VALID_ARGS = frozenset(
-        ("mode", "root", "pattern", "environment", "common", "strict")
+        ("mode", "root", "pattern", "environment", "common", "strict", "hash_behaviour")
     )
 
     SUPPORTED_EXTENSIONS = ("*.yml", "*.yaml", "*.json")
@@ -51,12 +53,19 @@ class ActionModule(ActionBase):
                 environment=dict(type="str"),
                 common=dict(type="str", default="base"),
                 strict=dict(type="bool", default=False),
+                hash_behaviour=dict(
+                    type="str",
+                    choices=["replace", "merge"],
+                    default=C.DEFAULT_HASH_BEHAVIOUR,
+                ),
             ),
             required_if=[
                 ("mode", "pattern", ("pattern",)),
                 ("mode", "environment", ("environment",)),
             ],
         )
+
+        self._merge = args["hash_behaviour"] == "merge"
 
         result = super().run(tmp, task_vars)
         result.update(changed=False, loaded_files=[], variables_loaded=0)
@@ -118,7 +127,10 @@ class ActionModule(ActionBase):
 
         for vars_file in files:
             new_task = self._task.copy()
-            new_task.args = {"file": vars_file}
+            new_task.args = {
+                "file": vars_file,
+                "hash_behaviour": "merge" if self._merge else "replace",
+            }
 
             action = self._shared_loader_obj.action_loader.get(
                 "ansible.builtin.include_vars",
@@ -135,8 +147,8 @@ class ActionModule(ActionBase):
                 return None, f"Failed to load '{vars_file}': {r.get('msg', 'Unknown error')}"
 
             if "ansible_facts" in r:
-                facts.update(r["ansible_facts"])
-                task_vars.update(r["ansible_facts"])
+                facts = combine_vars(facts, r["ansible_facts"], merge=self._merge)
+                task_vars = combine_vars(task_vars, r["ansible_facts"], merge=self._merge)
                 loaded.append(vars_file)
 
         return (facts, loaded), None
@@ -203,7 +215,7 @@ class ActionModule(ActionBase):
         if err:
             return self._fail(result, err)
         env_facts, env_loaded = env_data
-        facts.update(env_facts)
+        facts = combine_vars(facts, env_facts, merge=self._merge)
         loaded.extend(env_loaded)
 
         self._register_variables(result, facts)
