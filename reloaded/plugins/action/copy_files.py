@@ -221,6 +221,7 @@ class ActionModule(ActionBase):
     def _deploy(self, content, dest_path, task_vars):
         new_task = self._task.copy()
         new_task.args = {"content": content, "dest": dest_path}
+        new_task.diff = self._play_context.diff
 
         copy_action = self._shared_loader_obj.action_loader.get(
             "ansible.builtin.copy",
