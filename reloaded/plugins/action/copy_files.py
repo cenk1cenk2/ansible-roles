@@ -76,11 +76,10 @@ class ActionModule(ActionBase):
         for rel_path, abs_path in files:
             dest_path = os.path.join(dest, rel_path)
             display.vv(f"Copying file: {rel_path} -> {dest_path}")
-            r = self._run_action(
-                "ansible.builtin.copy",
-                {"src": abs_path, "dest": dest_path},
-                task_vars,
-            )
+            content = self._loader.get_real_file(abs_path)
+            with open(content, errors="replace") as f:
+                file_content = f.read()
+            r = self._deploy(file_content, dest_path, task_vars)
             if r.get("failed"):
                 return self._fail(result, f"Failed to copy '{rel_path}': {r.get('msg')}")
             if r.get("changed"):
@@ -94,11 +93,10 @@ class ActionModule(ActionBase):
             dest_name = rel_path.replace(".secrets", "")
             dest_path = os.path.join(dest, dest_name)
             display.vv(f"Decrypting secret: {rel_path} -> {dest_path}")
-            r = self._run_action(
-                "ansible.builtin.copy",
-                {"src": abs_path, "dest": dest_path, "decrypt": True},
-                task_vars,
-            )
+            real_path = self._loader.get_real_file(abs_path, decrypt=True)
+            with open(real_path, errors="replace") as f:
+                file_content = f.read()
+            r = self._deploy(file_content, dest_path, task_vars)
             if r.get("failed"):
                 return self._fail(result, f"Failed to copy secret '{rel_path}': {r.get('msg')}")
             if r.get("changed"):
@@ -112,11 +110,14 @@ class ActionModule(ActionBase):
             dest_name = rel_path.replace(".secrets", "").removesuffix(".j2")
             dest_path = os.path.join(dest, dest_name)
             display.vv(f"Rendering template: {rel_path} -> {dest_path}")
-            r = self._run_action(
-                "ansible.builtin.template",
-                {"src": abs_path, "dest": dest_path},
-                task_vars,
+            with open(abs_path, errors="replace") as f:
+                template_content = f.read()
+            rendered = self._templar.do_template(
+                template_content,
+                preserve_trailing_newlines=True,
+                escape_backslashes=False,
             )
+            r = self._deploy(rendered, dest_path, task_vars)
             if r.get("failed"):
                 return self._fail(result, f"Failed to render template '{rel_path}': {r.get('msg')}")
             if r.get("changed"):
@@ -217,12 +218,12 @@ class ActionModule(ActionBase):
 
         return directories, files, secrets, templates
 
-    def _run_action(self, action_name, action_args, task_vars):
+    def _deploy(self, content, dest_path, task_vars):
         new_task = self._task.copy()
-        new_task.args = action_args
+        new_task.args = {"content": content, "dest": dest_path}
 
-        action = self._shared_loader_obj.action_loader.get(
-            action_name,
+        copy_action = self._shared_loader_obj.action_loader.get(
+            "ansible.builtin.copy",
             task=new_task,
             connection=self._connection,
             play_context=self._play_context,
@@ -231,4 +232,5 @@ class ActionModule(ActionBase):
             shared_loader_obj=self._shared_loader_obj,
         )
 
-        return action.run(task_vars=task_vars)
+        return copy_action.run(task_vars=task_vars)
+
