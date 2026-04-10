@@ -85,7 +85,7 @@ class ActionModule(ActionBase):
             if r.get("changed"):
                 changed = True
             if "diff" in r:
-                diffs.append(r["diff"])
+                diffs.extend(r["diff"] if isinstance(r["diff"], list) else [r["diff"]])
             result["copied_files"].append(rel_path)
 
         # Copy secrets with vault decryption
@@ -102,7 +102,7 @@ class ActionModule(ActionBase):
             if r.get("changed"):
                 changed = True
             if "diff" in r:
-                diffs.append(r["diff"])
+                diffs.extend(r["diff"] if isinstance(r["diff"], list) else [r["diff"]])
             result["copied_secrets"].append(rel_path)
 
         # Render templates
@@ -123,7 +123,7 @@ class ActionModule(ActionBase):
             if r.get("changed"):
                 changed = True
             if "diff" in r:
-                diffs.append(r["diff"])
+                diffs.extend(r["diff"] if isinstance(r["diff"], list) else [r["diff"]])
             result["copied_templates"].append(rel_path)
 
         if diffs:
