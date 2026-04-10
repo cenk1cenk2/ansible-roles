@@ -72,12 +72,12 @@ class ActionModule(ActionBase):
         changed = False
         diffs = []
 
-        # Copy regular files via synchronize
+        # Copy regular files
         for rel_path, abs_path in files:
             dest_path = os.path.join(dest, rel_path)
-            display.vv(f"Syncing file: {rel_path} -> {dest_path}")
+            display.vv(f"Copying file: {rel_path} -> {dest_path}")
             r = self._run_action(
-                "ansible.posix.synchronize",
+                "ansible.builtin.copy",
                 {"src": abs_path, "dest": dest_path},
                 task_vars,
             )
