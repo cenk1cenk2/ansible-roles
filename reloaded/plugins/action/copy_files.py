@@ -112,7 +112,7 @@ class ActionModule(ActionBase):
             display.vv(f"Rendering template: {rel_path} -> {dest_path}")
             with open(abs_path, errors="replace") as f:
                 template_content = f.read()
-            rendered = self._templar.do_template(
+            rendered = self._templar.template(
                 template_content,
                 preserve_trailing_newlines=True,
                 escape_backslashes=False,
