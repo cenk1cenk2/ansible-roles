@@ -1,3 +1,9 @@
+.claude/
+**/charts/**/templates/**
 **/*secrets.yml*
+**/*secrets.json*
+**/*secrets.*
+**/*.yml.j2
+**/*.yaml.j2
 node_modules
 pnpm-lock.yaml

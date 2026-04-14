@@ -10,6 +10,4 @@ tasks:
   test:
     desc: Run all Molecule tests in a container
     cmds:
-      - >-
-        podman run --rm -v "{{.ROOT_DIR}}:/workspace:Z" -w /workspace {{.TEST_IMAGE}} sh -c "curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | VERIFY_CHECKSUM=false bash && ansible-galaxy collection install --force . && molecule test -s load_vars && molecule test -s copy_files && molecule test -s quadlet_template_helm"
-
+      - podman run --rm -v "{{.ROOT_DIR}}:/workspace:Z" -w /workspace {{.TEST_IMAGE}} sh -c "curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | VERIFY_CHECKSUM=false bash && ansible-galaxy collection install --force . && molecule test -s load_vars && molecule test -s copy_files && molecule test -s quadlet_template_helm"

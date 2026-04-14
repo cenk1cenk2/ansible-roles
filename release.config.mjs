@@ -1,32 +1,32 @@
 export default {
   branches: [
-    "main",
-    "master",
-    "next",
-    "next-major",
+    'main',
+    'master',
+    'next',
+    'next-major',
     {
-      name: "alpha",
+      name: 'alpha',
       prerelease: true
     },
     {
-      name: "beta",
+      name: 'beta',
       prerelease: true
     },
     {
-      name: "rc",
+      name: 'rc',
       prerelease: true
     }
   ],
   plugins: [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
-    "@semantic-release/changelog",
+    '@semantic-release/commit-analyzer',
+    '@semantic-release/release-notes-generator',
+    '@semantic-release/changelog',
     [
-      "@semantic-release/git",
+      '@semantic-release/git',
       {
-        assets: ["CHANGELOG.md"]
+        assets: ['CHANGELOG.md']
       }
     ],
-    "@semantic-release/gitlab"
+    '@semantic-release/gitlab'
   ]
 }

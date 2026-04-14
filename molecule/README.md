@@ -82,6 +82,7 @@ molecule test --all        # Run all scenarios
 ```
 
 This will:
+
 1. Create a Podman container
 2. Prepare the test environment (create test files)
 3. Run the converge playbook (execute all 9 tests)
@@ -121,13 +122,15 @@ molecule test -s load_vars -vvv
 Tests the `cenk1cenk2.reloaded.load_vars` action plugin with 9 comprehensive test cases:
 
 ### Pattern Mode Tests (Tests 1-5)
-1. **Basic pattern mode** - Load all *.yml files from a directory
+
+1. **Basic pattern mode** - Load all \*.yml files from a directory
 2. **Non-strict mode with no matches** - Succeed with warning when no files match
 3. **Strict mode with no matches** - Fail appropriately when no files match
 4. **Specific pattern matching** - Load files matching specific glob patterns
 5. **Missing required parameters** - Validate parameter requirements
 
 ### Environment Mode Tests (Tests 6-9)
+
 6. **Basic environment mode** - Hierarchical loading (base + prod with overrides)
 7. **Non-strict mode with missing environment** - Succeed when env dir missing
 8. **Strict mode with missing directories** - Fail when both common and env missing
@@ -228,6 +231,7 @@ podman system migrate
 ## Future Test Scenarios
 
 Additional scenarios can be added for:
+
 - `copy_files` action plugin testing
 - Integration tests across multiple plugins
 - Performance/stress testing
@@ -236,10 +240,12 @@ Additional scenarios can be added for:
 ## Comparison with Old Tests
 
 The `load_vars` scenario replaces the previous standalone playbooks:
+
 - ❌ `test-load-vars-pattern.yml` (deprecated)
 - ❌ `test-load-vars-environment.yml` (deprecated)
 
 **Benefits of Molecule**:
+
 - ✅ Isolated container environment (no host pollution)
 - ✅ Reproducible across different systems
 - ✅ Automatic setup and teardown
