@@ -25,6 +25,8 @@ homepage: https://gitlab.kilic.dev/ansible/ansible-roles
 
 issues: https://gitlab.kilic.dev/ansible/ansible-roles/-/issues
 
+requires_ansible: '>=2.16.0'
+
 build_ignore:
   - molecule
   - test-vars
