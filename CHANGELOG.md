@@ -1,3 +1,15 @@
+# [1.1.0](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.0.0...v1.1.0) (2026-04-14)
+
+
+### Bug Fixes
+
+* update prettierignore ([ba47c79](https://gitlab.kilic.dev/ansible/ansible-roles/commit/ba47c79a66730f6bda94b5399863a7fed9be2b83))
+
+
+### Features
+
+* add degit module ([0d5dc5f](https://gitlab.kilic.dev/ansible/ansible-roles/commit/0d5dc5f0597cba4a17192056d32521248ae0d4fc))
+
 # 1.0.0 (2026-04-14)
 
 
