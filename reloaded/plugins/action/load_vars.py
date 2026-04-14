@@ -34,7 +34,7 @@ RETURN = """
 
 class ActionModule(ActionBase):
     _VALID_ARGS = frozenset(
-        ("mode", "root", "pattern", "environment", "common", "strict", "hash_behaviour")
+        ("mode", "root", "pattern", "environment", "common", "strict", "hash_behaviour", "scope")
     )
 
     SUPPORTED_EXTENSIONS = ("*.yml", "*.yaml", "*.json")
@@ -58,6 +58,11 @@ class ActionModule(ActionBase):
                     choices=["replace", "merge"],
                     default=C.DEFAULT_HASH_BEHAVIOUR,
                 ),
+                scope=dict(
+                    type="str",
+                    choices=["global", "return"],
+                    default="global",
+                ),
             ),
             required_if=[
                 ("mode", "pattern", ("pattern",)),
@@ -66,6 +71,7 @@ class ActionModule(ActionBase):
         )
 
         self._merge = args["hash_behaviour"] == "merge"
+        self._scope_return = args["scope"] == "return"
 
         result = super().run(tmp, task_vars)
         result.update(changed=False, loaded_files=[], variables_loaded=0)
@@ -124,6 +130,7 @@ class ActionModule(ActionBase):
     def _load_vars_files(self, files, result, task_vars):
         facts = {}
         loaded = []
+        per_file = []
 
         for vars_file in files:
             new_task = self._task.copy()
@@ -147,11 +154,17 @@ class ActionModule(ActionBase):
                 return None, f"Failed to load '{vars_file}': {r.get('msg', 'Unknown error')}"
 
             if "ansible_facts" in r:
-                facts = combine_vars(facts, r["ansible_facts"], merge=self._merge)
-                task_vars = combine_vars(task_vars, r["ansible_facts"], merge=self._merge)
+                file_data = r["ansible_facts"]
+                facts = combine_vars(facts, file_data, merge=self._merge)
+                task_vars = combine_vars(task_vars, file_data, merge=self._merge)
                 loaded.append(vars_file)
+                per_file.append({
+                    "filename": os.path.basename(vars_file),
+                    "path": vars_file,
+                    "data": file_data,
+                })
 
-        return (facts, loaded), None
+        return (facts, loaded, per_file), None
 
     def _run_pattern(self, result, args, task_vars):
         root = args["root"]
@@ -172,11 +185,17 @@ class ActionModule(ActionBase):
         if err:
             return self._fail(result, err)
 
-        facts, loaded = data
-        self._register_variables(result, facts)
+        facts, loaded, per_file = data
+
+        if self._scope_return:
+            result["vars"] = facts
+        else:
+            self._register_variables(result, facts)
+
         result["root"] = root
         result["matched_files"] = matched
         result["loaded_files"] = sorted(loaded)
+        result["files"] = per_file
         result["variables_loaded"] = len(facts)
         result["msg"] = f"Loaded {len(loaded)} file(s) matching '{pattern}'"
 
@@ -196,7 +215,7 @@ class ActionModule(ActionBase):
         data, err = self._load_vars_files(common_files, result, task_vars)
         if err:
             return self._fail(result, err)
-        facts, loaded = data
+        facts, loaded, per_file = data
 
         env_files = self._glob_vars_files(os.path.join(root, environment))
 
@@ -214,13 +233,19 @@ class ActionModule(ActionBase):
         env_data, err = self._load_vars_files(env_files, result, task_vars)
         if err:
             return self._fail(result, err)
-        env_facts, env_loaded = env_data
+        env_facts, env_loaded, env_per_file = env_data
         facts = combine_vars(facts, env_facts, merge=self._merge)
         loaded.extend(env_loaded)
+        per_file.extend(env_per_file)
 
-        self._register_variables(result, facts)
+        if self._scope_return:
+            result["vars"] = facts
+        else:
+            self._register_variables(result, facts)
+
         result["root"] = root
         result["loaded_files"] = sorted(loaded)
+        result["files"] = per_file
         result["variables_loaded"] = len(facts)
         result["msg"] = f"Loaded {len(loaded)} file(s) in environment mode"
 
