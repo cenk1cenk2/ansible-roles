@@ -128,6 +128,12 @@ class ActionModule(ActionBase):
         return sorted(set(files))
 
     def _load_vars_files(self, files, result, task_vars):
+        if self._scope_return:
+            return self._load_vars_files_local(files)
+
+        return self._load_vars_files_include(files, task_vars)
+
+    def _load_vars_files_include(self, files, task_vars):
         facts = {}
         loaded = []
         per_file = []
@@ -163,6 +169,36 @@ class ActionModule(ActionBase):
                     "path": vars_file,
                     "data": file_data,
                 })
+
+        return (facts, loaded, per_file), None
+
+    def _load_vars_files_local(self, files):
+        facts = {}
+        loaded = []
+        per_file = []
+
+        for vars_file in files:
+            try:
+                file_data = self._loader.load_from_file(vars_file)
+            except Exception as e:
+                return None, f"Failed to load '{vars_file}': {e}"
+
+            if file_data is None:
+                file_data = {}
+
+            if not isinstance(file_data, dict):
+                return None, f"File '{vars_file}' does not contain a YAML dictionary"
+
+            # Template the data to resolve Jinja2 expressions
+            file_data = self._templar.template(file_data)
+
+            facts = combine_vars(facts, file_data, merge=self._merge)
+            loaded.append(vars_file)
+            per_file.append({
+                "filename": os.path.basename(vars_file),
+                "path": vars_file,
+                "data": file_data,
+            })
 
         return (facts, loaded, per_file), None
 
