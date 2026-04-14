@@ -1,3 +1,10 @@
+## [1.1.1](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.0...v1.1.1) (2026-04-14)
+
+
+### Bug Fixes
+
+* autocomplete ([a946b98](https://gitlab.kilic.dev/ansible/ansible-roles/commit/a946b987155cd806ba28fd456e2ba3cde7be4071))
+
 # [1.1.0](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.0.0...v1.1.0) (2026-04-14)
 
 
