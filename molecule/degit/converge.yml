@@ -1,0 +1,157 @@
+---
+- name: Test degit plugin
+  hosts: all
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    test_repo: https://github.com/cenk1cenk2/nvim.git
+    test_branch: rolling
+
+  tasks:
+    - name: Create temporary dest directory
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: degit_test_
+      register: test_dir
+
+    - name: Run tests
+      block:
+        # Test 1: Clone with subpath
+        - name: Test 1 - Clone repo with src subpath
+          cenk1cenk2.reloaded.degit:
+            git:
+              repo: '{{ test_repo }}'
+              version: '{{ test_branch }}'
+            src: utils/scripts
+            dest: '{{ test_dir.path }}/dest1'
+          register: result_basic
+
+        - name: Verify basic clone
+          ansible.builtin.assert:
+            that:
+              - result_basic is succeeded
+              - result_basic.changed == true
+              - result_basic.dest == test_dir.path + '/dest1'
+              - result_basic.repo == test_repo
+              - result_basic.copied_files | length > 0
+
+        - name: Verify files exist on disk
+          ansible.builtin.stat:
+            path: '{{ test_dir.path }}/dest1'
+          register: dest1_stat
+
+        - name: Verify dest exists
+          ansible.builtin.assert:
+            that:
+              - dest1_stat.stat.exists
+              - dest1_stat.stat.isdir
+
+        # Test 2: Idempotence
+        - name: Test 2 - Idempotence check
+          cenk1cenk2.reloaded.degit:
+            git:
+              repo: '{{ test_repo }}'
+              version: '{{ test_branch }}'
+            src: utils/scripts
+            dest: '{{ test_dir.path }}/dest1'
+          register: result_idempotent
+
+        - name: Verify idempotence
+          ansible.builtin.assert:
+            that:
+              - result_idempotent is succeeded
+              - result_idempotent.changed == false
+
+        # Test 3: Clone without src (full repo)
+        - name: Test 3 - Full repo clone
+          cenk1cenk2.reloaded.degit:
+            git:
+              repo: '{{ test_repo }}'
+              version: '{{ test_branch }}'
+            dest: '{{ test_dir.path }}/dest2'
+          register: result_full
+
+        - name: Verify full clone
+          ansible.builtin.assert:
+            that:
+              - result_full is succeeded
+              - result_full.changed == true
+              - result_full.copied_files | length > 0
+
+        # Test 4: state: absent
+        - name: Test 4 - Remove dest
+          cenk1cenk2.reloaded.degit:
+            git:
+              repo: '{{ test_repo }}'
+            dest: '{{ test_dir.path }}/dest1'
+            state: absent
+          register: result_absent
+
+        - name: Verify removal
+          ansible.builtin.assert:
+            that:
+              - result_absent is succeeded
+              - result_absent.changed == true
+
+        - name: Verify dest is gone
+          ansible.builtin.stat:
+            path: '{{ test_dir.path }}/dest1'
+          register: dest1_gone
+
+        - name: Verify dest removed
+          ansible.builtin.assert:
+            that:
+              - not dest1_gone.stat.exists
+
+        # Test 5: state: absent idempotence
+        - name: Test 5 - Absent idempotence
+          cenk1cenk2.reloaded.degit:
+            git:
+              repo: '{{ test_repo }}'
+            dest: '{{ test_dir.path }}/dest1'
+            state: absent
+          register: result_absent_idem
+
+        - name: Verify absent idempotence
+          ansible.builtin.assert:
+            that:
+              - result_absent_idem is succeeded
+              - result_absent_idem.changed == false
+
+        # Test 6: Missing repo fails
+        - name: Test 6 - Missing repo
+          cenk1cenk2.reloaded.degit:
+            git: {}
+            dest: '{{ test_dir.path }}/dest3'
+          register: result_no_repo
+          ignore_errors: true
+
+        - name: Verify missing repo fails
+          ansible.builtin.assert:
+            that:
+              - result_no_repo is failed
+              - "'repo' in result_no_repo.msg"
+
+        # Test 7: Invalid src subpath fails
+        - name: Test 7 - Invalid src subpath
+          cenk1cenk2.reloaded.degit:
+            git:
+              repo: '{{ test_repo }}'
+              version: '{{ test_branch }}'
+            src: nonexistent/path
+            dest: '{{ test_dir.path }}/dest4'
+          register: result_bad_src
+          ignore_errors: true
+
+        - name: Verify invalid src fails
+          ansible.builtin.assert:
+            that:
+              - result_bad_src is failed
+              - "'does not exist' in result_bad_src.msg"
+
+      always:
+        - name: Clean up temporary directory
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}'
+            state: absent
+          when: test_dir.path is defined
