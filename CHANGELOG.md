@@ -1,3 +1,11 @@
+## [1.1.2](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.1...v1.1.2) (2026-04-14)
+
+
+### Bug Fixes
+
+* update ansible ([f6d665b](https://gitlab.kilic.dev/ansible/ansible-roles/commit/f6d665b8c0c05b09174abbdb7c750a24767bb4b4))
+* update conf ([49fbfc8](https://gitlab.kilic.dev/ansible/ansible-roles/commit/49fbfc8c0f326424d300b73f5d12f49d74b8f33f))
+
 ## [1.1.1](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.0...v1.1.1) (2026-04-14)
 
 
