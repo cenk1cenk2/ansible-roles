@@ -1,7 +1,0 @@
----
-# Common/base variables for all environments
-app_name: 'myapp'
-log_level: 'info'
-database_host: 'localhost'
-cache_enabled: true
-common_var: 'from base'

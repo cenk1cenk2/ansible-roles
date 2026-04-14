@@ -1,0 +1,233 @@
+---
+- name: Test quadlet_template_helm plugin
+  hosts: all
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Create temporary test directory
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: quadlet_template_helm_test_
+      register: test_dir
+
+    - name: Run tests
+      block:
+        - name: Create chart directory structure
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}/{{ item }}'
+            state: directory
+            mode: '0755'
+          loop:
+            - chart/templates
+            - output
+            - values
+
+        - name: Create Chart.yaml
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/chart/Chart.yaml'
+            content: |
+              ---
+              apiVersion: v2
+              name: test-app
+              version: 0.1.0
+            mode: '0644'
+
+        - name: Create chart template
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/chart/templates/pod.yaml'
+            content: |
+              ---
+              apiVersion: v1
+              kind: Pod
+              metadata:
+                name: {{ '{{ .Release.Name }}' }}
+                namespace: {{ '{{ .Release.Namespace | default "default" }}' }}
+              spec:
+                containers:
+                  - name: app
+                    image: {{ '{{ .Values.image.repository }}' }}:{{ '{{ .Values.image.tag }}' }}
+                    ports:
+                      - containerPort: {{ '{{ .Values.port | default 8080 }}' }}
+            mode: '0644'
+
+        - name: Create default values
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/chart/values.yaml'
+            content: |
+              ---
+              image:
+                repository: nginx
+                tag: latest
+              port: 8080
+            mode: '0644'
+
+        - name: Create override values file
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/values/prod.yml'
+            content: |
+              ---
+              image:
+                tag: "1.25.0"
+              port: 80
+            mode: '0644'
+
+        # Test 1: Basic render and deploy
+        - name: Test 1 - Basic helm render
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            chart: '{{ test_dir.path }}/chart'
+            dest: '{{ test_dir.path }}/output'
+            name: myapp
+          register: result_basic
+
+        - name: Verify basic render
+          ansible.builtin.assert:
+            that:
+              - result_basic is succeeded
+              - result_basic.changed == true
+              - result_basic.dest == test_dir.path + '/output/myapp.yaml'
+              - result_basic.filename == 'myapp.yaml'
+              - "'myapp' in result_basic.manifest"
+              - "'nginx:latest' in result_basic.manifest"
+              - result_basic.command is defined
+
+        # Test 2: Idempotence (second run should not change)
+        - name: Test 2 - Idempotence check
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            chart: '{{ test_dir.path }}/chart'
+            dest: '{{ test_dir.path }}/output'
+            name: myapp
+          register: result_idempotent
+
+        - name: Verify idempotence
+          ansible.builtin.assert:
+            that:
+              - result_idempotent is succeeded
+              - result_idempotent.changed == false
+
+        # Test 3: Values file override
+        - name: Test 3 - Values file override
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            chart: '{{ test_dir.path }}/chart'
+            dest: '{{ test_dir.path }}/output'
+            name: myapp
+            values_files:
+              - '{{ test_dir.path }}/values/prod.yml'
+          register: result_values_file
+
+        - name: Verify values file override
+          ansible.builtin.assert:
+            that:
+              - result_values_file is succeeded
+              - result_values_file.changed == true
+              - "'nginx:1.25.0' in result_values_file.manifest"
+              - "'containerPort: 80' in result_values_file.manifest"
+
+        # Test 4: Inline values override
+        - name: Test 4 - Inline values override
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            chart: '{{ test_dir.path }}/chart'
+            dest: '{{ test_dir.path }}/output'
+            name: myapp
+            values:
+              image:
+                repository: alpine
+                tag: '3.19'
+          register: result_inline_values
+
+        - name: Verify inline values override
+          ansible.builtin.assert:
+            that:
+              - result_inline_values is succeeded
+              - result_inline_values.changed == true
+              - "'alpine:3.19' in result_inline_values.manifest"
+
+        # Test 5: Namespace
+        - name: Test 5 - Namespace
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            chart: '{{ test_dir.path }}/chart'
+            dest: '{{ test_dir.path }}/output'
+            name: myapp-ns
+            namespace: kube-system
+          register: result_namespace
+
+        - name: Verify namespace
+          ansible.builtin.assert:
+            that:
+              - result_namespace is succeeded
+              - "'kube-system' in result_namespace.manifest"
+              - result_namespace.dest == test_dir.path + '/output/myapp-ns.yaml'
+
+        # Test 6: Missing chart should fail
+        - name: Test 6 - Missing chart
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            chart: '{{ test_dir.path }}/nonexistent'
+            dest: '{{ test_dir.path }}/output'
+            name: fail-test
+          register: result_missing_chart
+          ignore_errors: true
+
+        - name: Verify missing chart fails
+          ansible.builtin.assert:
+            that:
+              - result_missing_chart is failed
+
+        # Test 7: state: absent removes the file
+        - name: Test 7 - Render manifest for absent test
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            chart: '{{ test_dir.path }}/chart'
+            dest: '{{ test_dir.path }}/output'
+            name: absent-test
+          register: result_absent_render
+
+        - name: Test 7 - Verify rendered file exists before absent
+          ansible.builtin.stat:
+            path: '{{ test_dir.path }}/output/absent-test.yaml'
+          register: stat_before_absent
+
+        - name: Test 7 - Assert file exists before absent
+          ansible.builtin.assert:
+            that:
+              - result_absent_render is succeeded
+              - stat_before_absent.stat.exists == true
+
+        - name: Test 7 - Remove manifest with state absent
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            dest: '{{ test_dir.path }}/output'
+            name: absent-test
+            state: absent
+          register: result_absent
+
+        - name: Test 7 - Verify file is gone after absent
+          ansible.builtin.stat:
+            path: '{{ test_dir.path }}/output/absent-test.yaml'
+          register: stat_after_absent
+
+        - name: Test 7 - Assert absent changed and file removed
+          ansible.builtin.assert:
+            that:
+              - result_absent is succeeded
+              - result_absent.changed == true
+              - stat_after_absent.stat.exists == false
+
+        # Test 8: state: absent idempotence
+        - name: Test 8 - Call state absent again on already-removed file
+          cenk1cenk2.reloaded.quadlet_template_helm:
+            dest: '{{ test_dir.path }}/output'
+            name: absent-test
+            state: absent
+          register: result_absent_idempotent
+
+        - name: Test 8 - Assert absent is idempotent
+          ansible.builtin.assert:
+            that:
+              - result_absent_idempotent is succeeded
+              - result_absent_idempotent.changed == false
+
+      always:
+        - name: Clean up temporary test directory
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}'
+            state: absent
+          when: test_dir.path is defined

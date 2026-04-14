@@ -1,3 +1,0 @@
----
-podman_kube_quadlet_dir: /etc/containers/systemd/
-podman_kube_quadlet_kustomize_dir: ./files/manifests

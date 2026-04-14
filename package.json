@@ -2,7 +2,7 @@
   "name": "@cenk1cenk2/ansible-roles",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:cenk1cenk2/ansible-roles.git",
+  "repository": "git@gitlab.kilic.dev:ansible/ansible-roles.git",
   "author": "Cenk Kılıç <cenk@kilic.dev>",
   "license": "MIT",
   "private": true,

@@ -1,9 +1,0 @@
-{% if vhost_ssl_le is defined and vhost_ssl_le == true %}
-
-location /.well-known/acme-challenge {
-  access_log acme-access.log;
-  error_log acme-error.log;
-  allow all;
-  root {{ letsencyrpt_container_acme_root }};
-}
-{% endif %}

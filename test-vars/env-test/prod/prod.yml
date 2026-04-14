@@ -1,7 +1,0 @@
----
-# Production environment specific variables
-# These should override common/base variables
-log_level: 'warning' # Override base value
-database_host: 'prod-db.example.com' # Override base value
-database_ssl: true
-prod_only_var: 'production specific'

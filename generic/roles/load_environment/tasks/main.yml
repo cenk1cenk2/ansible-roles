@@ -1,4 +1,0 @@
----
-- ansible.builtin.import_tasks: load-environment.yml
-  when:
-    - load_environment is defined

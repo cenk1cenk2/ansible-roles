@@ -1,0 +1,133 @@
+---
+- name: Test quadlet_systemd plugin
+  hosts: all
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Create temporary systemd unit
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: quadlet_systemd_test_
+      register: test_dir
+
+    - name: Run tests
+      block:
+        - name: Create a test systemd user service
+          ansible.builtin.copy:
+            dest: '{{ ansible_facts["env"]["HOME"] }}/.config/systemd/user/quadlet-test.service'
+            content: |
+              [Unit]
+              Description=Quadlet systemd test service
+
+              [Service]
+              Type=oneshot
+              ExecStart=/bin/true
+              RemainAfterExit=yes
+
+              [Install]
+              WantedBy=default.target
+            mode: '0644'
+
+        # Test 1: Basic service management with triggers (no trigger fired)
+        - name: Test 1 - Start service (no triggers)
+          cenk1cenk2.reloaded.quadlet_systemd:
+            services:
+              - name: quadlet-test.service
+            scope: user
+          register: result_start
+
+        - name: Verify service started
+          ansible.builtin.assert:
+            that:
+              - result_start is succeeded
+              - result_start.services | length == 1
+              - result_start.services[0].state == 'started'
+
+        # Test 2: With triggers fired (should restart)
+        - name: Test 2 - Restart via trigger
+          cenk1cenk2.reloaded.quadlet_systemd:
+            triggers:
+              - false
+              - true
+            services:
+              - name: quadlet-test.service
+            scope: user
+          register: result_triggered
+
+        - name: Verify service restarted via trigger
+          ansible.builtin.assert:
+            that:
+              - result_triggered is succeeded
+              - result_triggered.services[0].state == 'restarted'
+
+        # Test 3: With no triggers fired (should start, not restart)
+        - name: Test 3 - No triggers fired
+          cenk1cenk2.reloaded.quadlet_systemd:
+            triggers:
+              - false
+              - false
+            services:
+              - name: quadlet-test.service
+            scope: user
+          register: result_no_trigger
+
+        - name: Verify service started (not restarted)
+          ansible.builtin.assert:
+            that:
+              - result_no_trigger is succeeded
+              - result_no_trigger.services[0].state == 'started'
+
+        # Test 4: String service names
+        - name: Test 4 - String service name
+          cenk1cenk2.reloaded.quadlet_systemd:
+            services:
+              - quadlet-test.service
+            scope: user
+          register: result_string
+
+        - name: Verify string name works
+          ansible.builtin.assert:
+            that:
+              - result_string is succeeded
+              - result_string.services[0].name == 'quadlet-test.service'
+
+        # Test 5: Explicit state passthrough
+        - name: Test 5 - Explicit stopped state
+          cenk1cenk2.reloaded.quadlet_systemd:
+            services:
+              - name: quadlet-test.service
+                state: stopped
+            scope: user
+          register: result_stopped
+
+        - name: Verify service stopped
+          ansible.builtin.assert:
+            that:
+              - result_stopped is succeeded
+              - result_stopped.services[0].state == 'stopped'
+
+      always:
+        - name: Stop and disable test service
+          ansible.builtin.systemd:
+            name: quadlet-test.service
+            state: stopped
+            scope: user
+          ignore_errors: true
+
+        - name: Remove test service file
+          ansible.builtin.file:
+            path: '{{ ansible_facts["env"]["HOME"] }}/.config/systemd/user/quadlet-test.service'
+            state: absent
+
+        - name: Reload daemon after cleanup
+          ansible.builtin.systemd:
+            daemon_reload: true
+            scope: user
+
+        - name: Clean up temp directory
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}'
+            state: absent
+          when: test_dir.path is defined

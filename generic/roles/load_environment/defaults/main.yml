@@ -1,4 +1,0 @@
----
-load_environment_root: ./environments
-load_environment_strict: false
-common_load_environment: base
