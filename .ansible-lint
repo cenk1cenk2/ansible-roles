@@ -8,6 +8,7 @@ exclude_paths:
   - roles/
   - collections/
   - "**/files/**/*"
+  - pnpm-lock.yaml
 
 use_default_rules: true
 

@@ -323,6 +323,161 @@
               - item.data is defined
           loop: '{{ result_global_files.files }}'
 
+        # Test 13: Deep merge across files with shared top-level key
+        - name: Create merge-test directory structure
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}/merge-test/base'
+            state: directory
+            mode: '0755'
+
+        - name: Create merge-test main.yml with nested dict
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/merge-test/base/main.yml'
+            content: |
+              ---
+              merge_app:
+                uri: app.example.com
+                registry:
+                  uri: registry.example.com
+            mode: '0644'
+
+        - name: Create merge-test secrets.yml with overlapping nested dict
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/merge-test/base/secrets.yml'
+            content: |
+              ---
+              merge_app:
+                registry:
+                  db:
+                    name: appdb
+                    password: s3cret
+            mode: '0644'
+
+        - name: Test 13 - Deep merge across files with same top-level key
+          cenk1cenk2.reloaded.load_vars:
+            mode: environment
+            root: '{{ test_dir.path }}/merge-test'
+            environment: nonexistent
+            common: base
+            hash_behaviour: merge
+          register: result_merge
+
+        - name: Verify deep merge preserves both files' nested keys in result
+          ansible.builtin.assert:
+            that:
+              - result_merge is succeeded
+              - result_merge.ansible_facts.merge_app.uri == 'app.example.com'
+              - result_merge.ansible_facts.merge_app.registry.uri == 'registry.example.com'
+              - result_merge.ansible_facts.merge_app.registry.db.name == 'appdb'
+              - result_merge.ansible_facts.merge_app.registry.db.password == 's3cret'
+
+        - name: Verify deep merge reached the host's variable cache (catches the bug)
+          ansible.builtin.assert:
+            that:
+              - merge_app.uri == 'app.example.com'
+              - merge_app.registry.uri == 'registry.example.com'
+              - merge_app.registry.db.name == 'appdb'
+              - merge_app.registry.db.password == 's3cret'
+
+        # Test 14: Sequential load_vars calls must not pollute each other
+        - name: Create seq-test directory with two files sharing a top-level key
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}/seq-test/base'
+            state: directory
+            mode: '0755'
+
+        - name: Create seq-test main.yml
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/seq-test/base/main.yml'
+            content: |
+              ---
+              seq_app:
+                uri: seq.example.com
+                registry:
+                  uri: seq-registry.example.com
+            mode: '0644'
+
+        - name: Create seq-test secrets.yml
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/seq-test/base/secrets.yml'
+            content: |
+              ---
+              seq_app:
+                registry:
+                  db:
+                    name: seqdb
+                    password: sekret
+            mode: '0644'
+
+        - name: Test 14a - First load_vars call (simulates earlier play in aggregator)
+          cenk1cenk2.reloaded.load_vars:
+            mode: pattern
+            root: '{{ test_dir.path }}/seq-test/base'
+            pattern: main.yml
+            hash_behaviour: merge
+
+        - name: Test 14b - Second load_vars call merging both files
+          cenk1cenk2.reloaded.load_vars:
+            mode: environment
+            root: '{{ test_dir.path }}/seq-test'
+            environment: nonexistent
+            common: base
+            hash_behaviour: merge
+
+        - name: Verify second call's merge reached host with no pollution from first call
+          ansible.builtin.assert:
+            that:
+              - seq_app.uri == 'seq.example.com'
+              - seq_app.registry.uri == 'seq-registry.example.com'
+              - seq_app.registry.db.name == 'seqdb'
+              - seq_app.registry.db.password == 'sekret'
+
+        # Test 15: hash_behaviour=replace still shallow-replaces at top level
+        - name: Create replace-test directory with two files sharing a top-level key
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}/replace-test/base'
+            state: directory
+            mode: '0755'
+
+        - name: Create replace-test main.yml
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/replace-test/base/main.yml'
+            content: |
+              ---
+              replace_app:
+                uri: replace.example.com
+                registry:
+                  uri: replace-registry.example.com
+            mode: '0644'
+
+        - name: Create replace-test secrets.yml
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/replace-test/base/secrets.yml'
+            content: |
+              ---
+              replace_app:
+                registry:
+                  db:
+                    name: replacedb
+                    password: secret
+            mode: '0644'
+
+        - name: Test 15 - Replace mode shallow-replaces at top level
+          cenk1cenk2.reloaded.load_vars:
+            mode: environment
+            root: '{{ test_dir.path }}/replace-test'
+            environment: nonexistent
+            common: base
+            hash_behaviour: replace
+          register: result_replace
+
+        - name: Verify replace mode drops main.yml's top-level keys
+          ansible.builtin.assert:
+            that:
+              - result_replace is succeeded
+              - result_replace.ansible_facts.replace_app.registry.db.name == 'replacedb'
+              - "'uri' not in result_replace.ansible_facts.replace_app"
+
       always:
         - name: Clean up temporary test directory
           ansible.builtin.file:
