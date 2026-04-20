@@ -14,6 +14,7 @@ from ansible.utils.vars import combine_vars
 
 try:
     from ansible.plugins.action import VariableLayer
+    from ansible._internal._task import TaskContext
 
     _HAS_VARIABLE_LAYER = True
 except ImportError:
@@ -142,7 +143,6 @@ class ActionModule(ActionBase):
             new_task = self._task.copy()
             new_task.args = {
                 "file": vars_file,
-                "hash_behaviour": "merge" if self._merge else "replace",
             }
 
             action = self._shared_loader_obj.action_loader.get(
@@ -155,6 +155,11 @@ class ActionModule(ActionBase):
                 shared_loader_obj=self._shared_loader_obj,
             )
             r = action.run(task_vars=task_vars)
+
+            if _HAS_VARIABLE_LAYER:
+                TaskContext.current().pending_changes.register_host_variables.pop(
+                    VariableLayer.INCLUDE_VARS, None
+                )
 
             if r.get("failed"):
                 return None, f"Failed to load '{vars_file}': {r.get('msg', 'Unknown error')}"
