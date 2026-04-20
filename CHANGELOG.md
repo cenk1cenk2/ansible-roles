@@ -1,3 +1,10 @@
+## [1.1.3](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.2...v1.1.3) (2026-04-20)
+
+
+### Bug Fixes
+
+* **load_vars:** clear per-file INCLUDE_VARS layer to avoid cross-play pollution ([1b7beec](https://gitlab.kilic.dev/ansible/ansible-roles/commit/1b7beec7fec03a12731d0d38a6d689df9556f797))
+
 ## [1.1.2](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.1...v1.1.2) (2026-04-14)
 
 
