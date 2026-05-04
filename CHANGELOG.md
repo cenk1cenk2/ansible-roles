@@ -1,3 +1,10 @@
+## [1.1.5](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.4...v1.1.5) (2026-05-04)
+
+
+### Bug Fixes
+
+* **load_vars:** mark loaded files as trusted_as_template in scope=return path ([1809f1c](https://gitlab.kilic.dev/ansible/ansible-roles/commit/1809f1cc6aae79dc32b994b8701138c8695574c4))
+
 ## [1.1.4](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.3...v1.1.4) (2026-05-04)
 
 
