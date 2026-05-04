@@ -1,3 +1,10 @@
+## [1.1.4](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.3...v1.1.4) (2026-05-04)
+
+
+### Bug Fixes
+
+* **load_vars:** template loaded YAML against task vars in scope=return path ([0630a86](https://gitlab.kilic.dev/ansible/ansible-roles/commit/0630a861bf4847e63b36597c9ad0bf54ab40af3e))
+
 ## [1.1.3](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.2...v1.1.3) (2026-04-20)
 
 
