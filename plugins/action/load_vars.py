@@ -189,7 +189,19 @@ class ActionModule(ActionBase):
 
         for vars_file in files:
             try:
-                file_data = self._loader.load_from_file(vars_file)
+                # trusted_as_template=True is required on ansible-core 2.19+ for
+                # the templar to actually evaluate Jinja2 inside the loaded
+                # strings; without it Templar.template() silently returns the
+                # literal string. ansible.builtin.include_vars passes the same
+                # flag for the same reason. Fall back to the no-kwarg form on
+                # older ansible-core (<2.19) where the parameter doesn't exist
+                # and trust enforcement isn't applied.
+                try:
+                    file_data = self._loader.load_from_file(
+                        vars_file, trusted_as_template=True
+                    )
+                except TypeError:
+                    file_data = self._loader.load_from_file(vars_file)
             except Exception as e:
                 return None, f"Failed to load '{vars_file}': {e}"
 
