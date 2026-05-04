@@ -130,7 +130,7 @@ class ActionModule(ActionBase):
 
     def _load_vars_files(self, files, result, task_vars):
         if self._scope_return:
-            return self._load_vars_files_local(files)
+            return self._load_vars_files_local(files, task_vars)
 
         return self._load_vars_files_include(files, task_vars)
 
@@ -177,10 +177,15 @@ class ActionModule(ActionBase):
 
         return (facts, loaded, per_file), None
 
-    def _load_vars_files_local(self, files):
+    def _load_vars_files_local(self, files, task_vars):
         facts = {}
         loaded = []
         per_file = []
+
+        # ActionBase.run() does not auto-populate self._templar.available_variables
+        # from task_vars. Wire it up so embedded Jinja2 / lookups in the loaded
+        # YAML resolve against the host's variable scope.
+        self._templar.available_variables = task_vars
 
         for vars_file in files:
             try:
@@ -194,10 +199,17 @@ class ActionModule(ActionBase):
             if not isinstance(file_data, dict):
                 return None, f"File '{vars_file}' does not contain a YAML dictionary"
 
-            # Template the data to resolve Jinja2 expressions
+            # Resolve Jinja2 in the loaded dict (var refs, lookups, etc.)
             file_data = self._templar.template(file_data)
 
             facts = combine_vars(facts, file_data, merge=self._merge)
+
+            # Make facts from earlier files visible to later ones in this same
+            # call — parity with the include path which mutates task_vars after
+            # each include_vars call.
+            task_vars = combine_vars(task_vars, file_data, merge=self._merge)
+            self._templar.available_variables = task_vars
+
             loaded.append(vars_file)
             per_file.append({
                 "filename": os.path.basename(vars_file),

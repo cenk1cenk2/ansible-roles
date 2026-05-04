@@ -297,6 +297,82 @@
               - result_return_env.files | length == 2
               - result_return_env.files | map(attribute='filename') | list | sort == ['common.yml', 'prod.yml']
 
+        # Test 11a: scope=return resolves embedded Jinja against task vars
+        - name: Create jinja-test directory
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}/jinja-test'
+            state: directory
+            mode: '0755'
+
+        - name: Create jinja-test file with embedded Jinja and lookup
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/jinja-test/instance.yml'
+            content: |
+              ---
+              item:
+                greeting: '{{ "{{" }} upstream_value {{ "}}" }}'
+                shell_lookup: '{{ "{{" }} lookup("pipe", "echo resolved") {{ "}}" }}'
+            mode: '0644'
+
+        - name: Test 11a - scope=return templates loaded YAML against task vars
+          vars:
+            upstream_value: hello-from-task-vars
+          cenk1cenk2.reloaded.load_vars:
+            mode: pattern
+            root: '{{ test_dir.path }}/jinja-test'
+            pattern: '*.yml'
+            scope: return
+          register: result_jinja
+
+        - name: Verify embedded Jinja and lookups resolved at load time
+          ansible.builtin.assert:
+            that:
+              - result_jinja is succeeded
+              - result_jinja.files | length == 1
+              - result_jinja.files[0].data.item.greeting == 'hello-from-task-vars'
+              - result_jinja.files[0].data.item.shell_lookup == 'resolved'
+              - result_jinja.vars.item.greeting == 'hello-from-task-vars'
+              - result_jinja.vars.item.shell_lookup == 'resolved'
+
+        # Test 11b: scope=return — second file sees facts from first file in same call
+        - name: Create cumulative-test directory
+          ansible.builtin.file:
+            path: '{{ test_dir.path }}/cumulative-test'
+            state: directory
+            mode: '0755'
+
+        - name: Create cumulative-test first file
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/cumulative-test/01-first.yml'
+            content: |
+              ---
+              from_first_file: alpha
+            mode: '0644'
+
+        - name: Create cumulative-test second file referencing first
+          ansible.builtin.copy:
+            dest: '{{ test_dir.path }}/cumulative-test/02-second.yml'
+            content: |
+              ---
+              derived: '{{ "{{" }} from_first_file {{ "}}" }}-beta'
+            mode: '0644'
+
+        - name: Test 11b - scope=return cumulative scope refresh
+          cenk1cenk2.reloaded.load_vars:
+            mode: pattern
+            root: '{{ test_dir.path }}/cumulative-test'
+            pattern: '*.yml'
+            scope: return
+          register: result_cumulative
+
+        - name: Verify second file resolved against first file's facts
+          ansible.builtin.assert:
+            that:
+              - result_cumulative is succeeded
+              - result_cumulative.files | length == 2
+              - result_cumulative.vars.from_first_file == 'alpha'
+              - result_cumulative.vars.derived == 'alpha-beta'
+
         # Test 12: result.files and result.root in global mode
         - name: Test 12 - result.files and result.root in global (default) scope
           cenk1cenk2.reloaded.load_vars:
