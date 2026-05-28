@@ -1,3 +1,7 @@
 ---
-onlyBuiltDependencies:
-  - simple-git-hooks
+packages: []
+
+minimumReleaseAge: 1440
+
+allowBuilds:
+  simple-git-hooks: true
