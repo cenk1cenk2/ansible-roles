@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@cenk1cenk2/cz-cc':
-        specifier: ^2.2.15
-        version: 2.2.15(@types/node@25.4.0)(typescript@5.9.3)
+        specifier: ^2.2.16
+        version: 2.2.16(@types/node@25.4.0)(typescript@5.9.3)
       lint-staged:
         specifier: ^16.4.0
         version: 16.4.0
@@ -31,9 +31,9 @@ packages:
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
 
-  '@cenk1cenk2/cz-cc@2.2.15':
-    resolution: {integrity: sha512-yfPPTO1rv/UpAdgh0WIKrV4fJrMHIxdVXf/YcHQHkSc1yMx6/v3Jil3VBEuZHuMu15sSLN6KA0oi36yEoKlpSQ==}
-    engines: {node: '>= 22'}
+  '@cenk1cenk2/cz-cc@2.2.16':
+    resolution: {integrity: sha512-9Gtv8sRoQMDrZ8Zy74LsxzoL6fyQHkuRbgUI/pF/Yleqzxl4SGahWBBKqOvC8v66f3Elkio8I2C2dVCI4DVbhA==}
+    engines: {node: '>= 24'}
 
   '@commitlint/config-validator@20.4.3':
     resolution: {integrity: sha512-jCZpZFkcSL3ZEdL5zgUzFRdytv3xPo8iukTe9VA+QGus/BGhpp1xXSVu2B006GLLb2gYUAEGEqv64kTlpZNgmA==}
@@ -180,15 +180,6 @@ packages:
       '@types/node':
         optional: true
 
-  '@inquirer/type@4.0.5':
-    resolution: {integrity: sha512-aetVUNeKNc/VriqXlw1NRSW0zhMBB0W4bNbWRJgzRl/3d0QNDQFfk0GO5SDdtjMZVg6o8ZKEiadd7SCCzoOn5Q==}
-    engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-
   '@inquirer/type@4.0.6':
     resolution: {integrity: sha512-J+9tdxOskuYuGjsvGaq00AamhDgjR7anhEW2dP4QdQpFCMPngCeC/bCYWQ5NsMWZRdsy53is7kAHb/+7cwDk2g==}
     engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
@@ -198,8 +189,8 @@ packages:
       '@types/node':
         optional: true
 
-  '@listr2/prompt-adapter-inquirer@4.2.3':
-    resolution: {integrity: sha512-Co9U3AJ3LW0J8XBHjVoNKA79dMAyFt8EZH3OaKTMcDTj8r+6kG3vSUPq/eGLHT7P0iK3uLaFfhdFYd3033P24g==}
+  '@listr2/prompt-adapter-inquirer@4.2.4':
+    resolution: {integrity: sha512-/KRI2DMD7JGSYaREF0Ygl7AefJ/2ase4Gc5cBiKqT5l4tFjsSJfhFGcc5nSkgl0Sp9LkCQNzl/cqbVJYP2L3dw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
       '@inquirer/prompts': '>= 3 < 9'
@@ -907,10 +898,10 @@ snapshots:
   '@babel/helper-validator-identifier@7.28.5':
     optional: true
 
-  '@cenk1cenk2/cz-cc@2.2.15(@types/node@25.4.0)(typescript@5.9.3)':
+  '@cenk1cenk2/cz-cc@2.2.16(@types/node@25.4.0)(typescript@5.9.3)':
     dependencies:
       '@inquirer/prompts': 8.5.0(@types/node@25.4.0)
-      '@listr2/prompt-adapter-inquirer': 4.2.3(@inquirer/prompts@8.5.0(@types/node@25.4.0))(@types/node@25.4.0)(listr2@10.2.1)
+      '@listr2/prompt-adapter-inquirer': 4.2.4(@inquirer/prompts@8.5.0(@types/node@25.4.0))(@types/node@25.4.0)(listr2@10.2.1)
       commitizen: 4.3.1(@types/node@25.4.0)(typescript@5.9.3)
       conventional-commit-types: 3.0.0
       find-git-root: 1.1.0
@@ -1075,18 +1066,14 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.4.0
 
-  '@inquirer/type@4.0.5(@types/node@25.4.0)':
-    optionalDependencies:
-      '@types/node': 25.4.0
-
   '@inquirer/type@4.0.6(@types/node@25.4.0)':
     optionalDependencies:
       '@types/node': 25.4.0
 
-  '@listr2/prompt-adapter-inquirer@4.2.3(@inquirer/prompts@8.5.0(@types/node@25.4.0))(@types/node@25.4.0)(listr2@10.2.1)':
+  '@listr2/prompt-adapter-inquirer@4.2.4(@inquirer/prompts@8.5.0(@types/node@25.4.0))(@types/node@25.4.0)(listr2@10.2.1)':
     dependencies:
       '@inquirer/prompts': 8.5.0(@types/node@25.4.0)
-      '@inquirer/type': 4.0.5(@types/node@25.4.0)
+      '@inquirer/type': 4.0.6(@types/node@25.4.0)
       listr2: 10.2.1
     transitivePeerDependencies:
       - '@types/node'
