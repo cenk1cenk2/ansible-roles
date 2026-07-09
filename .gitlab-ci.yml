@@ -1,7 +1,7 @@
 ---
 include:
   - project: devops/pipelines
-    ref: semantic-release@1.6.1
+    ref: semantic-release@2.0.0
     file:
       - /semantic-release/publish.gitlab-ci.yml
 
