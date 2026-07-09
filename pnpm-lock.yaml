@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@cenk1cenk2/cz-cc':
-        specifier: ^2.2.20
-        version: 2.2.20(@types/node@25.4.0)(typescript@5.9.3)
+        specifier: ^2.2.22
+        version: 2.2.22(@types/node@25.4.0)(typescript@5.9.3)
       lint-staged:
         specifier: ^16.4.0
         version: 16.4.0
@@ -31,8 +31,8 @@ packages:
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
 
-  '@cenk1cenk2/cz-cc@2.2.20':
-    resolution: {integrity: sha512-1E5WLBAQMdb1+0V6/Rc99+5jAcwjJH3830ReM1+s97KH5ZsiqT3l5LofNKU7C0hfNCtk4CKRox1+i0mQjVzSOw==}
+  '@cenk1cenk2/cz-cc@2.2.22':
+    resolution: {integrity: sha512-aVemGPSOCskBQaneJARcRGUuvqMabAbCGHTpqIPXYkUXy8Ofpy+b337YS3zr0aTfyqR/gf2fTd8VtS+ncWW37w==}
     engines: {node: '>= 24'}
 
   '@commitlint/config-validator@20.4.3':
@@ -888,7 +888,7 @@ snapshots:
   '@babel/helper-validator-identifier@7.28.5':
     optional: true
 
-  '@cenk1cenk2/cz-cc@2.2.20(@types/node@25.4.0)(typescript@5.9.3)':
+  '@cenk1cenk2/cz-cc@2.2.22(@types/node@25.4.0)(typescript@5.9.3)':
     dependencies:
       '@inquirer/prompts': 8.5.2(@types/node@25.4.0)
       '@listr2/prompt-adapter-inquirer': 4.2.4(@inquirer/prompts@8.5.2(@types/node@25.4.0))(@types/node@25.4.0)(listr2@10.2.2)
