@@ -9,7 +9,7 @@ importers:
   .:
     devDependencies:
       '@cenk1cenk2/cz-cc':
-        specifier: ^3.0.0
+        specifier: ^3.0.1
         version: 3.0.1(@types/node@26.6.2)(typescript@7.0.2)
       lint-staged:
         specifier: ^17.5.1
