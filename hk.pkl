@@ -1,0 +1,23 @@
+amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    steps {
+      ["prettier"] = (Builtins.prettier) {
+        glob = List("*.yml", "*.yml.j2", "*.json")
+      }
+    }
+  }
+  ["pre-push"] {
+    steps {
+      ["ansible-lint"] {
+        check = "ansible-lint -v"
+      }
+      ["prettier-check"] {
+        check = "prettier --log-level warn --check ."
+      }
+    }
+  }
+}

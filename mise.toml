@@ -3,6 +3,8 @@ python.uv_venv_auto = true
 
 [env]
 _.python.venv = ".venv"
+_.path = ["node_modules/.bin"]
 
 [tools]
 helm = "3"
+hk = "latest"
