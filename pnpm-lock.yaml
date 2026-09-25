@@ -13,7 +13,7 @@ importers:
         version: 3.0.1(@types/node@26.6.2)(typescript@7.0.2)
       prettier:
         specifier: ^3.9.6
-        version: 3.9.8
+        version: 3.9.9
 
 packages:
 
@@ -786,8 +786,8 @@ packages:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  prettier@3.9.8:
-    resolution: {integrity: sha512-WRFq3Wn3WId7LLROfMLdH7xaFr2jR62wU8nLO6rQUOLOxNZUviyJQs1M0iIhLexSFy+L+w0ch66wtoO2jRjG0A==}
+  prettier@3.9.9:
+    resolution: {integrity: sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -1683,7 +1683,7 @@ snapshots:
 
   picomatch@2.3.2: {}
 
-  prettier@3.9.8: {}
+  prettier@3.9.9: {}
 
   readable-stream@3.6.2:
     dependencies:
