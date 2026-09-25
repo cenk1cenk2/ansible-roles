@@ -5,6 +5,7 @@ from __future__ import annotations
 __metaclass__ = type
 
 import os
+import sys
 
 from ansible.plugins.action import ActionBase
 from ansible.plugins.connection.local import Connection as LocalConnection
@@ -106,13 +107,14 @@ class ActionModule(ActionBase):
 
         # Run helm on the controller, not the target
         # helm binary and chart files are local, only the rendered output goes remote
+        # the target's interpreter does not exist or lacks the module's dependencies on the controller
         original_connection = self._connection
         try:
             self._connection = LocalConnection(self._play_context)
             helm_result = self._execute_module(
                 module_name="kubernetes.core.helm_template",
                 module_args=helm_args,
-                task_vars=task_vars,
+                task_vars={**task_vars, "ansible_python_interpreter": sys.executable},
             )
         finally:
             self._connection = original_connection

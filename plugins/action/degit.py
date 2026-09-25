@@ -5,6 +5,7 @@ from __future__ import annotations
 __metaclass__ = type
 
 import os
+import sys
 import tempfile
 
 from ansible.plugins.action import ActionBase
@@ -73,7 +74,7 @@ class ActionModule(ActionBase):
                 git_result = self._execute_module(
                     module_name="ansible.builtin.git",
                     module_args=git_args,
-                    task_vars=task_vars,
+                    task_vars={**task_vars, "ansible_python_interpreter": sys.executable},
                 )
             finally:
                 self._connection = original_connection
