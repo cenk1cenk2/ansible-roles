@@ -1,3 +1,9 @@
+## [1.1.6](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.5...v1.1.6) (2026-09-25)
+
+### Bug Fixes
+
+* **plugins:** run controller-side modules with the controller interpreter ([a4987a6](https://gitlab.kilic.dev/ansible/ansible-roles/commit/a4987a64a0af5472290513602e362d627889979f))
+
 ## [1.1.5](https://gitlab.kilic.dev/ansible/ansible-roles/compare/v1.1.4...v1.1.5) (2026-05-04)
 
 
