@@ -12,7 +12,7 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(@types/node@26.6.3)(typescript@7.0.2)
       prettier:
-        specifier: ^3.9.6
+        specifier: ^3.9.8
         version: 3.9.9
 
 packages:
